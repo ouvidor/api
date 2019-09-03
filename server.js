@@ -1,8 +1,8 @@
 /*
-        Essa classe é o entry point da aplicação, aqui é iniciado o servidor na instacia
+    Essa classe é o entry point da aplicação, aqui é iniciado o servidor na instacia
     de app, iniciamos o "listen" do server e passamos o resto das responsabilidades para 
     routes.index   
-    
+
 */
 
 const express = require('express');

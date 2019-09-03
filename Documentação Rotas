@@ -1,0 +1,13 @@
+Sugestão, documentar todas rotas da aplicação em um documento, txt temporário...
+
+
+    Aqui devera ser documentado e comentado cada rota do nosso programa, assim como o seu
+uso e necessidade (ou não) de permissão de administrador ou autenticação normal.
+
+
+EX:
+    rota: '/user'
+    autenticação: true
+    get: retorna todos usuarios
+    post: salva um novo usuário
+    file: 'src/routes/routes.teste.js'
