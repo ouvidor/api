@@ -9,8 +9,16 @@ const express = require('express');
 
 const app = express();
 
+//Database
+const db = require('./src/config/database')
+
+//testa a conexão com o banco
+db.authenticate()
+    .then(() => console.log('database connected...'))
+    .catch(err => console.log('error: ' + err))
+
 // Passa a nossa instancia de app para o routes.index ter acesso também.
-require('./src/routes/routes.index')(app);
+require('./src/app/routes/routes.index')(app);
 
 app.listen(3000, () => {
     console.log("Listening at port 3000...")

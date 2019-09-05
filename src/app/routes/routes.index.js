@@ -22,5 +22,5 @@ module.exports = function(app) {
       caminho especifico, por exemplo, o caminho '/user' tera todas suas rotas no 
       arquivo routes.user.
   */
-  app.use('/user', require('./routes.teste'));
+  app.use('/user', require('./routes.user'));
 };
