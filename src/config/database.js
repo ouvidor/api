@@ -1,7 +1,8 @@
 require('dotenv').config();
 
 const Sequelize = require('sequelize');
-// Option 1: Passing parameters separately
+
+//retorna uma instancia de conexão
 module.exports = new Sequelize(
     process.env.DB_DATABASE_NAME,
     process.env.DB_USERNAME,

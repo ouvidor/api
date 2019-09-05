@@ -8,17 +8,7 @@ const db = require('../../config/database');
     https://sequelize.org/v3/docs/models-definition/
 */
 const User = db.define('users', {
-    id: {
-        type: Sequelize.BIGINT,
-        primaryKey: true,
-        allowNull: false,
-        unique: true,
-        validate: {
-            notEmpty: true,
-            autoIncrement: true,
-            notEmpty: true       
-        } 
-    },
+
     name: {
         type: Sequelize.STRING,
         allowNull: false,

@@ -17,8 +17,10 @@
   },
   "homepage": "https://github.com/ouvidor/api#readme",
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mysql2": "^1.7.0",
     "nodemon": "^1.19.1",
     "sequelize": "^5.18.1"
