@@ -7,12 +7,12 @@
 
 
 const express = require('express');
-const UserCtrl = require('../controller/user.controller');
-const UserMidl = require('../middlewares/middlewares.user');
+const AuthCtrl = require('../controller/auth.controller');
+// const UserMidl = require('../middlewares/middlewares.user');
 const router = express.Router();
 
 router
-  .get('/', UserCtrl.getAllUsers)//ROTA DE TESTE, EXCLUIR
-  .post('/save', UserCtrl.saveToDb)
+  .post('/login', AuthCtrl.login)
+
 
 module.exports = router;

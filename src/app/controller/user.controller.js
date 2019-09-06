@@ -1,10 +1,10 @@
-const db = require('../../config/database')
 const User = require('../models/User')
+const Bcrypt = require('bcrypt');
 
 class UserController {
 
     //Retorna todas entries de Users no DB, temporário, !somente para teste!
-    static async getAllUsers(req,res){        
+    static async getAllUsers(req, res) {
         User.findAll()
             .then(users => {
                 console.log(users);
@@ -13,12 +13,10 @@ class UserController {
             .catch(err => console.log(err));
     }
 
-    static async login(req,res){
-        
-        res.send();
-    }
 
-    static async saveToDb(req,res){
+
+    //salva o usuário no banco
+    static async saveToDb(req, res) {
         try {
             let user = new User();
             user.name = req.body.name;
@@ -26,32 +24,29 @@ class UserController {
             user.email = req.body.email;
             user.login = req.body.login;
 
-            //APÓS IMPLEMENTAR JWT E HASH, ALTERAR ISSO ABAIXO
-            user.password = req.body.password;
+            //Muda a senha para o Hash
+            user.password = await Bcrypt.hashSync(req.body.password, 10);
 
             console.log("teste Model: " + user.name);
             await user.save()
-                .then(data =>{
+                .then(data => {
                     res.json(data);
-                })              
+                })
         } catch (err) {
 
             //erro caso tente salvar uma entrada de campo unico ja existente
-            if(err.name == "SequelizeUniqueConstraintError"){
+            if (err.name == "SequelizeUniqueConstraintError") {
                 console.log("Já existe uma entrada UNICA com esse valor, campo: "
-                + err.errors.path);
+                    + err.errors.path);
 
                 res.send("Já existe uma entrada UNICA com esse valor, campo: "
-                + err.errors.path);
+                    + err.errors.path);
             }
 
             //erro geral
             res.json(err);
-        }        
+        }
     }
-
-
-
 
 
 }//fim da classe

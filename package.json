@@ -4,7 +4,7 @@
   "description": "API encarregada de prover endpoints e serviços às aplicações Mobile e Web do Ouvidor.",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
