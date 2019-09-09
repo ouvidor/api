@@ -13,8 +13,7 @@
 const express = require('express');
 const authMiddleware = require('../middlewares/middlewares.auth');
 
-module.exports = function (app) {
-
+module.exports = function(app) {
   /*
         As rotas funcionam da seguinte forma, esse arquivo (routes.index)é a 
       entrada principal dos requests, abaixo será filtrado e encaminhado para cada 
@@ -22,18 +21,18 @@ module.exports = function (app) {
       arquivo routes.user.
   */
 
-  //isso abaixo é nessecario para que ao receber um Json do post, consiga ler ele como objeto sem problemas
+  // isso abaixo é nessecario para que ao receber um Json do post, consiga ler ele como objeto sem problemas
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
   app.use('/user', require('./routes.user'));
   app.use('/authenticate', require('./routes.auth'));
 
-  //daqui para baixo todas rotas são autenticadas
+  // daqui para baixo todas rotas são autenticadas
   app.use(authMiddleware.validateToken);
 
-  //teste
+  // teste
   app.get('/', (req, res) => {
     res.send('autenticado');
-  })
+  });
 };

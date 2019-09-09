@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-//importa nossa instancia de db para realizar as conexões
+// importa nossa instancia de db para realizar as conexões
 const db = require('../../config/database');
 
 /*
@@ -8,46 +8,45 @@ const db = require('../../config/database');
     https://sequelize.org/v3/docs/models-definition/
 */
 const User = db.define('users', {
-
-    name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
+  name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
     },
-    lastName: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
+  },
+  lastName: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
     },
-    email: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            isEmail: true,
-            notEmpty: true
-        }
+  },
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      isEmail: true,
+      notEmpty: true,
     },
-    login: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            notEmpty: true
-        }
+  },
+  login: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      notEmpty: true,
     },
-    password: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }        
-    }
-})
+  },
+  password: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
+  },
+});
 
 /*
     A função Sync verifica se já existe um banco com o nome escolhido como acima,
