@@ -1,9 +1,6 @@
-const Bcrypt = require('bcrypt')
-const User = require('../models/User')
+const Bcrypt = require('bcrypt');
+const User = require('../models/User');
 
-class userMiddlewares {
-
-
-}
+class userMiddlewares {}
 
 module.exports = userMiddlewares;
