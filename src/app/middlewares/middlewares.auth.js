@@ -1,6 +1,4 @@
-const Bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 const authConfig = require('../../config/auth');
 
 class authMiddlewares {
@@ -30,11 +28,14 @@ class authMiddlewares {
 
     // verifica o token
     jwt.verify(token, authConfig.secret, (err, decoded) => {
-      if (err) return res.status(401).send({ error: 'Token Invalido' });
+      if (err) {
+        return res.status(401).send({ error: 'Token Invalido' });
+      }
 
-      req.userId = decoded.id;
+      req.user_id = decoded.id;
       return next();
     });
+    return res.status(401).send({ error: 'erro geral' });
   }
 }
 

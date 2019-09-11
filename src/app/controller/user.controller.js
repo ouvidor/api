@@ -30,7 +30,7 @@ class UserController {
       });
     } catch (err) {
       // erro caso tente salvar uma entrada de campo unico ja existente
-      if (err.name == 'SequelizeUniqueConstraintError') {
+      if (err.name === 'SequelizeUniqueConstraintError') {
         console.log(
           `Já existe uma entrada UNICA com esse valor, campo: ${err.errors.path}`
         );
