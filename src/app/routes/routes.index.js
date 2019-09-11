@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 /*
     Aqui ocorre a divisão de cada caminho para sua propria rota,
     funciona da seguinte forma:
@@ -10,12 +9,13 @@
     e vice e versa.
 
 */
+import express from 'express';
 
-const express = require('express');
-const authMiddleware = require('../middlewares/middlewares.auth');
+import authMiddleware from '../middlewares/middlewares.auth';
+import userRoutes from './routes.user';
+import authRoutes from './routes.auth';
 
-// eslint-disable-next-line func-names
-module.exports = function(app) {
+module.exports = app => {
   /*
         As rotas funcionam da seguinte forma, esse arquivo (routes.index)é a
       entrada principal dos requests, abaixo será filtrado e encaminhado para cada
@@ -27,8 +27,8 @@ module.exports = function(app) {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
-  app.use('/user', require('./routes.user'));
-  app.use('/authenticate', require('./routes.auth'));
+  app.use('/user', userRoutes);
+  app.use('/authenticate', authRoutes);
 
   // daqui para baixo todas rotas são autenticadas, ao ser enviado o
   // token no header e a validação ser feita com sucesso, seria inserido o valor
@@ -38,6 +38,7 @@ module.exports = function(app) {
 
   // teste
   app.get('/', (req, res) => {
-    res.send('autenticado');
+    // quando enviar o json final use um return para finalizar a rota
+    return res.send('autenticado');
   });
 };
