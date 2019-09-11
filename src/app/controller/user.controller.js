@@ -1,10 +1,11 @@
 const Bcrypt = require('bcrypt');
-const User = require('../models/User');
+const { Users } = require('../models');
 
 class UserController {
   // Retorna todas entries de Users no DB, temporário, !somente para teste!
   static async getAllUsers(req, res) {
-    User.findAll()
+    console.log(Users);
+    Users.findAll()
       .then(users => {
         console.log(users);
         res.sendStatus(200);
@@ -15,7 +16,7 @@ class UserController {
   // salva o usuário no banco
   static async saveToDb(req, res) {
     try {
-      const user = new User();
+      const user = new Users();
       user.name = req.body.name;
       user.lastName = req.body.lastName;
       user.email = req.body.email;

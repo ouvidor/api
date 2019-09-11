@@ -10,7 +10,7 @@ import express from 'express';
 const app = express();
 
 // Database
-const db = require('./config/database');
+const db = require('./database/database');
 
 // inicia a conexão com o banco
 db.authenticate()
