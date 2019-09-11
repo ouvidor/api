@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 /*
     Aqui ocorre a divisão de cada caminho para sua propria rota,
     funciona da seguinte forma:
@@ -13,11 +14,12 @@
 const express = require('express');
 const authMiddleware = require('../middlewares/middlewares.auth');
 
+// eslint-disable-next-line func-names
 module.exports = function(app) {
   /*
-        As rotas funcionam da seguinte forma, esse arquivo (routes.index)é a 
-      entrada principal dos requests, abaixo será filtrado e encaminhado para cada 
-      caminho especifico, por exemplo, o caminho '/user' terá todas suas rotas no 
+        As rotas funcionam da seguinte forma, esse arquivo (routes.index)é a
+      entrada principal dos requests, abaixo será filtrado e encaminhado para cada
+      caminho especifico, por exemplo, o caminho '/user' terá todas suas rotas no
       arquivo routes.user.
   */
 
@@ -28,7 +30,10 @@ module.exports = function(app) {
   app.use('/user', require('./routes.user'));
   app.use('/authenticate', require('./routes.auth'));
 
-  // daqui para baixo todas rotas são autenticadas
+  // daqui para baixo todas rotas são autenticadas, ao ser enviado o
+  // token no header e a validação ser feita com sucesso, seria inserido o valor
+  // user_id em <req> no meio do middleware, req.user_id será usado para
+  // saber qual usuário está acessando a rota no momento
   app.use(authMiddleware.validateToken);
 
   // teste
