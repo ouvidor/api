@@ -20,6 +20,7 @@
     "no-param-reassign": "off",
     "camelcase": "off",
     "no-console": "off",
-    "no-unused-vars": ["error", { "ignorePattern": "next" }]
+    "no-unused-vars": ["error", { "ignorePattern": "next" }],
+    "import/no-dynamic-require": "off"
   }
 }

@@ -1,4 +1,3 @@
-/* eslint-disable import/no-dynamic-require */
 /*
   Nesse arquivo fica a referencia para todos os models do sistema, sendo assim necessário
   somente o require desse arquivo, exemplo
