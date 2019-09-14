@@ -5,12 +5,14 @@
 */
 
 import express from 'express';
-// const express = require('express');
+
+// instancia configurada do Sequelize, para conectar ao Database
+import db from './database/database';
+
+// função com todas as rotas e middlewares da aplicação
+import Routes from './app/routes';
 
 const app = express();
-
-// Database
-const db = require('./database/database');
 
 // inicia a conexão com o banco
 db.authenticate()
@@ -18,7 +20,7 @@ db.authenticate()
   .catch(err => console.log(`error: ${err}`));
 
 // Passa a nossa instancia de app para o routes.index ter acesso também.
-require('./app/routes/routes.index')(app);
+Routes(app);
 
 const port = process.env.LISTEN_PORT;
 app.listen(port, () => {

@@ -1,4 +1,11 @@
-'use strict';
+/**
+ * Migration da tabela de usuário
+ * Para gerar uma migration similar basta executar o comando:
+ * yarn sequelize migration:create --name=create-user
+ *
+ * para rodar a migration para o banco de dados
+ * yarn sequelize db:migrate
+ */
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
@@ -49,7 +56,7 @@ module.exports = {
       },
     });
   },
-  down: (queryInterface, Sequelize) => {
+  down: queryInterface => {
     return queryInterface.dropTable('Users');
   },
 };
