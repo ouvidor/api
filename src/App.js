@@ -1,3 +1,8 @@
+/**
+ * Classe App, orquestradora da API
+ * responsável por iniciar a conexão ao banco de dados, manter as rotas e
+ * as middlewares de configuração
+ */
 import express from 'express';
 import cors from 'cors';
 
@@ -14,9 +19,8 @@ class App {
     this.routes();
   }
 
-  // iniciando a conexão com o banco
+  // inicia a conexão com o banco
   initDatabase() {
-    // inicia a conexão com o banco
     db.authenticate()
       .then(() => console.log('database connected...'))
       .catch(err => console.log(`error: ${err}`));
@@ -30,11 +34,11 @@ class App {
     // CORS permite acesso de qualquer ip à API
     this.server.use(cors());
 
-    // isso abaixo é nessecario para que ao receber um Json do post, consiga ler ele como objeto sem problemas
+    // nessecario para que ao receber uma requisição com JSON, consiga ler ele como objeto sem problemas
     this.server.use(express.urlencoded({ extended: true }));
   }
 
-  // conectando as rotas ao app
+  // conecta as rotas ao app
   routes() {
     this.server.use(routes);
   }
