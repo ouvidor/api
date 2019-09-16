@@ -1,8 +1,9 @@
 // const db = require('../../config/database');
-const Bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const auth = require('../../config/auth');
+import Bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
+import User from '../models/User';
+import auth from '../../config/auth';
 
 // função que gera o token
 function generateToken(id) {
@@ -23,7 +24,7 @@ class AuthController {
 
       // caso não exista
       if (!user) {
-        return res.status(400).send({ error: 'usuário não encontrado' });
+        return res.status(400).send({ error: 'Usuário não encontrado' });
       }
 
       // Checa se a senha está correta

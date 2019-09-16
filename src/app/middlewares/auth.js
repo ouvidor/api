@@ -7,10 +7,11 @@ export default async (req, res, next) => {
   // pega o token do header
   const authHeader = req.headers.authorization;
 
-  // checa se é null
+  // checa se algum token foi passado
   if (!authHeader) {
-    return res.status(401).send({ error: 'token não informado' });
+    return res.status(401).send({ error: 'Token não informado' });
   }
+
   const [scheme, token] = authHeader.split(' ');
 
   // checa se a Header é no formato Bearer
@@ -30,6 +31,6 @@ export default async (req, res, next) => {
     return next();
   } catch (err) {
     // caso o token não passe na validação
-    return res.status(401).json({ error: 'Token invalid' });
+    return res.status(401).json({ error: 'Token invalido' });
   }
 };
