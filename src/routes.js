@@ -9,7 +9,7 @@
 import { Router } from 'express';
 
 import UserController from './app/controller/user.controller';
-import AuthMiddleware from './app/middlewares/middlewares.auth';
+import AuthMiddleware from './app/middlewares/auth';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
@@ -27,7 +27,7 @@ router.post('/user/create', UserController.saveToDb);
  * Para ser autenticado deve ser enviado um token na Header da requisição
  * Apartir desse ponto se pode ter acesso ao 'req.user_id'
  */
-router.use(AuthMiddleware.validateToken);
+router.use(AuthMiddleware);
 
 /**
  * Rotas privadas

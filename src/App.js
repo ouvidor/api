@@ -36,6 +36,10 @@ class App {
 
     // nessecario para que ao receber uma requisição com JSON, consiga ler ele como objeto sem problemas
     this.server.use(express.urlencoded({ extended: true }));
+
+    // exclui o 'x-powered-by' da Header, por motivos de segurança
+    // isso permitia que a pessoa acessando soubesse o framework usado no server
+    this.server.disable('x-powered-by');
   }
 
   // conecta as rotas ao app
