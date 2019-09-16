@@ -3,27 +3,22 @@
  * responsável por iniciar a conexão ao banco de dados, manter as rotas e
  * as middlewares de configuração
  */
+import './bootstrap';
 import express from 'express';
 import cors from 'cors';
 
+// inicia a instancia do Sequelize, fazendo a conexão com o Database
+import './database';
+
 // instancia configurada do Sequelize, para conectar ao Database
-import db from './database/database';
 import routes from './routes';
 
 class App {
   constructor() {
     this.server = express();
 
-    this.initDatabase();
     this.config();
     this.routes();
-  }
-
-  // inicia a conexão com o banco
-  initDatabase() {
-    db.authenticate()
-      .then(() => console.log('database connected...'))
-      .catch(err => console.log(`error: ${err}`));
   }
 
   // middlewares de configuração
