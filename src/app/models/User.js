@@ -1,42 +1,38 @@
-'use  strict';
+import Sequelize, { Model } from 'sequelize';
+import bcrypt from 'bcrypt';
 
-/*
-    referencia para criação de model:
-    https://sequelize.org/v3/docs/models-definition/
-*/
-module.exports = function(sequelize, DataTypes) {
-  const User = sequelize.define('Users', {
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
+class User extends Model {
+  static init(sequelize) {
+    super.init(
+      {
+        name: Sequelize.STRING,
+        email: Sequelize.STRING,
+        password: Sequelize.VIRTUAL,
+        password_hash: Sequelize.STRING,
       },
-    },
-    lastName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: {
-        isEmail: true,
-        notEmpty: true,
-      },
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-  });
+      // configs da tabela
+      { sequelize }
+    );
 
-  return User;
-};
+    this.addHook('beforeSave', async user => {
+      // caso uma senha seja informada
+      if (user.password) {
+        user.password_hash = await bcrypt.hash(user.password, 8);
+      }
+    });
+
+    return this;
+  }
+
+  static associate(models) {
+    console.log(models);
+    // this.hasMany(models.Manifestation);
+  }
+
+  // retorna true caso a senha bata
+  checkPassword(password) {
+    return bcrypt.compare(password, this.password_hash);
+  }
+}
+
+export default User;
