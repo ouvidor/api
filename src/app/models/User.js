@@ -7,8 +7,8 @@ class User extends Model {
       {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
-        password: Sequelize.VIRTUAL,
-        password_hash: Sequelize.STRING,
+        password_temp: Sequelize.VIRTUAL,
+        password: Sequelize.STRING,
       },
       // configs da tabela
       { sequelize }
@@ -17,16 +17,17 @@ class User extends Model {
     this.addHook('beforeSave', async user => {
       // caso uma senha seja informada
       if (user.password) {
-        user.password_hash = await bcrypt.hash(user.password, 8);
+        user.password = await bcrypt.hash(user.password, 8);
       }
+      console.log(user.password);
     });
 
     return this;
   }
 
   static associate(models) {
-    console.log(models);
-    // this.hasMany(models.Manifestation);
+    // User possui um
+    // this.hasOne(models.Role);
   }
 
   // retorna true caso a senha bata

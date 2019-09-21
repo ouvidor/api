@@ -6,7 +6,7 @@ class UserController {
     User.findAll()
       .then(users => {
         console.log(users);
-        res.sendStatus(200);
+        res.json(users);
       })
       .catch(err => console.log(err));
   }
