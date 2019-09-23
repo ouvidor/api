@@ -9,6 +9,7 @@
 import { Router } from 'express';
 
 import UserController from './app/controller/user.controller';
+import AuthController from './app/controller/auth.controller';
 import AuthMiddleware from './app/middlewares/auth';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
@@ -19,6 +20,8 @@ const router = new Router();
  */
 router.get('/user', UserController.getAllUsers);
 router.post('/user/create', UserController.saveToDb);
+
+router.post('/auth', AuthController.login);
 // TODO rota para criar seção (retorna o perfil do usuário e o token)
 
 /**
