@@ -17,6 +17,7 @@ const router = new Router();
 /**
  * Rotas publicas
  */
+router.get('/user', UserController.getAllUsers);
 router.post('/user/create', UserController.saveToDb);
 // TODO rota para criar seção (retorna o perfil do usuário e o token)
 

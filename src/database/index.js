@@ -5,11 +5,13 @@ import databaseConfig from '../config/database';
 
 // importações dos models
 import User from '../app/models/User';
+import Role from '../app/models/Role';
 
-const models = [User];
+const models = [User, Role];
 
 class Database {
   constructor() {
+    // Aqui é necessário informar se está utilizando as configurações de banco local ou remoto
     this.connection = new Sequelize(databaseConfig);
     this.init();
     this.associate();
