@@ -6,11 +6,15 @@ class User extends Model {
     super.init(
       {
         name: Sequelize.STRING,
+        preferedName: Sequelize.STRING,
         email: Sequelize.STRING,
         password: Sequelize.STRING,
       },
       // configs da tabela
-      { sequelize }
+      {
+        sequelize,
+        underscored: true,
+      }
     );
 
     this.addHook('beforeSave', async user => {
@@ -24,7 +28,7 @@ class User extends Model {
   }
 
   static associate(models) {
-    // User possui um
+    this.hasMany(models.Manifestation);
   }
 
   // retorna true caso a senha bata

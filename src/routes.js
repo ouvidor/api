@@ -11,17 +11,26 @@ import { Router } from 'express';
 import UserController from './app/controller/user.controller';
 import AuthController from './app/controller/auth.controller';
 import AuthMiddleware from './app/middlewares/auth';
+import ManifestationMiddleware from './app/middlewares/manifestation.middleware';
+import ManifestationController from './app/controller/manifestation.controller';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
 
 /**
- * Rotas publicas
+ * Rotas de Teste
  */
 router.get('/user', UserController.getAllUsers);
+// const decoded = jwt.verify(req.body.token, process.env.AUTH_SECRET);
+
+/**
+ * Rotas publicas
+ */
+
 router.post('/user/create', UserController.saveToDb);
 
 router.post('/auth', AuthController.login);
+
 // TODO rota para criar seção (retorna o perfil do usuário e o token)
 
 /**
@@ -37,6 +46,13 @@ router.use(AuthMiddleware);
  * Rotas privadas
  * necessário um Token
  */
+
+router.post(
+  '/manifestation/create',
+  ManifestationMiddleware.checkBody,
+  ManifestationController.saveToDb
+);
+
 // TODO rotas privadas
 
 export default router;

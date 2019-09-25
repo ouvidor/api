@@ -5,8 +5,9 @@ import databaseConfig from '../config/database';
 
 // importações dos models
 import User from '../app/models/User';
+import Manifestation from '../app/models/Manifestation';
 
-const models = [User];
+const models = [User, Manifestation];
 
 class Database {
   constructor() {
@@ -14,6 +15,7 @@ class Database {
     this.connection = new Sequelize(databaseConfig);
     this.init();
     this.associate();
+    this.sync();
   }
 
   init() {
@@ -25,6 +27,16 @@ class Database {
       if (model.associate) {
         model.associate(this.connection.models);
       }
+    });
+  }
+
+  // A função sync sincroniza todos os models com a database em uso.
+  // ps: somente use {force: true} em ambiente de desenvolvimento sem dados no banco.
+  sync() {
+    models.forEach(model => {
+      model
+        .sync()
+        .then(console.log(`Table: ${model.name} Sincronizada ao banco`));
     });
   }
 }
