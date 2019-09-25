@@ -5,9 +5,10 @@
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon src/index.js",
-    "pretest": "cross-env NODE_ENV=test && sequelize db:migrate",
-    "test": "cross-env NODE_ENV=test && jest --runInBand",
-    "posttest": "cross-env NODE_ENV=test && sequelize db:migrate:undo:all"
+    "start-local": "cross-env NODE_ENV=local yarn start",
+    "pretest": "cross-env NODE_ENV=test sequelize db:migrate",
+    "test": "cross-env NODE_ENV=test jest --runInBand",
+    "posttest": "cross-env NODE_ENV=test sequelize db:migrate:undo:all"
   },
   "repository": {
     "type": "git",
@@ -37,6 +38,8 @@
     "eslint-config-prettier": "^6.2.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-prettier": "^3.1.0",
+    "factory-girl": "^5.0.4",
+    "faker": "^4.1.0",
     "jest": "^24.9.0",
     "nodemon": "^1.19.2",
     "prettier": "^1.18.2",
