@@ -1,2 +1,8 @@
 /node_modules
 .env
+
+# ignora banco sqlite gerado
+__tests__/database.sqlite
+
+# ignora interface gerada para do coverage dos tests
+__tests__/coverage
