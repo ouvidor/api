@@ -7,7 +7,7 @@ class User extends Model {
       {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
-        password_temp: Sequelize.VIRTUAL,
+        passwordTemp: Sequelize.VIRTUAL,
         password: Sequelize.STRING,
       },
       // configs da tabela
@@ -25,10 +25,10 @@ class User extends Model {
     return this;
   }
 
-  static associate(models) {
-    // User possui um
-    // this.hasOne(models.Role);
-  }
+  // static associate(models) {
+  //   // User possui um
+  //   // this.hasOne(models.Role);
+  // }
 
   // retorna true caso a senha bata
   checkPassword(password) {
