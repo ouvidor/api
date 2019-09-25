@@ -10,7 +10,7 @@ import User from '../src/app/models/User';
 factory.define('User', User, {
   name: faker.name.firstName(),
   email: faker.internet.email(),
-  password_temp: faker.internet.password(6),
+  password: faker.internet.password(6),
 });
 
 export default factory;

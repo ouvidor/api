@@ -16,10 +16,9 @@ class User extends Model {
 
     this.addHook('beforeSave', async user => {
       // caso uma senha seja informada
-      if (user.password) {
-        user.password = await bcrypt.hash(user.password, 8);
+      if (user.passwordTemp) {
+        user.password = await bcrypt.hash(user.passwordTemp, 8);
       }
-      console.log(user.password);
     });
 
     return this;
@@ -31,8 +30,8 @@ class User extends Model {
   // }
 
   // retorna true caso a senha bata
-  checkPassword(password) {
-    return bcrypt.compare(password, this.password_hash);
+  checkPassword(passwordToCheck) {
+    return bcrypt.compare(passwordToCheck, this.password);
   }
 }
 
