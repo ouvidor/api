@@ -1,8 +1,8 @@
-class Manifestation {
+class ManifestationMiddleware {
   // valida o body do request
   async checkBody(req, res, next) {
-    // Keys esperadas a serem contidas no objeto
-    const expectedKeys = ['title', 'description', 'category'];
+    // Keys esperadas a serem contidas no request
+    const expectedKeys = ['title', 'description', 'categories'];
 
     // Keys que vieram na requisição
     const keys = Object.keys(req.body);
@@ -25,4 +25,4 @@ class Manifestation {
   }
 }
 
-export default new Manifestation();
+export default new ManifestationMiddleware();

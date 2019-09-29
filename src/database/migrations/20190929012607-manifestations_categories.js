@@ -9,25 +9,24 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('users', {
+    return queryInterface.createTable('manifestation_category', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
-        type: Sequelize.STRING,
+      manifestation_id: {
+        type: Sequelize.INTEGER,
+        references: { model: 'manifestations', key: 'id' },
         allowNull: false,
+        onDelete: 'CASCADE',
       },
-      email: {
-        type: Sequelize.STRING,
+      category_id: {
+        type: Sequelize.INTEGER,
+        references: { model: 'categories', key: 'id' },
         allowNull: false,
-        unique: true,
-      },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        onDelete: 'CASCADE',
       },
       created_at: {
         type: Sequelize.DATE,
@@ -40,6 +39,6 @@ module.exports = {
     });
   },
   down: queryInterface => {
-    return queryInterface.dropTable('users');
+    return queryInterface.dropTable('manifestation_category');
   },
 };

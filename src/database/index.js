@@ -1,13 +1,14 @@
 import Sequelize from 'sequelize';
 
 // configuração de acesso ao banco
-import databaseConfig from '../config/database';
+import databaseConfig from '../config/config';
 
 // importações dos models
 import User from '../app/models/User';
 import Manifestation from '../app/models/Manifestation';
+import Category from '../app/models/Category';
 
-const models = [User, Manifestation];
+const models = [User, Manifestation, Category];
 
 class Database {
   constructor() {
@@ -30,9 +31,11 @@ class Database {
     });
   }
 
-  // A função sync sincroniza todos os models com a database em uso.
-  // ps: somente use {force: true} em ambiente de desenvolvimento sem dados no banco.
-  sync() {
+  /*
+   * A função sync sincroniza todos os models com a database em uso.
+   * ps: somente use {force: true} em ambiente de desenvolvimento sem dados no banco.
+   */
+  async sync() {
     models.forEach(model => {
       model
         .sync()

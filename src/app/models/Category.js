@@ -1,12 +1,10 @@
 import Sequelize, { Model } from 'sequelize';
 
-class Manifestation extends Model {
+class Category extends Model {
   static init(sequelize) {
     super.init(
       {
-        title: Sequelize.STRING,
-        description: Sequelize.TEXT,
-        read: Sequelize.TINYINT,
+        name: Sequelize.STRING,
       },
       // configs da tabela
       {
@@ -19,14 +17,13 @@ class Manifestation extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.User);
-    this.belongsToMany(models.Category, {
+    this.belongsToMany(models.Manifestation, {
       through: 'manifestation_category',
-      as: 'categories',
-      foreignKey: 'manifestation_id',
+      as: 'manifesteations',
+      foreignKey: 'category_id',
       constraints: false,
     });
   }
 }
 
-export default Manifestation;
+export default Category;
