@@ -13,7 +13,7 @@ import AuthController from './app/controller/auth.controller';
 import AuthMiddleware from './app/middlewares/auth';
 import ManifestationMiddleware from './app/middlewares/manifestation.middleware';
 import ManifestationController from './app/controller/manifestation.controller';
-import Category from './app/models/Category';
+import CategoryController from './app/controller/category.controller';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
@@ -79,8 +79,5 @@ router.post('/manifestation', ManifestationController.getById);
 /**
  * Usada para criar uma categoria, temporaria, será migrada para um controller próprio
  */
-router.post('/category', (req, res) => {
-  Category.create(req.body);
-  res.send('ok');
-});
+router.post('/category/create', CategoryController.saveToDb);
 export default router;

@@ -1,5 +1,5 @@
 /**
- * Migration da tabela de usuário
+ * Migration da tabela de categoria
  * Para gerar uma migration similar basta executar o comando:
  * yarn sequelize migration:create --name=create-user
  *
@@ -9,24 +9,17 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('manifestation_category', {
+    return queryInterface.createTable('categories', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      manifestation_id: {
-        type: Sequelize.INTEGER,
-        references: { model: 'manifestations', key: 'id' },
+      name: {
+        type: Sequelize.STRING,
         allowNull: false,
-        onDelete: 'CASCADE',
-      },
-      category_id: {
-        type: Sequelize.INTEGER,
-        references: { model: 'categories', key: 'id' },
-        allowNull: false,
-        onDelete: 'CASCADE',
+        unique: true,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -38,7 +31,8 @@ module.exports = {
       },
     });
   },
+
   down: queryInterface => {
-    return queryInterface.dropTable('manifestation_category');
+    return queryInterface.dropTable('categories');
   },
 };
