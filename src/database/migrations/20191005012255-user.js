@@ -20,14 +20,18 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      preferedName: {
-        type: Sequelize.INTEGER,
+      prefered_name: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       email: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
         unique: true,
+      },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,
