@@ -16,11 +16,11 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
+      first_name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      prefered_name: {
+      last_name: {
         type: Sequelize.STRING,
         allowNull: false,
       },

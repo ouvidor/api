@@ -27,14 +27,8 @@ router.get('/user', UserController.getAllUsers);
  *  Rotas publicas
  */
 
-/**
- * Rota para criar um user, recebe id, email, name, password.
- */
 router.post('/user/create', UserController.saveToDb);
 
-/**
- * Rota para autenticar e receber um tolken como retorno, recebe email e password.
- */
 router.post('/auth', AuthController.login);
 
 /**
@@ -55,18 +49,12 @@ router.use(AuthMiddleware);
  * necessário um Token
  */
 
-/**
- * Cria uma manifestação, recebe os atributos title, description e categories <- (em forma de array).
- */
 router.post(
   '/manifestation/create',
   ManifestationMiddleware.checkBody,
   ManifestationController.saveToDb
 );
 
-/**
- * Retorna manifestações baseado em sua requisição, recebe manifestation_id.
- */
 router.get('/manifestation', ManifestationController.getAll);
 router.post('/manifestation', ManifestationController.getById);
 
@@ -76,8 +64,5 @@ router.post('/manifestation', ManifestationController.getById);
  * passar role como payload no tolken
  */
 
-/**
- * Usada para criar uma categoria, temporaria, será migrada para um controller próprio
- */
 router.post('/category/create', CategoryController.saveToDb);
 export default router;
