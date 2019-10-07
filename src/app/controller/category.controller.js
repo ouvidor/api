@@ -19,7 +19,7 @@ class CategoryController {
 
     // caso a categoria já existir no DB
     if (doesUserExist) {
-      return res.status(400).json({ error: 'Ususário já existe' });
+      return res.status(400).json({ error: 'categoria ja existe' });
     }
 
     // criar categoria
