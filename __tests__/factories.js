@@ -8,7 +8,8 @@ import { factory } from 'factory-girl';
 import User from '../src/app/models/User';
 
 factory.define('User', User, {
-  name: faker.name.firstName(),
+  first_name: faker.name.firstName(),
+  last_name: faker.name.lastName(),
   email: faker.internet.email(),
   password: faker.internet.password(6),
 });

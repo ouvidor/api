@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 
 // configuração de acesso ao banco
-import databaseConfig from '../config/config';
+import databaseConfig from '../config/database';
 
 // importações dos models
 import User from '../app/models/User';

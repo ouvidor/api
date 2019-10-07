@@ -14,7 +14,7 @@ describe('User', () => {
   it('should encrypt the user password when a new user is created', async () => {
     const user = await factory.create('User', {
       // passando uma senha estática para poder comparar depois
-      passwordTemp: '123456',
+      password: '123456',
     });
 
     const hashComparisonResult = await Bcrypt.compare('123456', user.password);
@@ -80,6 +80,7 @@ describe('User', () => {
     expect(response.body.messages).toEqual(
       expect.arrayContaining([
         'Nome é necessário',
+        'Sobrenome é necessário',
         'Email é necessário',
         'Senha é necessária',
       ])

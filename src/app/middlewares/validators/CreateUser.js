@@ -7,7 +7,8 @@ import { object, string } from 'yup';
 export default async (request, response, next) => {
   try {
     const schema = object().shape({
-      name: string().required('Nome é necessário'),
+      first_name: string().required('Nome é necessário'),
+      last_name: string().required('Sobrenome é necessário'),
       email: string()
         .email('Email invalido')
         .required('Email é necessário'),
