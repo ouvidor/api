@@ -26,12 +26,12 @@ class UserController {
     }
 
     // criar usuário
-    const { id, email, name, prefered_name } = await User.create(req.body);
+    const { id, email, first_name, last_name } = await User.create(req.body);
 
     return res.json({
       id,
-      name,
-      prefered_name,
+      first_name,
+      last_name,
       email,
     });
   }
