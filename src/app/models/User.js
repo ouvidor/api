@@ -5,29 +5,31 @@ class User extends Model {
   static init(sequelize) {
     super.init(
       {
-        name: Sequelize.STRING,
+        first_name: Sequelize.STRING,
+        last_name: Sequelize.STRING,
         email: Sequelize.STRING,
-        passwordTemp: Sequelize.VIRTUAL,
         password: Sequelize.STRING,
       },
       // configs da tabela
-      { sequelize }
+      {
+        sequelize,
+        underscored: true,
+      }
     );
 
     this.addHook('beforeSave', async user => {
       // caso uma senha seja informada
-      if (user.passwordTemp) {
-        user.password = await bcrypt.hash(user.passwordTemp, 8);
+      if (user.password) {
+        user.password = await bcrypt.hash(user.password, 8);
       }
     });
 
     return this;
   }
 
-  // static associate(models) {
-  //   // User possui um
-  //   // this.hasOne(models.Role);
-  // }
+  static associate(models) {
+    this.hasMany(models.Manifestation);
+  }
 
   // retorna true caso a senha bata
   checkPassword(passwordToCheck) {

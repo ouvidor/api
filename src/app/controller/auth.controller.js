@@ -17,9 +17,10 @@ class AuthController {
   // Loga e retorna um Tolken
   static async login(req, res) {
     try {
+      console.log(req.body);
       // procura e pega usuário do banco
       const user = await User.findOne({
-        where: { login: req.body.login },
+        where: { email: req.body.email },
       });
 
       // caso não exista
