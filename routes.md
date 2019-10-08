@@ -1,38 +1,177 @@
 # Rotas do Ouvidor
 
+Documentação de todas as rotas da _API_.
+Contêm protocolo _HTTP_, endereço da rota, explicação do que é feito, o que recebe e o que retorna.
+
+---
+
 ## Publicas
 
-## user
+### user
 
-- **user/ - GET**: retorna todas as entries de user no banco
+- **GET** `user/`: retorna todos os registros da tabela _users_.
 
-- **user/create - POST**: cria uma nova entry no banco de um _user_.
-  recebe como parâmetros as keys: - **first_name**: String - **last_name**: String - **email**: String - **password**: String
+_retorna_:
 
-## auth
+```json
+{
+  [
+    {
+      "id": 321,
+      "first_name": "anitta",
+      "last_name": "manuel",
+      "email": "anitta@gmail.com",
+      "password": "umH4SHmu1t0L0k0"
+    }
+  ]
+}
+```
 
-- **auth/ - POST**: Autentica as credenciais e retorna um _JWT_ (**_STRING_**) que é usado para acessar rotas autenticadas, necessita dos parâmetros: - **email**: String - **password**: String
+- **POST** `user/create`: cria um novo registro na tabela de _users_.
+
+_requisição_:
+
+```json
+{
+  "first_name": "anitta",
+  "last_name": "manuel",
+  "email": "anitta@gmail.com",
+  "password": "123456"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 2134,
+  "first_name": "anitta",
+  "last_name": "manuel",
+  "email": "anitta@gmail.com"
+}
+```
+
+### auth
+
+- **POST** `auth/`: Insere as credenciais e loga no sistema. Retorna um _Token_ _JWT_, esse _Token_ é usado para acessar as rotas autenticadas.
+
+_requisição_:
+
+```json
+{
+  "email": "claudin@gmail.com",
+  "password": "123456"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "user": {
+    "id": 1233,
+    "first_name": "claudin",
+    "last_name": "buchecha",
+    "email": "claudin@gmail.com"
+  },
+  "token": "UMtokenJWTbizarro"
+}
+```
+
+---
 
 ## Autenticação necessária
 
-## manifestation
+### manifestation
 
-- **manifestation/ - GET**: Recebe como retorno um JSON com todas as entries de _manifestation_.
+- **GET** `manifestation/`: retorna todos os registros da tabela _manifestations_.
 
-- **manifestation/ - POST**: Retorna uma entry especifica baseada nos parâmetros enviados, recebe: - **manifestation_id**
+_retorna_:
 
-- **manifestation/create - POST**: Cria uma nova entry de _manifestation_ no banco, recebe os parâmetros: - **title**: String - **description**: Text - **categories**: Array de INTEGER (cada numero correspondendo a uma categoria da tabela categoria), exemplo:
+```json
+{
+  [
+    {
+      "id": 42,
+      "user_id": 911,
+      "title": "Um problema na minha rua",
+      "description": "Tem um buracão na rua vai fazer 5 meses.",
+      "categories": [1, 2],
+      "create_at": "2019-08-07T21:21:00+00:00"
+    }
+  ]
+}
+```
 
->     {
->         "title": "Rua em péssimas condições",
->         "description": "texto texto texto texto texto",
->         "categories": [1,4],
->     }
+- **POST** `manifestation/`: baseado no _id_ passado acha um registro da tabela _manifestations_.
 
-_(por exemplo, 1 corresponde a problema estrutural e 4 a problemas elétricos)._
+_requisição_:
 
-# Necessário privilégio ADMIN
+```json
+{
+  "manifestation_id": 42
+}
+```
 
-## category
+_retorna_:
 
-- **category/create - POST**: Cria uma nova entry de _category_ no banco, recebe os parâmetros: - **name**: String
+```json
+{
+  "id": 42,
+  "user_id": 911,
+  "title": "Um problema na minha rua",
+  "description": "Tem um buracão na rua vai fazer 5 meses.",
+  "categories": [1, 2],
+  "create_at": "2019-08-07T21:21:00+00:00"
+}
+```
+
+- **POST** `manifestation/create`: cria um novo registro na tabela de _manifestations_.
+
+_requisição_:
+
+```json
+{
+  "title": "Rua em péssimas condições",
+  "description": "texto texto texto texto texto",
+  "categories": [1, 4]
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 567,
+  "user_id": 111,
+  "title": "Rua em péssimas condições",
+  "description": "texto texto texto texto texto",
+  "categories": [1, 4],
+  "create_at": "2019-12-24T21:16:00+00:00"
+}
+```
+
+---
+
+## Necessário privilégio ADMIN
+
+### category
+
+- **POST** `category/create`: cria um novo registro na tabela de _categories_.
+
+_requisição_:
+
+```json
+{
+  "name": "Saneamento"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 6,
+  "name": "Saneamento"
+}
+```
