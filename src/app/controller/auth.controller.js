@@ -33,8 +33,11 @@ class AuthController {
         return res.status(400).send({ message: 'Senha incorreta' });
       }
 
-      user.password = undefined;
-      return res.send({ user, token: generateToken(user.id) });
+      const { id, first_name, last_name, email } = user;
+      return res.send({
+        user: { id, first_name, last_name, email },
+        token: generateToken(user.id),
+      });
     } catch (error) {
       console.log(error);
       return res.status(400).send({ message: 'Senha incorreta' });
