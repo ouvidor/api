@@ -2,6 +2,7 @@ require('../bootstrap');
 /**
  * configuração de comunicação com o banco de dados
  */
+
 module.exports = {
   dialect: process.env.DB_DIALECT || 'mysql',
   host: process.env.DB_DOMAIN,
@@ -12,7 +13,7 @@ module.exports = {
   logging: false,
   define: {
     timestamps: true,
-    underscored: true,
-    underscoredAll: true,
+    underscored: false,
+    underscoredAll: false,
   },
 };

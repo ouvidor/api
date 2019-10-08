@@ -6,7 +6,7 @@ class UserController {
     User.findAll()
       .then(users => {
         console.log(users);
-        res.sendStatus(200);
+        res.json(users);
       })
       .catch(err => console.log(err));
   }
@@ -22,15 +22,16 @@ class UserController {
 
     // caso o usuário já existir no DB
     if (doesUserExist) {
-      return res.status(400).json({ error: 'Ususário já existe' });
+      return res.status(400).json({ error: 'Email já cadastrado' });
     }
 
     // criar usuário
-    const { id, email, name } = await User.create(req.body);
+    const { id, email, first_name, last_name } = await User.create(req.body);
 
     return res.json({
       id,
-      name,
+      first_name,
+      last_name,
       email,
     });
   }
