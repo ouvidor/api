@@ -16,7 +16,7 @@ const models = [User, Manifestation, Category, Role];
 class Database {
   constructor() {
     // Aqui é necessário informar se está utilizando as configurações de banco local ou remoto
-    this.connection = new Sequelize(databaseConfig.local);
+    this.connection = new Sequelize(databaseConfig);
     this.init();
     this.associate();
     // this.sync();
