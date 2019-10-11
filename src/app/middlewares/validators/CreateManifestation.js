@@ -13,7 +13,7 @@ export default async (request, response, next) => {
       description: string().required('Descrição é necessária'),
       // está incompleto usar array().of(...).min(2).required(...)
       categories: array()
-        .min(2)
+        .min(1)
         .required('Categorias são necessárias'),
     });
 

@@ -9,34 +9,36 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('manifestation_category', {
-      id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
+    return queryInterface.createTable(
+      'manifestation_category',
+      {
+        id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          autoIncrement: true,
+          primaryKey: true,
+        },
+        manifestation_id: {
+          type: Sequelize.INTEGER,
+          references: { model: 'manifestations', key: 'id' },
+          onDelete: 'CASCADE',
+        },
+        category_id: {
+          type: Sequelize.INTEGER,
+          references: { model: 'categories', key: 'id' },
+          onDelete: 'CASCADE',
+        },
+        created_at: {
+          type: Sequelize.DATE,
+          allowNull: false,
+        },
+        updated_at: {
+          type: Sequelize.DATE,
+          allowNull: false,
+        },
       },
-      manifestation_id: {
-        type: Sequelize.INTEGER,
-        references: { model: 'manifestations', key: 'id' },
-        allowNull: false,
-        onDelete: 'CASCADE',
-      },
-      category_id: {
-        type: Sequelize.INTEGER,
-        references: { model: 'categories', key: 'id' },
-        allowNull: false,
-        onDelete: 'CASCADE',
-      },
-      created_at: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      updated_at: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-    });
+      { underscored: true }
+    );
   },
   down: queryInterface => {
     return queryInterface.dropTable('manifestation_category');

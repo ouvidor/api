@@ -7,16 +7,20 @@ import databaseConfig from '../config/database';
 import User from '../app/models/User';
 import Manifestation from '../app/models/Manifestation';
 import Category from '../app/models/Category';
+import Role from '../app/models/Role';
 
-const models = [User, Manifestation, Category];
+require('dotenv');
+
+const models = [User, Manifestation, Category, Role];
 
 class Database {
   constructor() {
     // Aqui é necessário informar se está utilizando as configurações de banco local ou remoto
-    this.connection = new Sequelize(databaseConfig);
+    this.connection = new Sequelize(databaseConfig.local);
     this.init();
     this.associate();
-    this.sync();
+    // this.sync();
+    this.checkDefaultEntries();
   }
 
   init() {
@@ -29,6 +33,32 @@ class Database {
         model.associate(this.connection.models);
       }
     });
+  }
+
+  // essa função cria entries iniciais necessárias para o uso
+  async checkDefaultEntries() {
+    try {
+      const roles = await Role.findAll();
+      if (roles.length === 0) {
+        await Role.create({ name: 'master' });
+        await Role.create({ name: 'admin' });
+        await Role.create({ name: 'citzen' });
+      }
+
+      const users = await User.findAll();
+      if (users.length === 0) {
+        const user = await User.create({
+          first_name: 'master',
+          last_name: 'root',
+          email: 'root@gmail.com',
+          password: '123456',
+        });
+
+        user.setRole(await Role.findOne({ where: { name: 'master' } }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   /*

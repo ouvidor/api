@@ -14,6 +14,7 @@ import AuthController from './app/controller/auth.controller';
 import AuthMiddleware from './app/middlewares/auth';
 import ManifestationController from './app/controller/manifestation.controller';
 import CategoryController from './app/controller/category.controller';
+import RoleController from './app/controller/role.controller';
 
 // validators
 import CreateUserValidator from './app/middlewares/validators/CreateUser';
@@ -61,4 +62,9 @@ router.post('/manifestation', ManifestationController.getById);
  */
 
 router.post('/category/create', CategoryController.saveToDb);
+
+// A daqui serão rotas de Administradores MASTER
+
+router.post('/role/create', RoleController.saveToDb);
+
 export default router;

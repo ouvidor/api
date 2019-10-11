@@ -9,8 +9,12 @@ class ManifestationController {
     const manifestation = await Manifestation.create(data);
     await manifestation.setUser(await User.findByPk(req.user_id));
 
-    if (categories && categories.length > 0) {
-      await manifestation.setCategories(categories);
+    try {
+      if (categories && categories.length > 0) {
+        await manifestation.setCategories(categories);
+      }
+    } catch (error) {
+      console.log(error);
     }
 
     res.json(manifestation);

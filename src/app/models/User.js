@@ -29,6 +29,12 @@ class User extends Model {
 
   static associate(models) {
     this.hasMany(models.Manifestation);
+    this.belongsToMany(models.Role, {
+      through: 'user_role',
+      as: 'role',
+      foreignKey: 'user_id',
+      constraints: false,
+    });
   }
 
   // retorna true caso a senha bata

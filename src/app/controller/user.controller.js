@@ -1,9 +1,19 @@
 import User from '../models/User';
+import Role from '../models/Role';
 
 class UserController {
   // Retorna todas entries de Users no DB, temporário, !somente para teste!
   async getAllUsers(req, res) {
-    User.findAll()
+    User.findAll({
+      include: [
+        {
+          model: Role,
+          as: 'role',
+          // a linha abaixo previne que venham informações desnecessárias
+          through: { attributes: [] },
+        },
+      ],
+    })
       .then(users => {
         console.log(users);
         res.json(users);
@@ -26,14 +36,21 @@ class UserController {
     }
 
     // criar usuário
-    const { id, email, first_name, last_name } = await User.create(req.body);
+    const user = await User.create(req.body);
+    let role;
+    // checa se foi passado ROLE no corpo, se sim, associa a role ao usuário, se não, define citzen
 
-    return res.json({
-      id,
-      first_name,
-      last_name,
-      email,
-    });
+    try {
+      if (req.body.role) {
+        await user.setRole(await Role.findByPk(req.body.role));
+      } else {
+        await user.setRole(await Role.findOne({ where: { name: 'citzen' } }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    return res.json(user);
   }
 } // fim da classe
 

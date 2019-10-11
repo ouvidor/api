@@ -1,7 +1,7 @@
 import Category from '../models/Category';
 
 class CategoryController {
-  // Retorna todas entries de Users no DB, temporário, !somente para teste!
+  // Retorna todas entries de Category no DB
   async getAllCategories(req, res) {
     Category.findAll()
       .then(categories => {
@@ -13,12 +13,12 @@ class CategoryController {
 
   // salva a category no banco
   async saveToDb(req, res) {
-    const doesUserExist = await Category.findOne({
+    const doesCategoryExist = await Category.findOne({
       where: { name: req.body.name },
     });
 
     // caso a categoria já existir no DB
-    if (doesUserExist) {
+    if (doesCategoryExist) {
       return res.status(400).json({ error: 'categoria ja existe' });
     }
 
