@@ -4,7 +4,8 @@
   "description": "API encarregada de prover endpoints e serviços às aplicações Mobile e Web do Ouvidor.",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "start-dev": "nodemon src/index.js",
     "start-local": "cross-env NODE_ENV=local yarn start",
     "pretest": "cross-env NODE_ENV=test sequelize db:migrate",
     "test": "cross-env NODE_ENV=test jest --runInBand",
