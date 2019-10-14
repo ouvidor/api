@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "API encarregada de prover endpoints e serviços às aplicações Mobile e Web do Ouvidor.",
   "main": "src/index.js",
+  "engines": {
+    "node": "10.3.0"
+  },
   "scripts": {
     "start": "nodemon src/index.js",
     "start-local": "cross-env NODE_ENV=local yarn start",
