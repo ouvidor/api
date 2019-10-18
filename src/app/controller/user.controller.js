@@ -1,5 +1,43 @@
+import jwt from 'jsonwebtoken';
+import { promisify } from 'util';
+import authConfig from '../../config/auth';
+
 import User from '../models/User';
 import Role from '../models/Role';
+
+// Checka se a requisição foi feita por um admin e retorna um bool
+async function checkAdmin(req) {
+  // pega o token do header
+  const authHeader = req.headers.authorization;
+
+  // usado para retornar no final da função
+  let isAdmin = false;
+
+  // checa se algum token foi passado
+  if (!authHeader) {
+    return false;
+  }
+
+  const [scheme, token] = authHeader.split(' ');
+
+  // checa se a Header é no formato Bearer
+  if (scheme !== 'Bearer') {
+    return false;
+  }
+
+  const decoded = await promisify(jwt.verify)(token, authConfig.secret);
+
+  // const userId = decoded.id;
+  const userRole = decoded.role;
+
+  userRole.forEach(role => {
+    if (role.name === 'master') {
+      isAdmin = true;
+    }
+  });
+
+  return isAdmin;
+}
 
 class UserController {
   // Retorna todas entries de Users no DB, temporário, !somente para teste!
@@ -37,16 +75,23 @@ class UserController {
 
     // criar usuário
     const user = await User.create(req.body);
-    let role;
-    // checa se foi passado ROLE no corpo, se sim, associa a role ao usuário, se não, define citzen
+
+    // checka se possui um header e se é um adminMaster
+    const isAdminMaster = await checkAdmin(req);
+
+    const { role } = req.body;
 
     try {
-      if (req.body.role) {
-        await user.setRole(await Role.findByPk(req.body.role));
+      if (isAdminMaster && role) {
+        await user.setRole(await Role.findOne({ where: { id: role } }));
       } else {
+        if (role) {
+          return res.json({ message: 'Você não é um admin MASTER' });
+        }
         await user.setRole(await Role.findOne({ where: { name: 'citzen' } }));
       }
     } catch (error) {
+      // TODO APAGAR USER CRIADO CASO FALHE
       console.log(error);
     }
 

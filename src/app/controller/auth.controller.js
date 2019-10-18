@@ -6,8 +6,8 @@ import User from '../models/User';
 import auth from '../../config/auth';
 
 // função que gera o token
-function generateToken(id) {
-  const token = jwt.sign({ id }, auth.secret, {
+async function generateToken(id, role) {
+  const token = jwt.sign({ id, role }, auth.secret, {
     expiresIn: auth.expiresIn,
   });
   return token;
@@ -17,10 +17,7 @@ class AuthController {
   // Loga e retorna um Tolken
   static async login(req, res) {
     try {
-      // procura e pega usuário do banco
-      const user = await User.findOne({
-        where: { email: req.body.email },
-      });
+      const user = await User.searchUserByEmail(req.body.email);
 
       // caso não exista
       if (!user) {
@@ -32,10 +29,15 @@ class AuthController {
         return res.status(400).send({ message: 'Senha incorreta' });
       }
 
-      const { id, first_name, last_name, email } = user;
+      const { id, first_name, last_name, email, role } = user;
+      const token = await generateToken(user.id, user.role);
       return res.send({
-        user: { id, first_name, last_name, email },
-        token: generateToken(user.id),
+        id,
+        first_name,
+        last_name,
+        email,
+        role,
+        token,
       });
     } catch (error) {
       console.log(error);

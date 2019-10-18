@@ -31,6 +31,14 @@ router.get('/user', UserController.getAllUsers);
 /**
  *  Rotas publicas
  */
+
+/*
+ * TODO: para criar um user definiindo uma role é necessário saber a role, mas ela só é passada
+ * após a execução do middleware de autenticação, talvez seja necessário criar uma rota
+ * somente para criação de usuários admin
+ *
+ */
+
 router.post('/user/create', CreateUserValidator, UserController.saveToDb);
 router.post('/auth', AuthController.login);
 
@@ -39,7 +47,7 @@ router.post('/auth', AuthController.login);
  *
  * Apartir desse ponto é necessário estar autenticado
  * Para ser autenticado deve ser enviado um token na Header da requisição
- * A partir desse ponto se pode ter acesso ao `req.user_id` pois foi passado como payload no token.
+ * A partir desse ponto se pode ter acesso ao `req.user_id` e `req.user_role` pois foi passado como payload no token.
  */
 router.use(AuthMiddleware);
 

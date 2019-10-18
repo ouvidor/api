@@ -39,6 +39,22 @@ class User extends Model {
     });
   }
 
+  static async searchUserByEmail(email) {
+    const tempUser = await User.findAll({
+      where: { email },
+      include: [
+        {
+          model: this.sequelize.models.Role,
+          as: 'role',
+          // a linha abaixo previne que venham informações desnecessárias
+          through: { attributes: [] },
+        },
+      ],
+    });
+    // retornamos somente o índice 0 pois é o que queremos
+    return tempUser[0];
+  }
+
   // retorna true caso a senha bata
   checkPassword(passwordToCheck) {
     return bcrypt.compare(passwordToCheck, this.password);
