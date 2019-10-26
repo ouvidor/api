@@ -91,7 +91,7 @@ class UserController {
         await user.setRole(await Role.findOne({ where: { name: 'citzen' } }));
       }
     } catch (error) {
-      // TODO APAGAR USER CRIADO CASO FALHE
+      user.destroy();
       console.log(error);
     }
 
