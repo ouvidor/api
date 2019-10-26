@@ -19,6 +19,7 @@ import RoleController from './app/controller/role.controller';
 // validators
 import CreateUserValidator from './app/middlewares/validators/CreateUser';
 import CreateManifestationValidator from './app/middlewares/validators/CreateManifestation';
+import UserLoginValidator from './app/middlewares/validators/UserLogin';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
@@ -40,7 +41,7 @@ router.get('/user', UserController.getAllUsers);
  */
 
 router.post('/user/create', CreateUserValidator, UserController.saveToDb);
-router.post('/auth', AuthController.login);
+router.post('/auth', UserLoginValidator, AuthController.login);
 
 /**
  * Middlware de autenticação
