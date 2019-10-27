@@ -2,7 +2,7 @@ import Category from '../models/Category';
 
 class CategoryController {
   // Retorna todas entries de Category no DB
-  async getAllCategories(req, res) {
+  async fetchAll(req, res) {
     Category.findAll()
       .then(categories => {
         console.log(categories);
@@ -12,7 +12,7 @@ class CategoryController {
   }
 
   // salva a category no banco
-  async saveToDb(req, res) {
+  async save(req, res) {
     const doesCategoryExist = await Category.findOne({
       where: { name: req.body.name },
     });

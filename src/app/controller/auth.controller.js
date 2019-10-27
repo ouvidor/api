@@ -5,14 +5,6 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User';
 import auth from '../../config/auth';
 
-// função que gera o token
-async function generateToken(id, role) {
-  const token = jwt.sign({ id, role }, auth.secret, {
-    expiresIn: auth.expiresIn,
-  });
-  return token;
-}
-
 class AuthController {
   // Loga e retorna um Tolken
   static async login(req, res) {
@@ -30,7 +22,9 @@ class AuthController {
       }
 
       const { id, first_name, last_name, email, role } = user;
-      const token = await generateToken(user.id, user.role);
+      const token = jwt.sign({ id: user.id, role: user.role }, auth.secret, {
+        expiresIn: auth.expiresIn,
+      });
       return res.send({
         id,
         first_name,

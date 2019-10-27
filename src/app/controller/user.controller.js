@@ -6,19 +6,18 @@ import User from '../models/User';
 import Role from '../models/Role';
 
 // Checka se a requisição foi feita por um admin e retorna um bool
-async function checkAdmin(req) {
+async function checkAdmin(header) {
   // pega o token do header
-  const authHeader = req.headers.authorization;
 
   // usado para retornar no final da função
   let isAdmin = false;
 
   // checa se algum token foi passado
-  if (!authHeader) {
+  if (!header) {
     return false;
   }
 
-  const [scheme, token] = authHeader.split(' ');
+  const [scheme, token] = header.split(' ');
 
   // checa se a Header é no formato Bearer
   if (scheme !== 'Bearer') {
@@ -60,7 +59,7 @@ class UserController {
   }
 
   // salva o usuário no banco
-  async saveToDb(req, res) {
+  async save(req, res) {
     // evitar erros caso o password seja passado como numerico
     req.body.password = String(req.body.password);
 
@@ -77,7 +76,7 @@ class UserController {
     const user = await User.create(req.body);
 
     // checka se possui um header e se é um adminMaster
-    const isAdminMaster = await checkAdmin(req);
+    const isAdminMaster = await checkAdmin(req.headers.authorization);
 
     const { role } = req.body;
 

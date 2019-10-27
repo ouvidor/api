@@ -3,7 +3,7 @@ import User from '../models/User';
 import Category from '../models/Category';
 
 class ManifestationController {
-  async saveToDb(req, res) {
+  async save(req, res) {
     // Cria a manifestação e salva no banco
     const { categories, ...data } = req.body;
     const manifestation = await Manifestation.create(data);
@@ -20,7 +20,7 @@ class ManifestationController {
     res.json(manifestation);
   }
 
-  async getAll(req, res) {
+  async fetchAll(req, res) {
     /*
      * Abaixo um exemplo com find all de como pes
      *
@@ -42,7 +42,7 @@ class ManifestationController {
       .catch(err => console.log(err));
   }
 
-  async getById(req, res) {
+  async fetchById(req, res) {
     Manifestation.findOne(
       { where: { id: req.body.manifestation_id } },
       {

@@ -2,7 +2,7 @@ import Role from '../models/Role';
 
 class RoleController {
   // Retorna todas entries de Roles no DB
-  async getAllRoles(req, res) {
+  async fetchAllRoles(req, res) {
     Role.findAll()
       .then(roles => {
         console.log(roles);
@@ -12,7 +12,7 @@ class RoleController {
   }
 
   // salva o role no banco
-  async saveToDb(req, res) {
+  async save(req, res) {
     const doesRoleExist = await Role.findOne({
       where: { name: req.body.name },
     });

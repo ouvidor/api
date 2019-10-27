@@ -40,7 +40,7 @@ router.get('/user', UserController.getAllUsers);
  *
  */
 
-router.post('/user/create', CreateUserValidator, UserController.saveToDb);
+router.post('/user/create', CreateUserValidator, UserController.save);
 router.post('/auth', UserLoginValidator, AuthController.login);
 
 /**
@@ -59,10 +59,10 @@ router.use(AuthMiddleware);
 router.post(
   '/manifestation/create',
   CreateManifestationValidator,
-  ManifestationController.saveToDb
+  ManifestationController.save
 );
-router.get('/manifestation', ManifestationController.getAll);
-router.post('/manifestation', ManifestationController.getById);
+router.get('/manifestation', ManifestationController.fetchAll);
+router.post('/manifestation', ManifestationController.fetchById);
 
 // A daqui serão rotas de Administradores
 /**
@@ -70,10 +70,10 @@ router.post('/manifestation', ManifestationController.getById);
  * passar role como payload no token
  */
 
-router.post('/category/create', CategoryController.saveToDb);
+router.post('/category/create', CategoryController.save);
 
 // A daqui serão rotas de Administradores MASTER
 
-router.post('/role/create', RoleController.saveToDb);
+router.post('/role/create', RoleController.save);
 
 export default router;
