@@ -14,7 +14,9 @@ class ManifestationController {
         await manifestation.setCategories(categories);
       }
     } catch (error) {
+      manifestation.destroy();
       console.log(error);
+      res.json({ error: `houve um erro: ${error}` });
     }
 
     res.json(manifestation);

@@ -27,7 +27,7 @@ const router = new Router();
 /**
  * Rotas de Teste
  */
-router.get('/user', UserController.getAllUsers);
+router.get('/user', UserController.fetchAllUsers);
 
 /**
  *  Rotas publicas

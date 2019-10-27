@@ -40,7 +40,7 @@ async function checkAdmin(header) {
 
 class UserController {
   // Retorna todas entries de Users no DB, temporário, !somente para teste!
-  async getAllUsers(req, res) {
+  async fetchAllUsers(req, res) {
     User.findAll({
       include: [
         {
@@ -81,12 +81,17 @@ class UserController {
     const { role } = req.body;
 
     try {
+      // Se for admin master e contiver role na req seta a role
       if (isAdminMaster && role) {
         await user.setRole(await Role.findOne({ where: { id: role } }));
       } else {
+        // se o if não passar, checa se role existe mesmo não sendo admin, caso sim, apaga
+        // o user gravado e retorna uma mensagem
         if (role) {
+          user.destroy();
           return res.json({ message: 'Você não é um admin MASTER' });
         }
+        // Caso não tenha sido enviado uma role cria com a role padrão de citzen
         await user.setRole(await Role.findOne({ where: { name: 'citzen' } }));
       }
     } catch (error) {
