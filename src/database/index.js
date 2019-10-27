@@ -40,9 +40,9 @@ class Database {
     try {
       const roles = await Role.findAll();
       if (roles.length === 0) {
-        await Role.create({ name: 'master' });
-        await Role.create({ name: 'admin' });
-        await Role.create({ name: 'citzen' });
+        await Role.create({ title: 'master' });
+        await Role.create({ title: 'admin' });
+        await Role.create({ title: 'citzen' });
       }
 
       const users = await User.findAll();
@@ -54,7 +54,7 @@ class Database {
           password: '123456',
         });
 
-        user.setRole(await Role.findOne({ where: { name: 'master' } }));
+        user.setRole(await Role.findOne({ where: { title: 'master' } }));
       }
     } catch (error) {
       console.log(error);

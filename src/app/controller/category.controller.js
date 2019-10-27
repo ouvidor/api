@@ -23,11 +23,11 @@ class CategoryController {
     }
 
     // criar categoria
-    const { id, name } = await Category.create(req.body);
+    const { id, title } = await Category.create(req.body);
 
     return res.json({
       id,
-      name,
+      title,
     });
   }
 } // fim da classe

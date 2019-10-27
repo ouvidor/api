@@ -30,7 +30,7 @@ async function checkAdmin(header) {
   const userRole = decoded.role;
 
   userRole.forEach(role => {
-    if (role.name === 'master') {
+    if (role.title === 'master') {
       isAdmin = true;
     }
   });
@@ -42,17 +42,18 @@ class UserController {
   // Retorna todas entries de Users no DB, temporário, !somente para teste!
   async fetchAllUsers(req, res) {
     User.findAll({
+      attributes: ['id', 'first_name', 'last_name', 'email', 'created_at'],
       include: [
         {
           model: Role,
           as: 'role',
           // a linha abaixo previne que venham informações desnecessárias
           through: { attributes: [] },
+          attributes: ['id', 'title'],
         },
       ],
     })
       .then(users => {
-        console.log(users);
         res.json(users);
       })
       .catch(err => console.log(err));
@@ -80,10 +81,11 @@ class UserController {
 
     const { role } = req.body;
 
+    console.log(role);
     try {
       // Se for admin master e contiver role na req seta a role
       if (isAdminMaster && role) {
-        await user.setRole(await Role.findOne({ where: { id: role } }));
+        await user.setRole(await Role.findOne({ where: { title: role } }));
       } else {
         // se o if não passar, checa se role existe mesmo não sendo admin, caso sim, apaga
         // o user gravado e retorna uma mensagem
@@ -92,11 +94,16 @@ class UserController {
           return res.json({ message: 'Você não é um admin MASTER' });
         }
         // Caso não tenha sido enviado uma role cria com a role padrão de citzen
-        await user.setRole(await Role.findOne({ where: { name: 'citzen' } }));
+        const roleToSet = await Role.findOne({ where: { title: 'citzen' } });
+        if (roleToSet) {
+          await user.setRole(roleToSet);
+        } else {
+          return res.json({ message: 'role invalida' });
+        }
       }
     } catch (error) {
       user.destroy();
-      console.log(error);
+      return res.json({ error });
     }
 
     return res.json(user);

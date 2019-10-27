@@ -14,7 +14,7 @@ class RoleController {
   // salva o role no banco
   async save(req, res) {
     const doesRoleExist = await Role.findOne({
-      where: { name: req.body.name },
+      where: { title: req.body.title },
     });
 
     // caso o role já existir no DB
@@ -23,11 +23,11 @@ class RoleController {
     }
 
     // criar role
-    const { id, name } = await Role.create(req.body);
+    const { id, title } = await Role.create(req.body);
 
     return res.json({
       id,
-      name,
+      title,
     });
   }
 } // fim da classe
