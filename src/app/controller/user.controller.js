@@ -80,8 +80,6 @@ class UserController {
     const isAdminMaster = await checkAdmin(req.headers.authorization);
 
     const { role } = req.body;
-
-    console.log(role);
     try {
       // Se for admin master e contiver role na req seta a role
       if (isAdminMaster && role) {
