@@ -7,7 +7,7 @@
     "node": "^10.3.0"
   },
   "scripts": {
-    "start": "node src/index.js",
+    "start": "nodemon src/index.js",
     "start-dev": "nodemon src/index.js",
     "start-local": "cross-env NODE_ENV=local yarn start",
     "migrate-local": "cross-env NODE_ENV=local yarn sequelize db:migrate",
