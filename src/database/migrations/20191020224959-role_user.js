@@ -1,5 +1,5 @@
 /**
- * Migration da tabela de usuário
+ * Migration da tabela relacional de roles e users
  * Para gerar uma migration similar basta executar o comando:
  * yarn sequelize migration:create --name=create-user
  *
@@ -10,7 +10,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'users',
+      'user_role',
       {
         id: {
           type: Sequelize.INTEGER,
@@ -18,22 +18,17 @@ module.exports = {
           autoIncrement: true,
           primaryKey: true,
         },
-        first_name: {
-          type: Sequelize.STRING,
+        role_id: {
+          type: Sequelize.INTEGER,
+          references: { model: 'roles', key: 'id' },
           allowNull: false,
+          onDelete: 'CASCADE',
         },
-        last_name: {
-          type: Sequelize.STRING,
+        user_id: {
+          type: Sequelize.INTEGER,
+          references: { model: 'users', key: 'id' },
           allowNull: false,
-        },
-        email: {
-          type: Sequelize.STRING,
-          allowNull: false,
-          unique: true,
-        },
-        password: {
-          type: Sequelize.STRING,
-          allowNull: false,
+          onDelete: 'CASCADE',
         },
         created_at: {
           type: Sequelize.DATE,
@@ -47,8 +42,7 @@ module.exports = {
       { underscored: true }
     );
   },
-
   down: queryInterface => {
-    return queryInterface.dropTable('users');
+    return queryInterface.dropTable('user_role');
   },
 };

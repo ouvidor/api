@@ -3,10 +3,15 @@
   "version": "1.0.0",
   "description": "API encarregada de prover endpoints e serviços às aplicações Mobile e Web do Ouvidor.",
   "main": "src/index.js",
+  "engines": {
+    "node": "^10.3.0"
+  },
   "scripts": {
     "start": "node src/index.js",
     "start-dev": "nodemon src/index.js",
     "start-local": "cross-env NODE_ENV=local yarn start",
+    "migrate-local": "cross-env NODE_ENV=local yarn sequelize db:migrate",
+    "migrate": "yarn sequelize db:migrate",
     "pretest": "cross-env NODE_ENV=test sequelize db:migrate",
     "test": "cross-env NODE_ENV=test jest --runInBand",
     "posttest": "cross-env NODE_ENV=test sequelize db:migrate:undo:all"

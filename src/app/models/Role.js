@@ -1,6 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
 
-class Category extends Model {
+class Role extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -22,13 +22,13 @@ class Category extends Model {
   }
 
   static associate(models) {
-    this.belongsToMany(models.Manifestation, {
-      through: 'manifestation_category',
-      as: 'manifestation',
-      foreignKey: 'category_id',
+    this.belongsToMany(models.User, {
+      through: 'user_role',
+      as: 'user',
+      foreignKey: 'role_id',
       constraints: false,
     });
   }
 }
 
-export default Category;
+export default Role;

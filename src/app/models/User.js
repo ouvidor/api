@@ -14,6 +14,8 @@ class User extends Model {
       {
         sequelize,
         underscored: true,
+        createdAt: 'created_at', // <====== this line and the following one
+        updatedAt: 'updated_at',
       }
     );
 
@@ -29,6 +31,28 @@ class User extends Model {
 
   static associate(models) {
     this.hasMany(models.Manifestation);
+    this.belongsToMany(models.Role, {
+      through: 'user_role',
+      as: 'role',
+      foreignKey: 'user_id',
+      constraints: false,
+    });
+  }
+
+  static async searchUserByEmail(email) {
+    const tempUser = await User.findAll({
+      where: { email },
+      include: [
+        {
+          model: this.sequelize.models.Role,
+          as: 'role',
+          // a linha abaixo previne que venham informações desnecessárias
+          through: { attributes: [] },
+        },
+      ],
+    });
+    // retornamos somente o índice 0 pois é o que queremos
+    return tempUser[0];
   }
 
   // retorna true caso a senha bata

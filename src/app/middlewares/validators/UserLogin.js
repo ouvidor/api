@@ -1,20 +1,16 @@
 /**
- * Middleware de validação para criação de Manifestation
- * Docs do yup:
- * https://github.com/jquense/yup
+ * Middleware de validação para gerar um token de acesso ao sistema
  */
 // import * as Yup from 'yup' não foi feita porque o Jest aponta como uma branch
-import { object, string, array } from 'yup';
+import { object, string } from 'yup';
 
 export default async (request, response, next) => {
   try {
     const schema = object().shape({
-      title: string().required('Título é necessário'),
-      description: string().required('Descrição é necessária'),
-      // está incompleto usar array().of(...).min(2).required(...)
-      categories: array()
-        .min(1)
-        .required('Categorias são necessárias'),
+      email: string()
+        .email('Email invalido')
+        .required('Email é necessário'),
+      password: string().required('Senha é necessária'),
     });
 
     await schema.validate(request.body, { abortEarly: false });

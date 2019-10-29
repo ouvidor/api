@@ -14,28 +14,44 @@ Contêm protocolo _HTTP_, endereço da rota, explicação do que é feito, o que
 _retorna_:
 
 ```json
-{
-  [
     {
-      "id": 321,
-      "first_name": "anitta",
-      "last_name": "manuel",
-      "email": "anitta@gmail.com",
-      "password": "umH4SHmu1t0L0k0"
-    }
-  ]
-}
+        "id": 7,
+        "first_name": "Romullo",
+        "last_name": "Cordeiro Rodrigues",
+        "email": "romullocordeiro@gmail.com",
+        "created_at": "2019-10-18T17:38:42.000Z",
+        "role": [
+            {
+                "id": 2,
+                "title": "admin"
+            }
+        ]
+    },
 ```
 
 - **POST** `user/create`: cria um novo registro na tabela de _users_.
 
-_requisição_:
+Existem dois tipos de requisições possiveis aqui, uma incluí o atributo 'role' mas é necessário um token de usuário de nivel master no header na requisição, e a outra é sem o atributo role.
+
+_requisição sem role_:
 
 ```json
 {
   "first_name": "anitta",
   "last_name": "manuel",
   "email": "anitta@gmail.com",
+  "password": "123456"
+}
+```
+
+_requisição com role_:
+
+```json
+{
+  "first_name": "anitta",
+  "last_name": "manuel",
+  "email": "anitta@gmail.com",
+  "role": "admin",
   "password": "123456"
 }
 ```
@@ -163,7 +179,7 @@ _requisição_:
 
 ```json
 {
-  "name": "Saneamento"
+  "title": "Saneamento"
 }
 ```
 
@@ -172,6 +188,29 @@ _retorna_:
 ```json
 {
   "id": 6,
-  "name": "Saneamento"
+  "title": "Saneamento"
+}
+```
+
+## Necessário privilégio MASTER
+
+### role
+
+- **POST** `role/create`: cria um novo registro na tabela de _role_.
+
+_requisição_:
+
+```json
+{
+  "title": "Saneamento"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 6,
+  "title": "Saneamento"
 }
 ```

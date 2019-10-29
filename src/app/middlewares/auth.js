@@ -26,6 +26,7 @@ export default async (req, res, next) => {
 
     // permite o acesso ao id do usuário apartir daqui
     req.user_id = decoded.id;
+    req.user_role = decoded.role;
 
     // segue para o próximo middleware
     return next();

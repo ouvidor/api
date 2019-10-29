@@ -3,20 +3,26 @@ import User from '../models/User';
 import Category from '../models/Category';
 
 class ManifestationController {
-  async saveToDb(req, res) {
+  async save(req, res) {
     // Cria a manifestação e salva no banco
     const { categories, ...data } = req.body;
     const manifestation = await Manifestation.create(data);
     await manifestation.setUser(await User.findByPk(req.user_id));
 
-    if (categories && categories.length > 0) {
-      await manifestation.setCategories(categories);
+    try {
+      if (categories && categories.length > 0) {
+        await manifestation.setCategories(categories);
+      }
+    } catch (error) {
+      manifestation.destroy();
+      console.log(error);
+      res.json({ error: `houve um erro: ${error}` });
     }
 
     res.json(manifestation);
   }
 
-  async getAll(req, res) {
+  async fetchAll(req, res) {
     /*
      * Abaixo um exemplo com find all de como pes
      *
@@ -38,7 +44,7 @@ class ManifestationController {
       .catch(err => console.log(err));
   }
 
-  async getById(req, res) {
+  async fetchById(req, res) {
     Manifestation.findOne(
       { where: { id: req.body.manifestation_id } },
       {
