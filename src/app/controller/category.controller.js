@@ -14,7 +14,7 @@ class CategoryController {
   // salva a category no banco
   async save(req, res) {
     const doesCategoryExist = await Category.findOne({
-      where: { name: req.body.name },
+      where: { title: req.body.title },
     });
 
     // caso a categoria já existir no DB
