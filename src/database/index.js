@@ -7,11 +7,12 @@ import databaseConfig from '../config/database';
 import User from '../app/models/User';
 import Manifestation from '../app/models/Manifestation';
 import Category from '../app/models/Category';
+import Type from '../app/models/Type';
 import Role from '../app/models/Role';
 
 require('dotenv');
 
-const models = [User, Manifestation, Category, Role];
+const models = [User, Manifestation, Category, Type, Role];
 
 class Database {
   constructor() {

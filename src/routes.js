@@ -14,12 +14,14 @@ import AuthController from './app/controller/auth.controller';
 import AuthMiddleware from './app/middlewares/auth';
 import ManifestationController from './app/controller/manifestation.controller';
 import CategoryController from './app/controller/category.controller';
+import TypeController from './app/controller/type.controller';
 import RoleController from './app/controller/role.controller';
 
 // validators
 import CreateUserValidator from './app/middlewares/validators/CreateUser';
 import CreateManifestationValidator from './app/middlewares/validators/CreateManifestation';
 import UserLoginValidator from './app/middlewares/validators/UserLogin';
+import TypeValidator from './app/middlewares/validators/Type';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
@@ -34,10 +36,9 @@ router.get('/user', UserController.fetchAllUsers);
  */
 
 /*
- * TODO: para criar um user definiindo uma role é necessário saber a role, mas ela só é passada
+ * TODO: para criar um User definindo uma Role é necessário saber a Role, mas ela só é passada
  * após a execução do middleware de autenticação, talvez seja necessário criar uma rota
  * somente para criação de usuários admin
- *
  */
 
 router.post('/user/create', CreateUserValidator, UserController.save);
@@ -63,17 +64,18 @@ router.post(
 );
 router.get('/manifestation', ManifestationController.fetchAll);
 router.post('/manifestation', ManifestationController.fetchById);
+router.get('/type', TypeController.fetchAll);
 
-// A daqui serão rotas de Administradores
+// A partir daqui serão rotas de Administradores
 /**
  * TODO Verificar Role com um middleware aqui e averiguar se é admin
  * passar role como payload no token
  */
 
+// TODO: A partir daqui serão rotas de Administradores MASTER
 router.post('/category/create', CategoryController.save);
-
-// A daqui serão rotas de Administradores MASTER
-
 router.post('/role/create', RoleController.save);
+router.post('/type', TypeValidator, TypeController.save);
+router.put('/type/:id', TypeValidator, TypeController.update);
 
 export default router;
