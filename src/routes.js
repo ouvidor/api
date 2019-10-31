@@ -22,7 +22,8 @@ import RoleController from './app/controller/role.controller';
 import CreateUserValidator from './app/middlewares/validators/CreateUser';
 import CreateManifestationValidator from './app/middlewares/validators/CreateManifestation';
 import UserLoginValidator from './app/middlewares/validators/UserLogin';
-import TypeValidator from './app/middlewares/validators/Type';
+import TitleValidator from './app/middlewares/validators/Title';
+import RoleValidation from './app/middlewares/validators/RoleValidation';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
@@ -30,7 +31,7 @@ const router = new Router();
 /**
  * Rotas de Teste
  */
-router.get('/user', UserController.fetchAllUsers);
+router.get('/user/:id?*', UserController.fetch);
 
 /**
  *  Rotas publicas
@@ -63,7 +64,10 @@ router.post(
   CreateManifestationValidator,
   ManifestationController.save
 );
+
 router.get('/manifestation/:id?*', ManifestationController.fetch);
+router.get('/category/:id?*', CategoryController.fetch);
+router.get('/role/:id?*', RoleController.fetch);
 router.get('/type/:id?*', TypeController.fetch);
 router.get('/status/:id?*', StatusController.fetch);
 
@@ -74,13 +78,18 @@ router.get('/status/:id?*', StatusController.fetch);
  */
 
 // TODO: A partir daqui serão rotas de Administradores MASTER
-router.post('/category/create', CategoryController.save);
-router.post('/role/create', RoleController.save);
-router.post('/type', TypeValidator, TypeController.save);
-router.post('/status', TypeValidator, StatusController.save); // usando o TypeValidator por ser a mesma coisa
-router.put('/type/:id', TypeValidator, TypeController.update);
-router.put('/status/:id', TypeValidator, StatusController.update);
+router.post('/category', CategoryController.save);
+router.put('/category/:id', TitleValidator, CategoryController.update);
+router.delete('/category/:id', CategoryController.delete);
+
+router.post('/role', RoleValidation, RoleController.save);
+
+router.post('/type', TitleValidator, TypeController.save);
+router.put('/type/:id', TitleValidator, TypeController.update);
 router.delete('/type/:id', TypeController.delete);
+
+router.post('/status', TitleValidator, StatusController.save);
+router.put('/status/:id', TitleValidator, StatusController.update);
 router.delete('/status/:id', StatusController.delete);
 
 export default router;

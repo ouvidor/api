@@ -52,9 +52,9 @@ class Database {
     try {
       const roles = await Role.findAll();
       if (roles.length === 0) {
-        await Role.create({ title: 'master' });
-        await Role.create({ title: 'admin' });
-        await Role.create({ title: 'citzen' });
+        await Role.create({ title: 'master', level: 1 });
+        await Role.create({ title: 'admin', level: 2 });
+        await Role.create({ title: 'citizen', level: 3 });
       }
 
       const users = await User.findAll();

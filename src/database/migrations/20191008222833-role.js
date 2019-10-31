@@ -23,6 +23,10 @@ module.exports = {
           allowNull: false,
           unique: true,
         },
+        level: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+        },
         created_at: {
           type: Sequelize.DATE,
           allowNull: false,

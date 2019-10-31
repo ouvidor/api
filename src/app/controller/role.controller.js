@@ -2,13 +2,24 @@ import Role from '../models/Role';
 
 class RoleController {
   // Retorna todas entries de Roles no DB
-  async fetchAllRoles(req, res) {
-    Role.findAll()
-      .then(roles => {
-        console.log(roles);
-        res.json(roles);
-      })
-      .catch(err => console.log(err));
+  async fetch(req, res) {
+    const queryConfig = {
+      attributes: ['id', 'title', 'level'],
+    };
+
+    if (req.params.id) {
+      const role = await Role.findByPk(req.params.id, queryConfig);
+
+      if (!role) {
+        return res.status(400).json({ error: 'essa Role não existe' });
+      }
+
+      return res.status(200).json(role);
+    }
+
+    const role = await Role.findAll(queryConfig);
+
+    return res.status(200).json(role);
   }
 
   // salva o role no banco
@@ -23,11 +34,12 @@ class RoleController {
     }
 
     // criar role
-    const { id, title } = await Role.create(req.body);
+    const { id, title, level } = await Role.create(req.body);
 
     return res.json({
       id,
       title,
+      level,
     });
   }
 } // fim da classe

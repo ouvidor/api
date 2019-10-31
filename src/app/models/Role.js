@@ -8,6 +8,10 @@ class Role extends Model {
           type: Sequelize.STRING,
           unique: true,
         },
+        level: {
+          type: Sequelize.TINYINT,
+          values: [1, 2, 3],
+        },
       },
       // configs da tabela
       {

@@ -40,23 +40,30 @@ async function checkAdmin(header) {
 
 class UserController {
   // Retorna todas entries de Users no DB, temporário, !somente para teste!
-  async fetchAllUsers(req, res) {
-    User.findAll({
-      attributes: ['id', 'first_name', 'last_name', 'email', 'created_at'],
+  async fetch(req, res) {
+    const queryConfig = {
+      attributes: ['id', 'first_name', 'last_name', 'email'],
       include: [
         {
           model: Role,
           as: 'role',
-          // a linha abaixo previne que venham informações desnecessárias
-          through: { attributes: [] },
           attributes: ['id', 'title'],
+          through: { attributes: [] },
         },
       ],
-    })
-      .then(users => {
-        res.json(users);
-      })
-      .catch(err => console.log(err));
+    };
+
+    if (req.params.id) {
+      const user = await User.findByPk(req.params.id, queryConfig);
+      if (!user) {
+        return res.status(400).json({ error: 'esse usuário não existe' });
+      }
+      return res.status(200).json(user);
+    }
+
+    const users = await User.findAll(queryConfig);
+
+    return res.status(200).json(users);
   }
 
   // salva o usuário no banco

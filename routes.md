@@ -9,24 +9,40 @@ Contêm protocolo _HTTP_, endereço da rota, explicação do que é feito, o que
 
 ### user
 
-- **GET** `user/`: retorna todos os registros da tabela _users_.
-
-_retorna_:
+- **GET** `user/`: retorna todos os registros na tabela de _users_.
 
 ```json
+[
+  {
+    "id": 1,
+    "first_name": "master",
+    "last_name": "root",
+    "email": "root@gmail.com",
+    "role": [
+      {
+        "id": 1,
+        "title": "master"
+      }
+    ]
+  }
+]
+```
+
+- **GET** `user/:id?*`: essa mesma rota pode receber o id de um _users_ específico, retornando assim o usuário.
+
+```json
+{
+  "id": 1,
+  "first_name": "master",
+  "last_name": "root",
+  "email": "root@gmail.com",
+  "role": [
     {
-        "id": 7,
-        "first_name": "Romullo",
-        "last_name": "Cordeiro Rodrigues",
-        "email": "romullocordeiro@gmail.com",
-        "created_at": "2019-10-18T17:38:42.000Z",
-        "role": [
-            {
-                "id": 2,
-                "title": "admin"
-            }
-        ]
-    },
+      "id": 1,
+      "title": "master"
+    }
+  ]
+}
 ```
 
 - **POST** `user/create`: cria um novo registro na tabela de _users_.
@@ -175,7 +191,27 @@ _retorna_:
 
 ### category
 
-- **POST** `category/create`: cria um novo registro na tabela de _categories_.
+- **GET** `category/`: retorna todos os registros na tabela de _categories_.
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Saneamento"
+  }
+]
+```
+
+- **GET** `category/:id?*`: essa mesma rota pode receber o id de um _categories_ específico, retornando assim a categoria.
+
+```json
+{
+  "id": 1,
+  "title": "Saneamento"
+}
+```
+
+- **POST** `category`: cria um novo registro na tabela de _categories_.
 
 _requisição_:
 
@@ -194,9 +230,41 @@ _retorna_:
 }
 ```
 
+- **PUT** `category/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _categories_.
+
+_requisição_:
+
+```json
+{
+  "title": "Segurança"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Segurança"
+}
+```
+
+- **DELETE** `type/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _categories_.
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Segurança",
+  "created_at": "2019-10-31T17:03:19.000Z",
+  "updated_at": "2019-10-31T18:29:13.000Z"
+}
+```
+
 ### role
 
-- **POST** `role/create`: cria um novo registro na tabela de _role_.
+- **POST** `role`: cria um novo registro na tabela de _role_.
 
 _requisição_:
 
