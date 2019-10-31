@@ -7,6 +7,7 @@
  * router.get(), router.post(), router.put(), router.delete()
  */
 import { Router } from 'express';
+import Multer from 'multer';
 
 // controllers
 import UserController from './app/controller/user.controller';
@@ -20,9 +21,13 @@ import RoleController from './app/controller/role.controller';
 import CreateUserValidator from './app/middlewares/validators/CreateUser';
 import CreateManifestationValidator from './app/middlewares/validators/CreateManifestation';
 import UserLoginValidator from './app/middlewares/validators/UserLogin';
+import fileController from './app/controller/file.controller';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
+
+// let upload = Multer({ dest: 'temp/' });
+let upload = null;
 
 /**
  * Rotas de Teste
@@ -63,6 +68,9 @@ router.post(
 );
 router.get('/manifestation', ManifestationController.fetchAll);
 router.post('/manifestation', ManifestationController.fetchById);
+
+upload = Multer({ storage: fileController.createDiskStorage() });
+router.post('/upload', upload.single('file'), fileController.upload);
 
 // A daqui serão rotas de Administradores
 /**
