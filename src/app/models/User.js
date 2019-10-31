@@ -30,7 +30,6 @@ class User extends Model {
   }
 
   static associate(models) {
-    this.hasMany(models.Manifestation);
     this.belongsToMany(models.Role, {
       through: 'user_role',
       as: 'role',

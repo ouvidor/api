@@ -1,10 +1,6 @@
-/**
- * TIPOS DE MANIFESTAÇÕES
- * exemplo: 'Reclamação', 'Pedido de Informação', 'Elogio'
- */
 import Sequelize, { Model } from 'sequelize';
 
-class Type extends Model {
+class Status extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -16,6 +12,8 @@ class Type extends Model {
       // configs da tabela
       {
         sequelize,
+        modelName: 'Status',
+        tableName: 'status',
         underscored: true,
         createdAt: 'created_at', // <====== this line and the following one
         updatedAt: 'updated_at',
@@ -26,4 +24,4 @@ class Type extends Model {
   }
 }
 
-export default Type;
+export default Status;
