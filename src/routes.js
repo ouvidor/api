@@ -64,8 +64,8 @@ router.post(
   ManifestationController.save
 );
 router.get('/manifestation/:id?*', ManifestationController.fetch);
-router.get('/type', TypeController.fetchAll);
-router.get('/status', StatusController.fetchAll);
+router.get('/type/:id?*', TypeController.fetch);
+router.get('/status/:id?*', StatusController.fetch);
 
 // A partir daqui serão rotas de Administradores
 /**
@@ -77,8 +77,10 @@ router.get('/status', StatusController.fetchAll);
 router.post('/category/create', CategoryController.save);
 router.post('/role/create', RoleController.save);
 router.post('/type', TypeValidator, TypeController.save);
-router.put('/type/:id', TypeValidator, TypeController.update);
 router.post('/status', TypeValidator, StatusController.save); // usando o TypeValidator por ser a mesma coisa
+router.put('/type/:id', TypeValidator, TypeController.update);
 router.put('/status/:id', TypeValidator, StatusController.update);
+router.delete('/type/:id', TypeController.delete);
+router.delete('/status/:id', StatusController.delete);
 
 export default router;

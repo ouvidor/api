@@ -223,11 +223,18 @@ _retorna_:
 [
   {
     "id": 1,
-    "title": "Elogio",
-    "created_at": "2019-10-31T16:37:51.000Z",
-    "updated_at": "2019-10-31T16:37:57.000Z"
+    "title": "Reclamação"
   }
 ]
+```
+
+- **GET** `type/:id?*`: essa mesma rota pode receber o id de um _type_ específico, retornando assim o status.
+
+```json
+{
+  "id": 1,
+  "title": "Reclamação"
+}
 ```
 
 - **POST** `type/`: cria um novo registro na tabela de _types_.
@@ -268,6 +275,19 @@ _retorna_:
 }
 ```
 
+- **DELETE** `type/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _types_.
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Reclamação",
+  "created_at": "2019-10-31T17:01:36.000Z",
+  "updated_at": "2019-10-31T17:01:36.000Z"
+}
+```
+
 ### status
 
 - **GET** `status/`: retorna todos os registros na tabela de _status_.
@@ -275,12 +295,19 @@ _retorna_:
 ```json
 [
   {
-    "id": 1,
-    "title": "Fechado",
-    "created_at": "2019-10-31T16:38:10.000Z",
-    "updated_at": "2019-10-31T16:38:27.000Z"
+    "id": 2,
+    "title": "Em andamento"
   }
 ]
+```
+
+- **GET** `status/:id?*`: essa mesma rota pode receber o id de um _status_ específico, retornando assim o status.
+
+```json
+{
+  "id": 2,
+  "title": "Em andamento"
+}
 ```
 
 - **POST** `status/`: cria um novo registro na tabela de _status_.
@@ -318,5 +345,18 @@ _retorna_:
 {
   "id": 1,
   "title": "Fechado"
+}
+```
+
+- **DELETE** `status/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _status_.
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Em andamento",
+  "created_at": "2019-10-31T17:01:37.000Z",
+  "updated_at": "2019-10-31T17:01:37.000Z"
 }
 ```
