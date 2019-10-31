@@ -214,3 +214,109 @@ _retorna_:
   "title": "Saneamento"
 }
 ```
+
+### type
+
+- **GET** `type/`: retorna todos os registros na tabela de _types_.
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Elogio",
+    "created_at": "2019-10-31T16:37:51.000Z",
+    "updated_at": "2019-10-31T16:37:57.000Z"
+  }
+]
+```
+
+- **POST** `type/`: cria um novo registro na tabela de _types_.
+
+_requisição_:
+
+```json
+{
+  "title": "Reclamação"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Reclamação"
+}
+```
+
+- **PUT** `type/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _types_.
+
+_requisição_:
+
+```json
+{
+  "title": "Elogio"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Elogio"
+}
+```
+
+### status
+
+- **GET** `status/`: retorna todos os registros na tabela de _status_.
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Fechado",
+    "created_at": "2019-10-31T16:38:10.000Z",
+    "updated_at": "2019-10-31T16:38:27.000Z"
+  }
+]
+```
+
+- **POST** `status/`: cria um novo registro na tabela de _status_.
+
+_requisição_:
+
+```json
+{
+  "title": "Em andamento"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Em andamento"
+}
+```
+
+- **PUT** `status/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _status_.
+
+_requisição_:
+
+```json
+{
+  "title": "Fechado"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Fechado"
+}
+```
