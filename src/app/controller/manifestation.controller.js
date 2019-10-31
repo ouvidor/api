@@ -22,47 +22,31 @@ class ManifestationController {
     res.json(manifestation);
   }
 
-  async fetchAll(req, res) {
-    /*
-     * Abaixo um exemplo com find all de como pes
-     *
-     */
-    Manifestation.findAll({
+  async fetch(req, res) {
+    if (req.params.id) {
+      const manifestation = await Manifestation.findByPk(req.params.id);
+
+      if (!manifestation) {
+        return res.status(400).json({ error: 'essa manifestação não existe' });
+      }
+
+      return res.status(200).json(manifestation);
+    }
+
+    const manifestations = await Manifestation.findAll({
       include: [
         {
           model: Category,
           as: 'categories',
+          // só pega o id e o título
+          attributes: ['id', 'title'],
           // a linha abaixo previne que venham informações desnecessárias
           through: { attributes: [] },
         },
       ],
-    })
-      .then(response => {
-        console.log(response);
-        res.json(response);
-      })
-      .catch(err => console.log(err));
-  }
+    });
 
-  async fetchById(req, res) {
-    Manifestation.findOne(
-      { where: { id: req.body.manifestation_id } },
-      {
-        include: [
-          {
-            model: Category,
-            as: 'categories',
-            // a linha abaixo previne que venham informações desnecessárias
-            through: { attributes: [] },
-          },
-        ],
-      }
-    )
-      .then(response => {
-        console.log(response);
-        res.json(response);
-      })
-      .catch(err => console.log(err));
+    return res.status(200).json(manifestations);
   }
 } // fim da classe
 
