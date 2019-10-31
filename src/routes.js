@@ -11,12 +11,15 @@ import { Router } from 'express';
 // controllers
 import UserController from './app/controller/user.controller';
 import AuthController from './app/controller/auth.controller';
-import AuthMiddleware from './app/middlewares/auth';
 import ManifestationController from './app/controller/manifestation.controller';
 import CategoryController from './app/controller/category.controller';
 import TypeController from './app/controller/type.controller';
 import StatusController from './app/controller/status.controller';
 import RoleController from './app/controller/role.controller';
+
+// middlewares de autenticação
+import AuthMiddleware from './app/middlewares/auth';
+import RolesMiddleware from './app/middlewares/roles';
 
 // validators
 import CreateUserValidator from './app/middlewares/validators/CreateUser';
@@ -72,12 +75,15 @@ router.get('/type/:id?*', TypeController.fetch);
 router.get('/status/:id?*', StatusController.fetch);
 
 // A partir daqui serão rotas de Administradores
+router.use(RolesMiddleware.admin);
 /**
  * TODO Verificar Role com um middleware aqui e averiguar se é admin
  * passar role como payload no token
  */
 
-// TODO: A partir daqui serão rotas de Administradores MASTER
+// A partir daqui serão rotas de Administradores Master
+router.use(RolesMiddleware.adminMaster);
+
 router.post('/category', CategoryController.save);
 router.put('/category/:id', TitleValidator, CategoryController.update);
 router.delete('/category/:id', CategoryController.delete);
