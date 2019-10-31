@@ -15,6 +15,7 @@ import AuthMiddleware from './app/middlewares/auth';
 import ManifestationController from './app/controller/manifestation.controller';
 import CategoryController from './app/controller/category.controller';
 import TypeController from './app/controller/type.controller';
+import StatusController from './app/controller/status.controller';
 import RoleController from './app/controller/role.controller';
 
 // validators
@@ -62,9 +63,9 @@ router.post(
   CreateManifestationValidator,
   ManifestationController.save
 );
-router.get('/manifestation', ManifestationController.fetchAll);
-router.post('/manifestation', ManifestationController.fetchById);
+router.get('/manifestation/:id?*', ManifestationController.fetch);
 router.get('/type', TypeController.fetchAll);
+router.get('/status', StatusController.fetchAll);
 
 // A partir daqui serão rotas de Administradores
 /**
@@ -77,5 +78,7 @@ router.post('/category/create', CategoryController.save);
 router.post('/role/create', RoleController.save);
 router.post('/type', TypeValidator, TypeController.save);
 router.put('/type/:id', TypeValidator, TypeController.update);
+router.post('/status', TypeValidator, StatusController.save); // usando o TypeValidator por ser a mesma coisa
+router.put('/status/:id', TypeValidator, StatusController.update);
 
 export default router;

@@ -6,13 +6,24 @@ import databaseConfig from '../config/database';
 // importações dos models
 import User from '../app/models/User';
 import Manifestation from '../app/models/Manifestation';
+import ManifestationStatusHistory from '../app/models/ManifestationStatusHistory';
 import Category from '../app/models/Category';
 import Type from '../app/models/Type';
+import Status from '../app/models/Status';
 import Role from '../app/models/Role';
 
 require('dotenv');
 
-const models = [User, Manifestation, Category, Type, Role];
+// a ordem é importante caso queira testar com sync()
+const models = [
+  User,
+  Type,
+  Status,
+  Category,
+  Role,
+  Manifestation,
+  ManifestationStatusHistory,
+];
 
 class Database {
   constructor() {

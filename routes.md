@@ -105,40 +105,40 @@ _retorna_:
 _retorna_:
 
 ```json
-{
-  [
-    {
-      "id": 42,
-      "user_id": 911,
-      "title": "Um problema na minha rua",
-      "description": "Tem um buracão na rua vai fazer 5 meses.",
-      "categories": [1, 2],
-      "create_at": "2019-08-07T21:21:00+00:00"
-    }
-  ]
-}
+[
+  {
+    "id": 8,
+    "title": "Problema na rua",
+    "description": "texto texto texto texto",
+    "read": 0,
+    "created_at": "2019-10-31T17:17:53.000Z",
+    "updated_at": "2019-10-31T17:17:55.000Z",
+    "user_id": 1,
+    "type_id": 1,
+    "categories": [
+      {
+        "id": 1,
+        "title": "Saneamento"
+      }
+    ]
+  }
+]
 ```
 
-- **POST** `manifestation/`: baseado no _id_ passado acha um registro da tabela _manifestations_.
-
-_requisição_:
-
-```json
-{
-  "manifestation_id": 42
-}
-```
+- **GET** `manifestation/:id?*`: essa mesma rota pode receber o id de uma manifestação específica, retornando assim a manifestação.
 
 _retorna_:
 
 ```json
 {
-  "id": 42,
-  "user_id": 911,
-  "title": "Um problema na minha rua",
-  "description": "Tem um buracão na rua vai fazer 5 meses.",
-  "categories": [1, 2],
-  "create_at": "2019-08-07T21:21:00+00:00"
+  "id": 8,
+  "title": "Problema na rua",
+  "description": "texto texto texto texto",
+  "read": 0,
+  "created_at": "2019-10-31T17:17:53.000Z",
+  "updated_at": "2019-10-31T17:17:55.000Z",
+  "user_id": 1,
+  "type_id": 1
 }
 ```
 
@@ -171,6 +171,8 @@ _retorna_:
 
 ## Necessário privilégio ADMIN
 
+## Necessário privilégio MASTER
+
 ### category
 
 - **POST** `category/create`: cria um novo registro na tabela de _categories_.
@@ -191,8 +193,6 @@ _retorna_:
   "title": "Saneamento"
 }
 ```
-
-## Necessário privilégio MASTER
 
 ### role
 
