@@ -16,6 +16,7 @@ import CategoryController from './app/controller/category.controller';
 import TypeController from './app/controller/type.controller';
 import StatusController from './app/controller/status.controller';
 import RoleController from './app/controller/role.controller';
+import SecretaryController from './app/controller/secretary.controller';
 
 // middlewares de autenticação
 import AuthMiddleware from './app/middlewares/auth';
@@ -27,6 +28,7 @@ import CreateManifestationValidator from './app/middlewares/validators/CreateMan
 import UserLoginValidator from './app/middlewares/validators/UserLogin';
 import TitleValidator from './app/middlewares/validators/Title';
 import RoleValidation from './app/middlewares/validators/RoleValidation';
+import SecretaryValidator from './app/middlewares/validators/Secretary';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
@@ -68,18 +70,15 @@ router.post(
   ManifestationController.save
 );
 
+// A partir daqui serão rotas de Administradores
+router.use(RolesMiddleware.admin);
+
 router.get('/manifestation/:id?*', ManifestationController.fetch);
 router.get('/category/:id?*', CategoryController.fetch);
 router.get('/role/:id?*', RoleController.fetch);
 router.get('/type/:id?*', TypeController.fetch);
 router.get('/status/:id?*', StatusController.fetch);
-
-// A partir daqui serão rotas de Administradores
-router.use(RolesMiddleware.admin);
-/**
- * TODO Verificar Role com um middleware aqui e averiguar se é admin
- * passar role como payload no token
- */
+router.get('/secretary/:id?*', SecretaryController.fetch);
 
 // A partir daqui serão rotas de Administradores Master
 router.use(RolesMiddleware.adminMaster);
@@ -97,5 +96,9 @@ router.delete('/type/:id', TypeController.delete);
 router.post('/status', TitleValidator, StatusController.save);
 router.put('/status/:id', TitleValidator, StatusController.update);
 router.delete('/status/:id', StatusController.delete);
+
+router.post('/secretary', SecretaryValidator, SecretaryController.save);
+router.put('/secretary/:id', SecretaryValidator, SecretaryController.update);
+router.delete('/secretary/:id', SecretaryController.delete);
 
 export default router;

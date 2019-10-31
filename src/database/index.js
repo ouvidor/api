@@ -11,6 +11,7 @@ import Category from '../app/models/Category';
 import Type from '../app/models/Type';
 import Status from '../app/models/Status';
 import Role from '../app/models/Role';
+import Secretary from '../app/models/Secretary';
 
 require('dotenv');
 
@@ -19,6 +20,7 @@ const models = [
   User,
   Type,
   Status,
+  Secretary,
   Category,
   Role,
   Manifestation,
