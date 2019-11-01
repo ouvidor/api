@@ -1,4 +1,49 @@
+/**
+ * Arquivo responsavel por salvar temproariamente a imagem no folder 'temp', e envia-la para um servidor de arquivos remoto.
+ *
+ * Documentação do modulo FTP -> https://www.npmjs.com/package/ftp
+ */
+
 import Multer from 'multer';
+import Ftp from 'ftp';
+import fs from 'fs';
+import ftpConfig from '../../config/ftp';
+import { Http2SecureServer } from 'http2';
+
+function deleteFile(file) {
+  fs.unlink(`${process.cwd()}/temp/${file.filename}`, err => {
+    if (err) throw err;
+  });
+}
+
+async function sendToRemoteFileServer(file) {
+  console.log('conectando no ftp');
+  const c = new Ftp();
+  await new Promise((resolve, reject) => {
+    c.connect(ftpConfig);
+    c.on('ready', () => {
+      console.log('conectou');
+      console.log(`${process.cwd()}/temp/${file.filename}`);
+      c.put(
+        '' + process.cwd() + '/temp/' + file.filename,
+        `tmp/${file.filename}`,
+        err => {
+          if (err) {
+            return 500;
+          }
+          c.end();
+        }
+      );
+      resolve('ok');
+    });
+    c.on('error', err => {
+      console.log(err);
+      reject(err);
+    });
+  });
+  console.log('premissa retornou');
+  return 200;
+}
 
 class FileController {
   createDiskStorage() {
@@ -17,7 +62,10 @@ class FileController {
 
   // Retorna todas entries de Roles no DB
   async upload(req, res) {
-    res.send('kk');
+    const status = await sendToRemoteFileServer(req.file);
+    console.log('enviou req');
+    // deleteFile(req.file);
+    res.status(status).send('ok');
   }
 } // fim da classe
 
