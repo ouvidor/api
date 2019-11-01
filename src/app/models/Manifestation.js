@@ -21,6 +21,11 @@ class Manifestation extends Model {
   }
 
   static associate(models) {
+    this.belongsTo(models.Secretary, {
+      foreignKey: 'secretary_id',
+      as: 'secretary',
+      targetKey: 'id',
+    });
     this.belongsTo(models.User, {
       foreignKey: 'user_id',
       as: 'user',

@@ -185,10 +185,6 @@ _retorna_:
 
 ---
 
-## Necessário privilégio ADMIN
-
-## Necessário privilégio MASTER
-
 ### category
 
 - **GET** `category/`: retorna todos os registros na tabela de _categories_.
@@ -426,5 +422,85 @@ _retorna_:
   "title": "Em andamento",
   "created_at": "2019-10-31T17:01:37.000Z",
   "updated_at": "2019-10-31T17:01:37.000Z"
+}
+```
+
+### secretary
+
+- **GET** `secretary/`: retorna todos os registros na tabela de _secretariats_.
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Secretaria da Saúde",
+    "email": "saude.gov@gov.com"
+  }
+]
+```
+
+- **GET** `secretary/:id?*`: essa mesma rota pode receber o id de um _secretariats_ específico, retornando assim a secretaria.
+
+```json
+{
+  "id": 1,
+  "title": "Secretaria da Saúde",
+  "email": "saude.gov@gov.com"
+}
+```
+
+- **POST** `secretary/`: cria um novo registro na tabela de _secretariats_.
+
+_requisição_:
+
+```json
+{
+  "title": "Secretaria da Saúde",
+  "email": "saude.gov@gov.com"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Secretaria da Saúde",
+  "email": "saude.gov@gov.com"
+}
+```
+
+- **PUT** `status/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _status_.
+
+_requisição_:
+
+```json
+{
+  "title": "Secretaria da Fazenda",
+  "email": "fazenda.gov@gov.com"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Secretaria da Fazenda",
+  "email": "fazenda.gov@gov.com"
+}
+```
+
+- **DELETE** `status/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _status_.
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Secretaria da Fazenda",
+  "email": "fazenda.gov@gov.com",
+  "created_at": "2019-10-31T21:30:47.000Z",
+  "updated_at": "2019-10-31T23:55:51.000Z"
 }
 ```
