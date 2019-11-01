@@ -1,16 +1,13 @@
 /**
- * Middleware de validação para Secretary
+ * Middleware de validação generico
  */
 import { object, string } from 'yup';
 
-class SecretaryValidator {
+class GenericValidator {
   async save(request, response, next) {
     try {
       const schema = object().shape({
         title: string().required('O titulo é necessário'),
-        email: string()
-          .email('Email inválido')
-          .required('O email é necessário'),
       });
 
       await schema.validate(request.body, { abortEarly: false });
@@ -28,7 +25,6 @@ class SecretaryValidator {
     try {
       const schema = object().shape({
         title: string(),
-        email: string().email('Email inválido'),
       });
       await schema.validate(request.body, { abortEarly: false });
       return next();
@@ -42,4 +38,4 @@ class SecretaryValidator {
   }
 }
 
-export default new SecretaryValidator();
+export default new GenericValidator();

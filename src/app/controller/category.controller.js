@@ -49,16 +49,18 @@ class CategoryController {
         .json({ error: 'essa categoria não pode ser encontrado' });
     }
 
-    // busca por uma Categoria com esse titulo passado
-    const checkIfTitleExists = await Category.findOne({
-      where: { title: req.body.title },
-    });
+    // não procura caso o titulo seja o mesmo ou se não receber
+    if (req.body.title && req.body.title !== category.title) {
+      const checkIfTitleExists = await Category.findOne({
+        where: { title: req.body.title },
+      });
 
-    // se existir uma Categoria com esse titulo retorna um erro
-    if (checkIfTitleExists) {
-      return res
-        .status(400)
-        .json({ error: 'uma categoria já existe com esse titulo' });
+      // se existir uma Categoria com esse titulo retorna um erro
+      if (checkIfTitleExists) {
+        return res
+          .status(400)
+          .json({ error: 'uma categoria já existe com esse titulo' });
+      }
     }
 
     // atualiza a instancia

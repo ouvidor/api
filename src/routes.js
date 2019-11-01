@@ -26,7 +26,7 @@ import RolesMiddleware from './app/middlewares/roles';
 import CreateUserValidator from './app/middlewares/validators/CreateUser';
 import CreateManifestationValidator from './app/middlewares/validators/CreateManifestation';
 import UserLoginValidator from './app/middlewares/validators/UserLogin';
-import TitleValidator from './app/middlewares/validators/Title';
+import GenericValidator from './app/middlewares/validators/Generic';
 import RoleValidation from './app/middlewares/validators/RoleValidation';
 import SecretaryValidator from './app/middlewares/validators/Secretary';
 
@@ -83,18 +83,18 @@ router.get('/secretary/:id?*', SecretaryController.fetch);
 // A partir daqui serão rotas de Administradores Master
 router.use(RolesMiddleware.adminMaster);
 
-router.post('/category', CategoryController.save);
-router.put('/category/:id', TitleValidator, CategoryController.update);
+router.post('/category', GenericValidator.save, CategoryController.save);
+router.put('/category/:id', GenericValidator.update, CategoryController.update);
 router.delete('/category/:id', CategoryController.delete);
 
 router.post('/role', RoleValidation, RoleController.save);
 
-router.post('/type', TitleValidator, TypeController.save);
-router.put('/type/:id', TitleValidator, TypeController.update);
+router.post('/type', GenericValidator.save, TypeController.save);
+router.put('/type/:id', GenericValidator.update, TypeController.update);
 router.delete('/type/:id', TypeController.delete);
 
-router.post('/status', TitleValidator, StatusController.save);
-router.put('/status/:id', TitleValidator, StatusController.update);
+router.post('/status', GenericValidator.save, StatusController.save);
+router.put('/status/:id', GenericValidator.update, StatusController.update);
 router.delete('/status/:id', StatusController.delete);
 
 router.post('/secretary', SecretaryValidator.save, SecretaryController.save);
