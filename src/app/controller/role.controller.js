@@ -42,6 +42,63 @@ class RoleController {
       level,
     });
   }
+
+  async update(req, res) {
+    // busca pelo id do Status
+    const role = await Role.findByPk(req.params.id);
+
+    if (!role) {
+      return res
+        .status(401)
+        .json({ error: 'essa role não pode ser encontrado' });
+    }
+
+    // busca apenas se receber titulo e o titulo for diferente
+    if (req.body.title && req.body.title !== role.title) {
+      const checkIfTitleExists = await Role.findOne({
+        where: { title: req.body.title },
+      });
+
+      if (checkIfTitleExists) {
+        return res
+          .status(400)
+          .json({ error: 'um status já existe com esse titulo' });
+      }
+    }
+
+    // atualiza a instancia
+    const { id, title, level } = await role.update(req.body);
+
+    return res.status(200).json({ id, title, level });
+  }
+
+  async delete(req, res) {
+    // busca pelo id do Status
+    const role = await Role.findByPk(req.params.id);
+
+    if (!role) {
+      return res
+        .status(401)
+        .json({ error: 'essa role não pode ser encontrado' });
+    }
+
+    // checa se a role é importante
+    if (role.level === 1) {
+      // busca se existe uma outra master role
+      const masterRoles = await Role.findAll({ where: { level: 1 } });
+
+      // não exclui a unica master role
+      if (masterRoles.length === 1) {
+        return res
+          .status(400)
+          .json({ error: 'não é possivel excluir a unica master role' });
+      }
+    }
+
+    await role.destroy();
+
+    return res.status(200).json(role);
+  }
 } // fim da classe
 
 export default new RoleController();

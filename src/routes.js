@@ -87,7 +87,9 @@ router.post('/category', GenericValidator.save, CategoryController.save);
 router.put('/category/:id', GenericValidator.update, CategoryController.update);
 router.delete('/category/:id', CategoryController.delete);
 
-router.post('/role', RoleValidation, RoleController.save);
+router.post('/role', RoleValidation.save, RoleController.save);
+router.put('/role/:id', RoleValidation.update, RoleController.update);
+router.delete('/role/:id', RoleController.delete);
 
 router.post('/type', GenericValidator.save, TypeController.save);
 router.put('/type/:id', GenericValidator.update, TypeController.update);
