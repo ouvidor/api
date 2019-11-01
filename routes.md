@@ -260,13 +260,45 @@ _retorna_:
 
 ### role
 
-- **POST** `role`: cria um novo registro na tabela de _role_.
+- **GET** `role/`: retorna todos os registros na tabela _roles_.
+
+```json
+[
+  {
+    "id": 1,
+    "title": "master",
+    "level": 1
+  },
+  {
+    "id": 2,
+    "title": "admin",
+    "level": 2
+  },
+  {
+    "id": 3,
+    "title": "citizen",
+    "level": 3
+  }
+]
+```
+
+- **GET** `role/:id?*`: essa mesma rota pode receber o id de um _role_ específico, retornando assim o role.
+
+```json
+{
+  "id": 1,
+  "title": "master"
+}
+```
+
+- **POST** `role/`: cria um novo registro na tabela de _roles_.
 
 _requisição_:
 
 ```json
 {
-  "title": "Saneamento"
+  "title": "Ajudante",
+  "level": 2
 }
 ```
 
@@ -274,8 +306,43 @@ _retorna_:
 
 ```json
 {
-  "id": 6,
-  "title": "Saneamento"
+  "id": 4,
+  "title": "Ajudante",
+  "level": 2
+}
+```
+
+- **PUT** `role/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _roles_.
+
+_requisição_:
+
+```json
+{
+  "title": "Cidadão"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 3,
+  "title": "Cidadão",
+  "level": 3
+}
+```
+
+- **DELETE** `role/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _roles_.
+
+_retorna_:
+
+```json
+{
+  "id": 4,
+  "title": "Ajudante",
+  "level": 2,
+  "created_at": "2019-11-01T17:02:27.000Z",
+  "updated_at": "2019-11-01T17:02:27.000Z"
 }
 ```
 

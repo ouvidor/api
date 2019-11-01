@@ -82,16 +82,17 @@ class RoleController {
         .json({ error: 'essa role não pode ser encontrado' });
     }
 
-    // checa se a role é importante
-    if (role.level === 1) {
-      // busca se existe uma outra master role
-      const masterRoles = await Role.findAll({ where: { level: 1 } });
+    if (role.level) {
+      // busca se existe uma outra role desse nível
+      const rolesWithThisLevel = await Role.findAll({
+        where: { level: role.level },
+      });
 
-      // não exclui a unica master role
-      if (masterRoles.length === 1) {
+      // não exclui a unica role desse nível
+      if (rolesWithThisLevel.length === 1) {
         return res
           .status(400)
-          .json({ error: 'não é possivel excluir a unica master role' });
+          .json({ error: 'não é possivel excluir a unica role desse nível' });
       }
     }
 
