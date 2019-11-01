@@ -1,9 +1,11 @@
+require('dotenv').config();
 /**
  * Config para o cliente FTP
  */
+
 module.exports = {
-  host: 'files.000webhost.com',
-  port: 21,
-  user: 'romullo-ftp-server',
-  password: '123456789',
+  host: process.env.FTP_HOST,
+  port: process.env.FTP_PORT,
+  user: process.env.FTP_USER,
+  password: process.env.FTP_PASSWORD,
 };

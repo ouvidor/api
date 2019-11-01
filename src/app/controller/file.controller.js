@@ -8,7 +8,6 @@ import Multer from 'multer';
 import Ftp from 'ftp';
 import fs from 'fs';
 import ftpConfig from '../../config/ftp';
-import { Http2SecureServer } from 'http2';
 
 function deleteFile(file) {
   fs.unlink(`${process.cwd()}/temp/${file.filename}`, err => {
@@ -22,16 +21,18 @@ async function sendToRemoteFileServer(file) {
   await new Promise((resolve, reject) => {
     c.connect(ftpConfig);
     c.on('ready', () => {
-      console.log('conectou');
-      console.log(`${process.cwd()}/temp/${file.filename}`);
+      // ess.cwd()}/temp/${file.filename}`);
       c.put(
+        // importante ignorar a regra abaixo
+        // eslint-disable-next-line prefer-template
         '' + process.cwd() + '/temp/' + file.filename,
-        `tmp/${file.filename}`,
+        `tmp/teste/${file.filename}`,
         err => {
           if (err) {
             return 500;
           }
           c.end();
+          return 200;
         }
       );
       resolve('ok');
@@ -64,7 +65,7 @@ class FileController {
   async upload(req, res) {
     const status = await sendToRemoteFileServer(req.file);
     console.log('enviou req');
-    // deleteFile(req.file);
+    deleteFile(req.file);
     res.status(status).send('ok');
   }
 } // fim da classe
