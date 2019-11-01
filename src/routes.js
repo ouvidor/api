@@ -48,7 +48,7 @@ router.get('/user/:id?*', UserController.fetch);
  * somente para criação de usuários admin
  */
 
-router.post('/user/create', CreateUserValidator, UserController.save);
+router.post('/user', CreateUserValidator, UserController.save);
 router.post('/auth', UserLoginValidator, AuthController.login);
 
 /**
@@ -65,7 +65,7 @@ router.use(AuthMiddleware);
  * necessário um Token
  */
 router.post(
-  '/manifestation/create',
+  '/manifestation',
   CreateManifestationValidator,
   ManifestationController.save
 );
