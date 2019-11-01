@@ -60,26 +60,30 @@ class SecretaryController {
         .json({ error: 'essa secretaria não pode ser encontrada' });
     }
 
-    const checkIfEmailExists = await Secretary.findOne({
-      where: { email: req.body.email },
-    });
+    // se receber um email checa se ele está em uso
+    if (req.body.email && req.body.email !== secretary.email) {
+      const checkIfEmailExists = await Secretary.findOne({
+        where: { email: req.body.email },
+      });
 
-    // checa se o email esta em uso
-    if (checkIfEmailExists) {
-      return res
-        .status(400)
-        .json({ error: 'uma secretaria já usa esse email' });
+      if (checkIfEmailExists) {
+        return res
+          .status(400)
+          .json({ error: 'uma secretaria já usa esse email' });
+      }
     }
 
-    const checkIfTitleExists = await Secretary.findOne({
-      where: { title: req.body.title },
-    });
+    // se receber um title checa se ele está em uso
+    if (req.body.title && req.body.title !== secretary.title) {
+      const checkIfTitleExists = await Secretary.findOne({
+        where: { title: req.body.title },
+      });
 
-    // se existir um Secretary com esse titulo retorna um erro
-    if (checkIfTitleExists) {
-      return res
-        .status(400)
-        .json({ error: 'uma secretaria já existe com esse titulo' });
+      if (checkIfTitleExists) {
+        return res
+          .status(400)
+          .json({ error: 'uma secretaria já existe com esse titulo' });
+      }
     }
 
     // atualiza a instancia

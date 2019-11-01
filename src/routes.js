@@ -97,8 +97,12 @@ router.post('/status', TitleValidator, StatusController.save);
 router.put('/status/:id', TitleValidator, StatusController.update);
 router.delete('/status/:id', StatusController.delete);
 
-router.post('/secretary', SecretaryValidator, SecretaryController.save);
-router.put('/secretary/:id', SecretaryValidator, SecretaryController.update);
+router.post('/secretary', SecretaryValidator.save, SecretaryController.save);
+router.put(
+  '/secretary/:id',
+  SecretaryValidator.update,
+  SecretaryController.update
+);
 router.delete('/secretary/:id', SecretaryController.delete);
 
 export default router;
