@@ -1,7 +1,7 @@
 /**
- * Migration da tabela de role
+ * Migration da tabela de categoria
  * Para gerar uma migration similar basta executar o comando:
- * yarn sequelize migration:create --name=create-user
+ * yarn sequelize migration:create --name=create-type
  *
  * para rodar a migration para o banco de dados
  * yarn sequelize db:migrate
@@ -10,7 +10,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'roles',
+      'secretariats',
       {
         id: {
           type: Sequelize.INTEGER,
@@ -23,9 +23,10 @@ module.exports = {
           allowNull: false,
           unique: true,
         },
-        level: {
-          type: Sequelize.INTEGER,
+        email: {
+          type: Sequelize.STRING,
           allowNull: false,
+          unique: true,
         },
         created_at: {
           type: Sequelize.DATE,
@@ -41,6 +42,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('roles');
+    return queryInterface.dropTable('secretariats');
   },
 };

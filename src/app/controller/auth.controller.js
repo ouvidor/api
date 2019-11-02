@@ -22,9 +22,18 @@ class AuthController {
       }
 
       const { id, first_name, last_name, email, role } = user;
-      const token = jwt.sign({ id: user.id, role: user.role }, auth.secret, {
+
+      // filtra a Role para não passar as timestamps
+      const roles = role.map(r => ({
+        id: r.id,
+        title: r.title,
+        level: r.level,
+      }));
+
+      const token = jwt.sign({ id, role: roles }, auth.secret, {
         expiresIn: auth.expiresIn,
       });
+
       return res.send({
         id,
         first_name,
@@ -34,7 +43,6 @@ class AuthController {
         token,
       });
     } catch (error) {
-      console.log(error);
       return res.status(400).send({ message: 'Senha incorreta' });
     }
   }

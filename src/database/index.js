@@ -6,12 +6,26 @@ import databaseConfig from '../config/database';
 // importações dos models
 import User from '../app/models/User';
 import Manifestation from '../app/models/Manifestation';
+import ManifestationStatusHistory from '../app/models/ManifestationStatusHistory';
 import Category from '../app/models/Category';
+import Type from '../app/models/Type';
+import Status from '../app/models/Status';
 import Role from '../app/models/Role';
+import Secretary from '../app/models/Secretary';
 
 require('dotenv');
 
-const models = [User, Manifestation, Category, Role];
+// a ordem é importante caso queira testar com sync()
+const models = [
+  User,
+  Type,
+  Status,
+  Secretary,
+  Category,
+  Role,
+  Manifestation,
+  ManifestationStatusHistory,
+];
 
 class Database {
   constructor() {
@@ -40,9 +54,9 @@ class Database {
     try {
       const roles = await Role.findAll();
       if (roles.length === 0) {
-        await Role.create({ title: 'master' });
-        await Role.create({ title: 'admin' });
-        await Role.create({ title: 'citzen' });
+        await Role.create({ title: 'master', level: 1 });
+        await Role.create({ title: 'admin', level: 2 });
+        await Role.create({ title: 'citizen', level: 3 });
       }
 
       const users = await User.findAll();

@@ -9,24 +9,40 @@ Contêm protocolo _HTTP_, endereço da rota, explicação do que é feito, o que
 
 ### user
 
-- **GET** `user/`: retorna todos os registros da tabela _users_.
-
-_retorna_:
+- **GET** `user/`: retorna todos os registros na tabela de _users_.
 
 ```json
+[
+  {
+    "id": 1,
+    "first_name": "master",
+    "last_name": "root",
+    "email": "root@gmail.com",
+    "role": [
+      {
+        "id": 1,
+        "title": "master"
+      }
+    ]
+  }
+]
+```
+
+- **GET** `user/:id?*`: essa mesma rota pode receber o id de um _users_ específico, retornando assim o usuário.
+
+```json
+{
+  "id": 1,
+  "first_name": "master",
+  "last_name": "root",
+  "email": "root@gmail.com",
+  "role": [
     {
-        "id": 7,
-        "first_name": "Romullo",
-        "last_name": "Cordeiro Rodrigues",
-        "email": "romullocordeiro@gmail.com",
-        "created_at": "2019-10-18T17:38:42.000Z",
-        "role": [
-            {
-                "id": 2,
-                "title": "admin"
-            }
-        ]
-    },
+      "id": 1,
+      "title": "master"
+    }
+  ]
+}
 ```
 
 - **POST** `user/create`: cria um novo registro na tabela de _users_.
@@ -105,40 +121,40 @@ _retorna_:
 _retorna_:
 
 ```json
-{
-  [
-    {
-      "id": 42,
-      "user_id": 911,
-      "title": "Um problema na minha rua",
-      "description": "Tem um buracão na rua vai fazer 5 meses.",
-      "categories": [1, 2],
-      "create_at": "2019-08-07T21:21:00+00:00"
-    }
-  ]
-}
+[
+  {
+    "id": 8,
+    "title": "Problema na rua",
+    "description": "texto texto texto texto",
+    "read": 0,
+    "created_at": "2019-10-31T17:17:53.000Z",
+    "updated_at": "2019-10-31T17:17:55.000Z",
+    "user_id": 1,
+    "type_id": 1,
+    "categories": [
+      {
+        "id": 1,
+        "title": "Saneamento"
+      }
+    ]
+  }
+]
 ```
 
-- **POST** `manifestation/`: baseado no _id_ passado acha um registro da tabela _manifestations_.
-
-_requisição_:
-
-```json
-{
-  "manifestation_id": 42
-}
-```
+- **GET** `manifestation/:id?*`: essa mesma rota pode receber o id de uma manifestação específica, retornando assim a manifestação.
 
 _retorna_:
 
 ```json
 {
-  "id": 42,
-  "user_id": 911,
-  "title": "Um problema na minha rua",
-  "description": "Tem um buracão na rua vai fazer 5 meses.",
-  "categories": [1, 2],
-  "create_at": "2019-08-07T21:21:00+00:00"
+  "id": 8,
+  "title": "Problema na rua",
+  "description": "texto texto texto texto",
+  "read": 0,
+  "created_at": "2019-10-31T17:17:53.000Z",
+  "updated_at": "2019-10-31T17:17:55.000Z",
+  "user_id": 1,
+  "type_id": 1
 }
 ```
 
@@ -169,11 +185,29 @@ _retorna_:
 
 ---
 
-## Necessário privilégio ADMIN
-
 ### category
 
-- **POST** `category/create`: cria um novo registro na tabela de _categories_.
+- **GET** `category/`: retorna todos os registros na tabela de _categories_.
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Saneamento"
+  }
+]
+```
+
+- **GET** `category/:id?*`: essa mesma rota pode receber o id de um _categories_ específico, retornando assim a categoria.
+
+```json
+{
+  "id": 1,
+  "title": "Saneamento"
+}
+```
+
+- **POST** `category`: cria um novo registro na tabela de _categories_.
 
 _requisição_:
 
@@ -192,17 +226,79 @@ _retorna_:
 }
 ```
 
-## Necessário privilégio MASTER
+- **PUT** `category/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _categories_.
+
+_requisição_:
+
+```json
+{
+  "title": "Segurança"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Segurança"
+}
+```
+
+- **DELETE** `type/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _categories_.
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Segurança",
+  "created_at": "2019-10-31T17:03:19.000Z",
+  "updated_at": "2019-10-31T18:29:13.000Z"
+}
+```
 
 ### role
 
-- **POST** `role/create`: cria um novo registro na tabela de _role_.
+- **GET** `role/`: retorna todos os registros na tabela _roles_.
+
+```json
+[
+  {
+    "id": 1,
+    "title": "master",
+    "level": 1
+  },
+  {
+    "id": 2,
+    "title": "admin",
+    "level": 2
+  },
+  {
+    "id": 3,
+    "title": "citizen",
+    "level": 3
+  }
+]
+```
+
+- **GET** `role/:id?*`: essa mesma rota pode receber o id de um _role_ específico, retornando assim o role.
+
+```json
+{
+  "id": 1,
+  "title": "master"
+}
+```
+
+- **POST** `role/`: cria um novo registro na tabela de _roles_.
 
 _requisição_:
 
 ```json
 {
-  "title": "Saneamento"
+  "title": "Ajudante",
+  "level": 2
 }
 ```
 
@@ -210,7 +306,268 @@ _retorna_:
 
 ```json
 {
-  "id": 6,
-  "title": "Saneamento"
+  "id": 4,
+  "title": "Ajudante",
+  "level": 2
+}
+```
+
+- **PUT** `role/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _roles_.
+
+_requisição_:
+
+```json
+{
+  "title": "Cidadão"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 3,
+  "title": "Cidadão",
+  "level": 3
+}
+```
+
+- **DELETE** `role/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _roles_.
+
+_retorna_:
+
+```json
+{
+  "id": 4,
+  "title": "Ajudante",
+  "level": 2,
+  "created_at": "2019-11-01T17:02:27.000Z",
+  "updated_at": "2019-11-01T17:02:27.000Z"
+}
+```
+
+### type
+
+- **GET** `type/`: retorna todos os registros na tabela de _types_.
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Reclamação"
+  }
+]
+```
+
+- **GET** `type/:id?*`: essa mesma rota pode receber o id de um _type_ específico, retornando assim o status.
+
+```json
+{
+  "id": 1,
+  "title": "Reclamação"
+}
+```
+
+- **POST** `type/`: cria um novo registro na tabela de _types_.
+
+_requisição_:
+
+```json
+{
+  "title": "Reclamação"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Reclamação"
+}
+```
+
+- **PUT** `type/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _types_.
+
+_requisição_:
+
+```json
+{
+  "title": "Elogio"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Elogio"
+}
+```
+
+- **DELETE** `type/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _types_.
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Reclamação",
+  "created_at": "2019-10-31T17:01:36.000Z",
+  "updated_at": "2019-10-31T17:01:36.000Z"
+}
+```
+
+### status
+
+- **GET** `status/`: retorna todos os registros na tabela de _status_.
+
+```json
+[
+  {
+    "id": 2,
+    "title": "Em andamento"
+  }
+]
+```
+
+- **GET** `status/:id?*`: essa mesma rota pode receber o id de um _status_ específico, retornando assim o status.
+
+```json
+{
+  "id": 2,
+  "title": "Em andamento"
+}
+```
+
+- **POST** `status/`: cria um novo registro na tabela de _status_.
+
+_requisição_:
+
+```json
+{
+  "title": "Em andamento"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Em andamento"
+}
+```
+
+- **PUT** `status/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _status_.
+
+_requisição_:
+
+```json
+{
+  "title": "Fechado"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Fechado"
+}
+```
+
+- **DELETE** `status/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _status_.
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Em andamento",
+  "created_at": "2019-10-31T17:01:37.000Z",
+  "updated_at": "2019-10-31T17:01:37.000Z"
+}
+```
+
+### secretary
+
+- **GET** `secretary/`: retorna todos os registros na tabela de _secretariats_.
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Secretaria da Saúde",
+    "email": "saude.gov@gov.com"
+  }
+]
+```
+
+- **GET** `secretary/:id?*`: essa mesma rota pode receber o id de um _secretariats_ específico, retornando assim a secretaria.
+
+```json
+{
+  "id": 1,
+  "title": "Secretaria da Saúde",
+  "email": "saude.gov@gov.com"
+}
+```
+
+- **POST** `secretary/`: cria um novo registro na tabela de _secretariats_.
+
+_requisição_:
+
+```json
+{
+  "title": "Secretaria da Saúde",
+  "email": "saude.gov@gov.com"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Secretaria da Saúde",
+  "email": "saude.gov@gov.com"
+}
+```
+
+- **PUT** `status/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _status_.
+
+_requisição_:
+
+```json
+{
+  "title": "Secretaria da Fazenda",
+  "email": "fazenda.gov@gov.com"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Secretaria da Fazenda",
+  "email": "fazenda.gov@gov.com"
+}
+```
+
+- **DELETE** `status/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _status_.
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Secretaria da Fazenda",
+  "email": "fazenda.gov@gov.com",
+  "created_at": "2019-10-31T21:30:47.000Z",
+  "updated_at": "2019-10-31T23:55:51.000Z"
 }
 ```

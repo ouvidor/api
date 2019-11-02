@@ -1,6 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
 
-class Role extends Model {
+class Status extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -8,14 +8,12 @@ class Role extends Model {
           type: Sequelize.STRING,
           unique: true,
         },
-        level: {
-          type: Sequelize.TINYINT,
-          values: [1, 2, 3],
-        },
       },
       // configs da tabela
       {
         sequelize,
+        modelName: 'Status',
+        tableName: 'status',
         underscored: true,
         createdAt: 'created_at', // <====== this line and the following one
         updatedAt: 'updated_at',
@@ -24,15 +22,6 @@ class Role extends Model {
 
     return this;
   }
-
-  static associate(models) {
-    this.belongsToMany(models.User, {
-      through: 'user_role',
-      as: 'user',
-      foreignKey: 'role_id',
-      constraints: false,
-    });
-  }
 }
 
-export default Role;
+export default Status;
