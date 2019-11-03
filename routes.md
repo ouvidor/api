@@ -91,7 +91,7 @@ _requisição_:
 
 ```json
 {
-  "email": "claudin@gmail.com",
+  "email": "aa@aa.com",
   "password": "123456"
 }
 ```
@@ -101,12 +101,19 @@ _retorna_:
 ```json
 {
   "user": {
-    "id": 1233,
-    "first_name": "claudin",
-    "last_name": "buchecha",
-    "email": "claudin@gmail.com"
+    "id": 7,
+    "first_name": "a",
+    "last_name": "last_name",
+    "email": "aa@aa.com",
+    "role": [
+      {
+        "id": 3,
+        "title": "citizen",
+        "level": 3
+      }
+    ]
   },
-  "token": "UMtokenJWTbizarro"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6W3siaWQiOjMsInRpdGxlIjoiY2l0aXplbiIsImxldmVsIjozfV0sImlhdCI6MTU3MjgyMjk5NywiZXhwIjoxNTc1NDE0OTk3fQ.DLK849R9QNndfZ6aAWfWJki75U97GkjRGQQzNgXLnJ8"
 }
 ```
 

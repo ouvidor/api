@@ -1,50 +1,52 @@
-// const db = require('../../config/database');
-import Bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import User from '../models/User';
+import Role from '../models/Role';
 import auth from '../../config/auth';
 
 class AuthController {
   // Loga e retorna um Tolken
   static async login(req, res) {
-    try {
-      const user = await User.searchUserByEmail(req.body.email);
+    req.password = String(req.password);
 
-      // caso não exista
-      if (!user) {
-        return res.status(400).send({ error: 'Usuário não encontrado' });
-      }
+    const user = await User.findOne({
+      where: { email: req.body.email },
+      include: [
+        {
+          model: Role,
+          as: 'role',
+          attributes: ['id', 'title', 'level'],
+          through: { attributes: [] },
+        },
+      ],
+    });
 
-      // Checa se a senha está correta
-      if (!(await Bcrypt.compareSync(req.body.password, user.password))) {
-        return res.status(400).send({ message: 'Senha incorreta' });
-      }
+    // caso não exista
+    if (!user) {
+      return res.status(401).json({ error: 'Usuário não encontrado' });
+    }
 
-      const { id, first_name, last_name, email, role } = user;
+    // Checa se a senha está correta
+    if (!(await user.checkPassword(req.body.password))) {
+      return res.status(401).json({ error: 'Senha incorreta' });
+    }
 
-      // filtra a Role para não passar as timestamps
-      const roles = role.map(r => ({
-        id: r.id,
-        title: r.title,
-        level: r.level,
-      }));
+    const { id, first_name, last_name, email, role } = user;
 
-      const token = jwt.sign({ id, role: roles }, auth.secret, {
-        expiresIn: auth.expiresIn,
-      });
+    const token = jwt.sign({ id, role }, auth.secret, {
+      expiresIn: auth.expiresIn,
+    });
 
-      return res.send({
+    return res.status(200).json({
+      user: {
         id,
         first_name,
         last_name,
         email,
         role,
-        token,
-      });
-    } catch (error) {
-      return res.status(400).send({ message: 'Senha incorreta' });
-    }
+      },
+      token,
+    });
   }
 } // fim da classe
 

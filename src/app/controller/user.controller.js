@@ -47,7 +47,7 @@ class UserController {
         {
           model: Role,
           as: 'role',
-          attributes: ['id', 'title'],
+          attributes: ['id', 'title', 'level'],
           through: { attributes: [] },
         },
       ],
@@ -99,10 +99,11 @@ class UserController {
           return res.json({ message: 'Você não é um admin MASTER' });
         }
         // Caso não tenha sido enviado uma role cria com a role padrão de citzen
-        const roleToSet = await Role.findOne({ where: { title: 'citzen' } });
+        const roleToSet = await Role.findOne({ where: { title: 'citizen' } });
         if (roleToSet) {
           await user.setRole(roleToSet);
         } else {
+          user.destroy();
           return res.json({ message: 'role invalida' });
         }
       }
@@ -111,7 +112,12 @@ class UserController {
       return res.json({ error });
     }
 
-    return res.json(user);
+    return res.status(200).json({
+      id: user.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+    });
   }
 } // fim da classe
 
