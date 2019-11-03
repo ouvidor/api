@@ -1,4 +1,5 @@
 import request from 'supertest';
+import { decode } from 'jsonwebtoken';
 
 import app from '../../src/App';
 import factory from '../factories';
@@ -7,7 +8,7 @@ import registerUser from '../util/registerUser';
 
 describe('Auth', () => {
   // entre todos os testes é feito o truncate da tabela
-  beforeEach(async () => {
+  afterEach(async () => {
     await truncate();
   });
 
@@ -22,6 +23,12 @@ describe('Auth', () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('token');
+
+    const decodedToken = decode(response.body.token);
+
+    expect(decodedToken).toHaveProperty('exp', 'iat', 'id', 'role');
+    expect(decodedToken.role[0]).toHaveProperty('id', 'title', 'level');
+
     expect(response.body).toHaveProperty('user');
     expect(response.body.user).toHaveProperty(
       'id',
