@@ -18,6 +18,9 @@ import StatusController from './app/controller/status.controller';
 import RoleController from './app/controller/role.controller';
 import SecretaryController from './app/controller/secretary.controller';
 
+// middleware para configurar os dados iniciais do banco
+import setupDbInitialData from './app/middlewares/setupDbInitialData';
+
 // middlewares de autenticação
 import AuthMiddleware from './app/middlewares/auth';
 import RolesMiddleware from './app/middlewares/roles';
@@ -32,6 +35,12 @@ import SecretaryValidator from './app/middlewares/validators/Secretary';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
+
+// middleware para tests
+// esse middleware garante o setup inicial em todo test
+if (process.env.NODE_ENV === 'test') {
+  router.use(setupDbInitialData);
+}
 
 /**
  * Rotas de Teste

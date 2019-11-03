@@ -34,7 +34,9 @@ class Database {
     this.init();
     this.associate();
     // this.sync();
-    this.checkDefaultEntries();
+    if (process.env.NODE_ENV !== 'test') {
+      this.checkDefaultEntries();
+    }
   }
 
   init() {
