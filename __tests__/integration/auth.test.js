@@ -8,7 +8,7 @@ import registerUser from '../util/registerUser';
 
 describe('Auth', () => {
   // entre todos os testes é feito o truncate da tabela
-  afterEach(async () => {
+  beforeEach(async () => {
     await truncate();
   });
 
@@ -41,15 +41,15 @@ describe('Auth', () => {
   it('should not find user, wrong password', async () => {
     const user = await factory.attrs('User');
 
-    await registerUser({ ...user, email: 'umemail@errado.com' });
+    await registerUser({ ...user, email: 'umemail@gmail.com' });
 
     const response = await request(app)
       .post('/auth')
-      .send({ email: user.email, password: user.password });
+      .send({ email: 'umemail@gmail.com', password: 'WRONG_PASSWORD' });
 
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(401);
     expect(response.body).toHaveProperty('error');
-    expect(response.body.error).toStrictEqual('Usuário não encontrado');
+    expect(response.body.error).toStrictEqual('Senha incorreta');
   });
 
   it('should not pass validation', async () => {

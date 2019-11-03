@@ -27,22 +27,28 @@ describe('User', () => {
 
     // registra usuário
     const response = await request(app)
-      .post('/user/create')
+      .post('/user')
       .send(user);
 
     // checa se tem as seguintes propriedades
-    expect(response.body).toHaveProperty('email', 'id', 'name');
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty(
+      'id',
+      'email',
+      'first_name',
+      'last_name'
+    );
   });
 
   it("shouldn't be able to register duplicated email", async () => {
     const user = await factory.attrs('User');
 
     await request(app)
-      .post('/user/create')
+      .post('/user')
       .send(user);
 
     const response = await request(app)
-      .post('/user/create')
+      .post('/user')
       .send(user);
 
     // checa se o status da resposta HTTP é 400
@@ -59,7 +65,7 @@ describe('User', () => {
     user.email = 'a';
 
     const response = await request(app)
-      .post('/user/create')
+      .post('/user')
       .send(user);
 
     // espera requisição invalida
@@ -72,7 +78,7 @@ describe('User', () => {
 
   it("shouldn't register, missing name, password and email", async () => {
     const response = await request(app)
-      .post('/user/create')
+      .post('/user')
       .send();
 
     expect(response.status).toBe(400);
