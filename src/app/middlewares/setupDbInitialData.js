@@ -11,7 +11,7 @@ async function setupDbInitialData(req, res, next) {
       await Role.create({ title: 'citizen', level: 3 });
     }
 
-    const users = await User.findAll({ limit: 1 });
+    const users = await User.findAll();
     if (users.length === 0) {
       const user = await User.create({
         first_name: 'master',
@@ -20,14 +20,13 @@ async function setupDbInitialData(req, res, next) {
         password: '123456',
       });
 
-      const masterRole = await Role.findOne({ where: { title: 'master' } });
-      user.setRole(masterRole);
+      await user.setRole(await Role.findOne({ where: { title: 'master' } }));
     }
 
     return next();
   } catch (error) {
     return res.status(500).json({
-      error: 'Erro interno na hora de criar os dados iniciais do banco',
+      error,
     });
   }
 }

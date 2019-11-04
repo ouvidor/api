@@ -70,7 +70,7 @@ class Database {
           password: '123456',
         });
 
-        user.setRole(await Role.findOne({ where: { title: 'master' } }));
+        await user.setRole(await Role.findOne({ where: { title: 'master' } }));
       }
     } catch (error) {
       console.log(error);

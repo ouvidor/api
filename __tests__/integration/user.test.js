@@ -92,4 +92,21 @@ describe('User', () => {
       ])
     );
   });
+
+  it('should list all users', async () => {
+    const response = await request(app)
+      .get('/user')
+      .send();
+
+    expect(response.body).toEqual(expect.arrayContaining([]));
+    expect(response.body[0]).toHaveProperty(
+      'email',
+      'first_name',
+      'id',
+      'last_name',
+      'role'
+    );
+
+    expect(response.body[0].role[0]).toHaveProperty('level', 'id', 'title');
+  });
 });
