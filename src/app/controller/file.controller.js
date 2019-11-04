@@ -6,13 +6,20 @@
  * Documentação do modulo FTP -> https://www.npmjs.com/package/ftp
  */
 
+/**
+ * TODO: tratar as exceções que essa rota pode ter, a que eu estava vendo é a do tamanho do arquivo
+ */
+
 import Multer from 'multer';
 import Ftp from 'ftp';
 import fs from 'fs';
 import ftpConfig from '../../config/ftp';
 import User from '../models/User';
 import Manifestation from '../models/Manifestation';
-import { isBuffer } from 'util';
+
+/**
+ * Funções usadas dentro da classe
+ */
 
 function deleteFile(file) {
   fs.unlink(`${process.cwd()}/temp/${file.filename}`, err => {
@@ -28,7 +35,7 @@ async function sendToRemoteFileServer(file, manifestation_id) {
     c.on('ready', () => {
       console.log('Conexão estabelecida com sucesso!');
 
-      // Muda o diretório sendo utilizado
+      // Muda o diretório sendo utilizado para tmp que é uma pasta padrão do server ftp escolhido
       c.cwd('tmp', () => {
         console.log('diretório de trabalho alterado para tmp');
       });
@@ -37,28 +44,42 @@ async function sendToRemoteFileServer(file, manifestation_id) {
       c.list((err, list) => {
         let folderExist = false;
         list.forEach(folder => {
-          folderExist = folder.name == manifestation_id ? true : false;
+          folderExist = folder.name == manifestation_id;
         });
+        // Se o folder não existir é criado
         if (!folderExist) {
           c.mkdir('' + manifestation_id, erro => {
             if (erro) {
               console.log(erro);
               return 500;
             }
-            c.cwd('' + manifestation_id, () => {
-              // console.log('folder alterado para: ' + c.pwd());
-              c.put(
-                '' + process.cwd() + '/temp/' + file.filename,
-                `${file.filename}`,
-                err => {
-                  if (err) {
-                    return 500;
-                  }
-                  c.end();
-                  resolve('ok');
+          });
+          c.cwd('' + manifestation_id, () => {
+            c.put(
+              '' + process.cwd() + '/temp/' + file.filename,
+              `${file.filename}`,
+              err => {
+                if (err) {
+                  return 500;
                 }
-              );
-            });
+                c.end();
+                resolve('ok');
+              }
+            );
+          });
+        } else {
+          c.cwd('' + manifestation_id, () => {
+            c.put(
+              '' + process.cwd() + '/temp/' + file.filename,
+              `${file.filename}`,
+              err => {
+                if (err) {
+                  return 500;
+                }
+                c.end();
+                resolve('ok');
+              }
+            );
           });
         } // fim se não existir
       });
@@ -85,6 +106,10 @@ class FileController {
     return storage;
   }
 
+  /**
+   *  Funções usadas em rotas
+   */
+
   // Retorna todas entries de Roles no DB
   async upload(req, res) {
     // TODO alterar o funcionamento de checagem de role pois o pedro alterou na master
@@ -92,12 +117,8 @@ class FileController {
     const user = await User.findByPk(req.user_id);
     const manifestation = await Manifestation.findByPk(manifestation_id);
 
-    // console.log(user.dataValues.id);
-    // console.log(manifestation.dataValues.UserId);
-
     // Checa se quem fez a requisição é o dono da manifestação.
-    const onwer =
-      user.dataValues.id === manifestation.dataValues.UserId ? true : false;
+    const onwer = user.dataValues.id === manifestation.dataValues.UserId;
     const user_role = req.user_role[0];
 
     if (onwer || user_role.title === 'master') {

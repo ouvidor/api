@@ -40,6 +40,7 @@ class App {
   // conecta as rotas ao app
   routes() {
     this.server.use(routes);
+    this.server.use(ErrorHandler);
   }
 }
 

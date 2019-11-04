@@ -27,7 +27,10 @@ import fileController from './app/controller/file.controller';
 const router = new Router();
 
 // let upload = Multer({ dest: 'temp/' });
-let upload = null;
+const upload = Multer({
+  storage: fileController.createDiskStorage(),
+  limits: { fileSize: 8000 },
+});
 
 /**
  * Rotas de Teste
@@ -69,7 +72,6 @@ router.post(
 router.get('/manifestation', ManifestationController.fetchAll);
 router.post('/manifestation', ManifestationController.fetchById);
 
-upload = Multer({ storage: fileController.createDiskStorage() });
 router.post('/upload', upload.single('file'), fileController.upload);
 
 // A daqui serão rotas de Administradores
