@@ -23,14 +23,14 @@ import CreateManifestationValidator from './app/middlewares/validators/CreateMan
 import UserLoginValidator from './app/middlewares/validators/UserLogin';
 import fileController from './app/controller/file.controller';
 
+// configs
+import ftpConfig from './config/ftp';
+
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
 
 // let upload = Multer({ dest: 'temp/' });
-const upload = Multer({
-  storage: fileController.createDiskStorage(),
-  limits: { fileSize: 8000 },
-});
+const upload = Multer(ftpConfig.multerOptions);
 
 /**
  * Rotas de Teste
