@@ -34,6 +34,7 @@ module.exports = {
           type: Sequelize.INTEGER,
           references: { model: 'users', key: 'id' },
           onDelete: 'CASCADE',
+          allowNull: false,
         },
         type_id: {
           type: Sequelize.INTEGER,
@@ -47,7 +48,7 @@ module.exports = {
           references: { model: 'secretariats', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
-          allowNull: false,
+          allowNull: true,
         },
         created_at: {
           type: Sequelize.DATE,

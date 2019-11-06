@@ -27,7 +27,7 @@ import RolesMiddleware from './app/middlewares/roles';
 
 // validators
 import CreateUserValidator from './app/middlewares/validators/CreateUser';
-import CreateManifestationValidator from './app/middlewares/validators/CreateManifestation';
+import ManifestationValidator from './app/middlewares/validators/Manifestation';
 import UserLoginValidator from './app/middlewares/validators/UserLogin';
 import GenericValidator from './app/middlewares/validators/Generic';
 import RoleValidation from './app/middlewares/validators/RoleValidation';
@@ -65,7 +65,7 @@ router.post('/auth', UserLoginValidator, AuthController.login);
  *
  * Apartir desse ponto é necessário estar autenticado
  * Para ser autenticado deve ser enviado um token na Header da requisição
- * A partir desse ponto se pode ter acesso ao `req.user_id` e `req.user_role` pois foi passado como payload no token.
+ * A partir desse ponto se pode ter acesso ao `req.user_id` e `req.user_roles` pois foi passado como payload no token.
  */
 router.use(AuthMiddleware);
 
@@ -75,7 +75,7 @@ router.use(AuthMiddleware);
  */
 router.post(
   '/manifestation',
-  CreateManifestationValidator,
+  ManifestationValidator.save,
   ManifestationController.save
 );
 
