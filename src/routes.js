@@ -83,14 +83,14 @@ router.put(
   ManifestationValidator.update,
   ManifestationController.update
 );
+router.get('/category/:id?*', CategoryController.fetch);
+router.get('/type/:id?*', TypeController.fetch);
+router.get('/manifestation/:id?*', ManifestationController.fetch);
 
 // A partir daqui serão rotas de Administradores
 router.use(RolesMiddleware.admin);
 
-router.get('/manifestation/:id?*', ManifestationController.fetch);
-router.get('/category/:id?*', CategoryController.fetch);
 router.get('/role/:id?*', RoleController.fetch);
-router.get('/type/:id?*', TypeController.fetch);
 router.get('/status/:id?*', StatusController.fetch);
 router.get('/secretary/:id?*', SecretaryController.fetch);
 
