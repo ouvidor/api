@@ -59,6 +59,21 @@ class ManifestationController {
 
     return res.status(200).json(manifestations);
   }
+
+  async update(req, res) {
+    let manifestation = await Manifestation.findByPk(req.params.id);
+
+    if (!manifestation) {
+      return res
+        .status(401)
+        .json({ error: 'essa manifestação não pôde ser encontrada' });
+    }
+
+    // atualiza a instancia
+    manifestation = await manifestation.update(req.body);
+
+    return res.status(200).json(manifestation);
+  }
 } // fim da classe
 
 export default new ManifestationController();

@@ -78,6 +78,11 @@ router.post(
   ManifestationValidator.save,
   ManifestationController.save
 );
+router.put(
+  '/manifestation/:id',
+  ManifestationValidator.update,
+  ManifestationController.update
+);
 
 // A partir daqui serão rotas de Administradores
 router.use(RolesMiddleware.admin);
