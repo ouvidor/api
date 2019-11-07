@@ -7,21 +7,23 @@
  */
 
 /**
- * TODO: tratar as exceções que essa rota pode ter, a que eu estava vendo é a do tamanho do arquivo
+ * TODO:
+ *  - Limitar a quantidade de arquivos que uma manifestação pode ter.
+ *  - Filtrar os mimetype.
  */
 
-import Multer from 'multer';
 import Ftp from 'ftp';
 import fs from 'fs';
 import ftpConfig from '../../config/ftp';
 import User from '../models/User';
 import Manifestation from '../models/Manifestation';
+import File from '../models/File';
 
 /**
  * Funções usadas dentro da classe
  */
 
-function deleteFile(file) {
+function deleteTempFile(file) {
   fs.unlink(`${process.cwd()}/temp/${file.filename}`, err => {
     if (err) throw err;
   });
@@ -45,31 +47,35 @@ async function sendToRemoteFileServer(file, manifestation_id) {
 
           let folderExist = false;
           list.forEach(folder => {
-            folderExist = folder.name == manifestation_id;
+            folderExist = folder.name === manifestation_id;
           });
           // Se o folder não existir é criado
           if (!folderExist) {
-            c.mkdir('' + manifestation_id, erro => {
-              if (erro) {
-                console.log(erro);
+            c.mkdir('' + manifestation_id, err => {
+              if (err) {
+                console.log(err);
                 return 500;
               }
-            });
-            c.cwd('' + manifestation_id, () => {
-              c.put(
-                '' + process.cwd() + '/temp/' + file.filename,
-                `${file.filename}`,
-                err => {
-                  if (err) {
-                    return 500;
+              // Muda o folder para o que foi criado
+              c.cwd('' + manifestation_id, () => {
+                // realiza o upload
+                c.put(
+                  '' + process.cwd() + '/temp/' + file.filename,
+                  `${file.filename}`,
+                  err => {
+                    if (err) {
+                      return 500;
+                    }
+                    c.end();
+                    resolve('ok');
                   }
-                  c.end();
-                  resolve('ok');
-                }
-              );
+                );
+              });
             });
           } else {
+            // Muda o folder para o que foi criado
             c.cwd('' + manifestation_id, () => {
+              // realiza o upload
               c.put(
                 '' + process.cwd() + '/temp/' + file.filename,
                 `${file.filename}`,
@@ -107,8 +113,12 @@ class FileController {
 
     // checa se essa manifestação existe.
     if (!manifestation) {
-      deleteFile(req.file);
+      deleteTempFile(req.file);
       return res.status(500).json({ message: 'manifestação não existe' });
+    }
+    if (!user) {
+      deleteTempFile(req.file);
+      return res.status(500).json({ message: 'usuario não existe' });
     }
 
     // checa se um arquivo foi enviado (mudar para validator depois)
@@ -124,12 +134,36 @@ class FileController {
 
     if (onwer || user_role.title === 'master' || user_role.title === 'admin') {
       const status = await sendToRemoteFileServer(req.file, manifestation_id);
-      console.log('enviou req');
-      deleteFile(req.file);
-      return res.status(status).json({ message: 'ok' });
+      console.log('enviou res');
+      deleteTempFile(req.file);
+      if (status === 500) {
+        return res.status(status).json({ message: 'erro' });
+      }
+
+      // Se chegar até aqui quer dizer que o upload do arquivo foi um sucesso, agora salvaremos a referencia no banco com o model File
+      try {
+        const [type, extension] = req.file.mimetype.split('/');
+        const data = {
+          file_name: req.file.originalname,
+          file_name_in_server: req.file.filename,
+          extension,
+        };
+        const file = await File.create(data);
+        file.setUser(user);
+        file.setManifestation(manifestation);
+
+        return res.status(200).json({ message: 'ok', file });
+      } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Erro', error });
+      }
     }
 
-    deleteFile(req.file);
+    /**
+     * Funções Auxiliares
+     */
+
+    deleteTempFile(req.file);
 
     return res.status(401).json({
       message:
