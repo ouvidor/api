@@ -11,13 +11,15 @@ class SecretaryValidator {
       const schema = object().shape({
         title: string().required('Título é necessário'),
         description: string().required('Descrição é necessária'),
-        // está incompleto usar array().of(...).min(2).required(...)
         categories: array()
           .of(number())
           .min(1)
           .required('Categorias são necessárias'),
         type_id: number().required('Tipo é necessário'),
         secretary_id: number(),
+        location: string(),
+        latitude: string(),
+        longitude: string(),
       });
 
       await schema.validate(request.body, { abortEarly: false });
@@ -41,6 +43,9 @@ class SecretaryValidator {
           .min(1),
         type_id: number(),
         secretary_id: number(),
+        location: string(),
+        latitude: string(),
+        longitude: string(),
       });
 
       await schema.validate(request.body, { abortEarly: false });

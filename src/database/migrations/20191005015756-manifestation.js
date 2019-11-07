@@ -26,6 +26,18 @@ module.exports = {
           type: Sequelize.TEXT,
           allowNull: false,
         },
+        location: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
+        latitude: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
+        longitude: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
         read: {
           type: Sequelize.BOOLEAN,
           defaultValue: 0,

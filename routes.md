@@ -130,12 +130,16 @@ _retorna_:
 ```json
 [
   {
-    "id": 8,
+    "id": 2,
     "title": "Problema na rua",
     "description": "texto texto texto texto",
     "read": 0,
-    "created_at": "2019-10-31T17:17:53.000Z",
-    "updated_at": "2019-10-31T17:17:55.000Z",
+    "location": "Rua da restinga, Cabo Frio",
+    "latitude": null,
+    "longitude": null,
+    "created_at": "2019-11-07T00:47:49.000Z",
+    "updated_at": "2019-11-07T00:47:49.000Z",
+    "secretary_id": null,
     "user_id": 1,
     "type_id": 1,
     "categories": [
@@ -154,26 +158,32 @@ _retorna_:
 
 ```json
 {
-  "id": 8,
+  "id": 2,
   "title": "Problema na rua",
   "description": "texto texto texto texto",
   "read": 0,
-  "created_at": "2019-10-31T17:17:53.000Z",
-  "updated_at": "2019-10-31T17:17:55.000Z",
+  "location": "Rua da restinga, Cabo Frio",
+  "latitude": null,
+  "longitude": null,
+  "created_at": "2019-11-07T00:47:49.000Z",
+  "updated_at": "2019-11-07T00:47:49.000Z",
+  "secretary_id": null,
   "user_id": 1,
   "type_id": 1
 }
 ```
 
-- **POST** `manifestation/create`: cria um novo registro na tabela de _manifestations_.
+- **POST** `manifestation`: cria um novo registro na tabela de _manifestations_.
 
 _requisição_:
 
 ```json
 {
-  "title": "Rua em péssimas condições",
-  "description": "texto texto texto texto texto",
-  "categories": [1, 4]
+  "title": "Problema na rua",
+  "description": "texto texto texto texto",
+  "categories": [1],
+  "type_id": 1,
+  "location": "Rua da restinga, Cabo Frio"
 }
 ```
 
@@ -181,12 +191,40 @@ _retorna_:
 
 ```json
 {
-  "id": 567,
-  "user_id": 111,
-  "title": "Rua em péssimas condições",
-  "description": "texto texto texto texto texto",
-  "categories": [1, 4],
-  "create_at": "2019-12-24T21:16:00+00:00"
+  "id": 2,
+  "title": "Problema na rua",
+  "description": "texto texto texto texto",
+  "type_id": 1,
+  "location": "Rua da restinga, Cabo Frio",
+  "user_id": 1,
+  "updated_at": "2019-11-07T00:47:49.861Z",
+  "created_at": "2019-11-07T00:47:49.861Z"
+}
+```
+
+- **PUT** `manifestation/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _manifestations_.
+
+_requisição_:
+
+```json
+{
+  "title": "Na rua da restinga tem um problema"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 7,
+  "title": "Na rua da restinga tem um problema",
+  "description": "texto texto texto texto",
+  "read": 0,
+  "created_at": "2019-11-06T16:11:41.000Z",
+  "updated_at": "2019-11-06T17:03:58.963Z",
+  "secretary_id": null,
+  "user_id": 1,
+  "type_id": 1
 }
 ```
 

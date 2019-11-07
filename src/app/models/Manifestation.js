@@ -7,6 +7,9 @@ class Manifestation extends Model {
         title: Sequelize.STRING,
         description: Sequelize.TEXT,
         read: Sequelize.TINYINT,
+        location: Sequelize.STRING,
+        latitude: Sequelize.STRING,
+        longitude: Sequelize.STRING,
       },
       // configs da tabela
       {
