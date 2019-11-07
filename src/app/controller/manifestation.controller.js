@@ -1,14 +1,25 @@
 import Manifestation from '../models/Manifestation';
-import User from '../models/User';
 import Category from '../models/Category';
 
 class ManifestationController {
   async save(req, res) {
     // Cria a manifestação e salva no banco
     const { categories, ...data } = req.body;
-    const manifestation = await Manifestation.create(data);
-    await manifestation.setUser(await User.findByPk(req.user_id));
 
+    let manifestation;
+
+    try {
+      manifestation = await Manifestation.create({
+        ...data,
+        user_id: req.user_id,
+      });
+    } catch (error) {
+      // é possivel que ocorra um erro se o token estiver invalido
+      console.error(error);
+      return res.status(500).json({ error: 'Erro interno no servidor' });
+    }
+
+    // adicionar as categorias
     try {
       if (categories && categories.length > 0) {
         await manifestation.setCategories(categories);
@@ -16,10 +27,10 @@ class ManifestationController {
     } catch (error) {
       manifestation.destroy();
       console.log(error);
-      res.json({ error: `houve um erro: ${error}` });
+      return res.status(500).json({ error: 'Erro interno no servidor' });
     }
 
-    res.json(manifestation);
+    return res.status(200).json(manifestation);
   }
 
   async fetch(req, res) {
@@ -47,6 +58,21 @@ class ManifestationController {
     });
 
     return res.status(200).json(manifestations);
+  }
+
+  async update(req, res) {
+    let manifestation = await Manifestation.findByPk(req.params.id);
+
+    if (!manifestation) {
+      return res
+        .status(401)
+        .json({ error: 'essa manifestação não pôde ser encontrada' });
+    }
+
+    // atualiza a instancia
+    manifestation = await manifestation.update(req.body);
+
+    return res.status(200).json(manifestation);
   }
 } // fim da classe
 

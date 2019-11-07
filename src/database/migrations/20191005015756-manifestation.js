@@ -26,6 +26,18 @@ module.exports = {
           type: Sequelize.TEXT,
           allowNull: false,
         },
+        location: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
+        latitude: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
+        longitude: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
         read: {
           type: Sequelize.BOOLEAN,
           defaultValue: 0,
@@ -34,6 +46,7 @@ module.exports = {
           type: Sequelize.INTEGER,
           references: { model: 'users', key: 'id' },
           onDelete: 'CASCADE',
+          allowNull: false,
         },
         type_id: {
           type: Sequelize.INTEGER,
@@ -47,7 +60,7 @@ module.exports = {
           references: { model: 'secretariats', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
-          allowNull: false,
+          allowNull: true,
         },
         created_at: {
           type: Sequelize.DATE,
