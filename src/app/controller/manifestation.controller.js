@@ -1,5 +1,6 @@
 import Manifestation from '../models/Manifestation';
 import Category from '../models/Category';
+import Type from '../models/Type';
 
 class ManifestationController {
   async save(req, res) {
@@ -34,17 +35,7 @@ class ManifestationController {
   }
 
   async fetch(req, res) {
-    if (req.params.id) {
-      const manifestation = await Manifestation.findByPk(req.params.id);
-
-      if (!manifestation) {
-        return res.status(400).json({ error: 'essa manifestação não existe' });
-      }
-
-      return res.status(200).json(manifestation);
-    }
-
-    const manifestations = await Manifestation.findAll({
+    const includeAllQuery = {
       include: [
         {
           model: Category,
@@ -54,8 +45,28 @@ class ManifestationController {
           // a linha abaixo previne que venham informações desnecessárias
           through: { attributes: [] },
         },
+        {
+          model: Type,
+          as: 'type',
+          attributes: ['id', 'title'],
+        },
       ],
-    });
+    };
+
+    if (req.params.id) {
+      const manifestation = await Manifestation.findByPk(
+        req.params.id,
+        includeAllQuery
+      );
+
+      if (!manifestation) {
+        return res.status(400).json({ error: 'essa manifestação não existe' });
+      }
+
+      return res.status(200).json(manifestation);
+    }
+
+    const manifestations = await Manifestation.findAll(includeAllQuery);
 
     return res.status(200).json(manifestations);
   }

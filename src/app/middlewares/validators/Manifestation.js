@@ -11,7 +11,7 @@ class SecretaryValidator {
       const schema = object().shape({
         title: string().required('Título é necessário'),
         description: string().required('Descrição é necessária'),
-        categories: array()
+        categories_id: array()
           .of(number())
           .min(1)
           .required('Categorias são necessárias'),
@@ -38,7 +38,7 @@ class SecretaryValidator {
       const schema = object().shape({
         title: string(),
         description: string(),
-        categories: array()
+        categories_id: array()
           .of(number())
           .min(1),
         type_id: number(),

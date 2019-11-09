@@ -147,7 +147,11 @@ _retorna_:
         "id": 1,
         "title": "Saneamento"
       }
-    ]
+    ],
+    "type": {
+      "id": 1,
+      "title": "Reclamação"
+    }
   }
 ]
 ```
@@ -169,7 +173,17 @@ _retorna_:
   "updated_at": "2019-11-07T00:47:49.000Z",
   "secretary_id": null,
   "user_id": 1,
-  "type_id": 1
+  "type_id": 1,
+  "categories": [
+    {
+      "id": 1,
+      "title": "Saneamento"
+    }
+  ],
+  "type": {
+    "id": 1,
+    "title": "Reclamação"
+  }
 }
 ```
 
