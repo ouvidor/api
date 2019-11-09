@@ -1,3 +1,5 @@
+import { Op } from 'sequelize';
+
 import Manifestation from '../models/Manifestation';
 import Category from '../models/Category';
 import Type from '../models/Type';
@@ -53,6 +55,7 @@ class ManifestationController {
       ],
     };
 
+    // pesquisa por manifestação especifica
     if (req.params.id) {
       const manifestation = await Manifestation.findByPk(
         req.params.id,
@@ -66,6 +69,56 @@ class ManifestationController {
       return res.status(200).json(manifestation);
     }
 
+    // pesquisa com filtro
+    if (req.query.text || req.query.options) {
+      let text;
+      let types = [];
+      let categories = [];
+
+      try {
+        if (req.query.text) {
+          text = req.query.text;
+        }
+
+        if (req.query.options) {
+          req.query.options.forEach(async option => {
+            const type = await Type.findOne({ where: { title: option } });
+            if (type) {
+              types = [...types, type.id];
+            }
+
+            const category = await Category.findOne({
+              where: { title: option },
+            });
+            if (category) {
+              categories = [...categories, category.id];
+            }
+          });
+        }
+        console.log(categories);
+        console.log(types);
+        const manifestations = await Manifestation.findAll({
+          ...includeAllQuery,
+          where: {
+            title: {
+              [Op.like]: `%${text}%`,
+            },
+            type_id: {
+              [Op.or]: [...types],
+            },
+            categories_id: {
+              [Op.or]: [...categories],
+            },
+          },
+        });
+
+        return res.status(200).json(manifestations);
+      } catch (error) {
+        return res.status(500).json(error);
+      }
+    }
+
+    // pesquisa por todas as manifestações
     const manifestations = await Manifestation.findAll(includeAllQuery);
 
     return res.status(200).json(manifestations);
