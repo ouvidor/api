@@ -30,7 +30,7 @@ import UserValidator from './app/middlewares/validators/User';
 import ManifestationValidator from './app/middlewares/validators/Manifestation';
 import UserLoginValidator from './app/middlewares/validators/UserLogin';
 import GenericValidator from './app/middlewares/validators/Generic';
-import RoleValidation from './app/middlewares/validators/RoleValidation';
+import RoleValidation from './app/middlewares/validators/Role';
 import SecretaryValidator from './app/middlewares/validators/Secretary';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
