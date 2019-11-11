@@ -1,8 +1,7 @@
-import { Op } from 'sequelize';
-
 import Manifestation from '../models/Manifestation';
 import Category from '../models/Category';
 import Type from '../models/Type';
+import ManifestationService from '../services/ManifestationService';
 
 class ManifestationController {
   async save(req, res) {
@@ -37,6 +36,7 @@ class ManifestationController {
   }
 
   async fetch(req, res) {
+    const { text, options } = req.query;
     const includeAllQuery = {
       include: [
         {
@@ -70,52 +70,10 @@ class ManifestationController {
     }
 
     // pesquisa com filtro
-    if (req.query.text || req.query.options) {
-      let text;
-      let types = [];
-      let categories = [];
+    if (text || options) {
+      const manifestations = await ManifestationService.search(text, options);
 
-      try {
-        if (req.query.text) {
-          text = req.query.text;
-        }
-
-        if (req.query.options) {
-          req.query.options.forEach(async option => {
-            const type = await Type.findOne({ where: { title: option } });
-            if (type) {
-              types = [...types, type.id];
-            }
-
-            const category = await Category.findOne({
-              where: { title: option },
-            });
-            if (category) {
-              categories = [...categories, category.id];
-            }
-          });
-        }
-        console.log(categories);
-        console.log(types);
-        const manifestations = await Manifestation.findAll({
-          ...includeAllQuery,
-          where: {
-            title: {
-              [Op.like]: `%${text}%`,
-            },
-            type_id: {
-              [Op.or]: [...types],
-            },
-            categories_id: {
-              [Op.or]: [...categories],
-            },
-          },
-        });
-
-        return res.status(200).json(manifestations);
-      } catch (error) {
-        return res.status(500).json(error);
-      }
+      return res.status(200).json(manifestations);
     }
 
     // pesquisa por todas as manifestações
