@@ -67,7 +67,7 @@ class SearchManifestationService {
     return whereQuery;
   }
 
-  async run(text, options) {
+  async run(text, options, page = 1) {
     let types = [];
     let categories = [];
 
@@ -97,6 +97,8 @@ class SearchManifestationService {
         },
       ],
       where: whereQuery,
+      limit: 10,
+      offset: 10 * page - 10,
     });
 
     return manifestations;

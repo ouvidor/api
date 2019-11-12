@@ -36,8 +36,9 @@ class ManifestationController {
   }
 
   async fetch(req, res) {
-    const { text, options } = req.query;
-    const includeAllQuery = {
+    const { text, options, page = 1 } = req.query;
+
+    const query = {
       include: [
         {
           model: Category,
@@ -57,10 +58,7 @@ class ManifestationController {
 
     // pesquisa por manifestação especifica
     if (req.params.id) {
-      const manifestation = await Manifestation.findByPk(
-        req.params.id,
-        includeAllQuery
-      );
+      const manifestation = await Manifestation.findByPk(req.params.id, query);
 
       if (!manifestation) {
         return res.status(400).json({ error: 'essa manifestação não existe' });
@@ -80,7 +78,11 @@ class ManifestationController {
     }
 
     // pesquisa por todas as manifestações
-    const manifestations = await Manifestation.findAll(includeAllQuery);
+    const manifestations = await Manifestation.findAll({
+      ...query,
+      limit: 10,
+      offset: 10 * page - 10,
+    });
 
     return res.status(200).json(manifestations);
   }
