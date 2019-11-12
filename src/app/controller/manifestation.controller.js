@@ -71,7 +71,8 @@ class ManifestationController {
     if (text || options) {
       const manifestations = await SearchManifestationService.run(
         text,
-        options
+        options,
+        page
       );
 
       return res.status(200).json(manifestations);
