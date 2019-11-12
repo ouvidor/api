@@ -1,12 +1,12 @@
 import Manifestation from '../models/Manifestation';
 import Category from '../models/Category';
 import Type from '../models/Type';
-import ManifestationService from '../services/ManifestationService';
+import SearchManifestationService from '../services/SearchManifestationService';
 
 class ManifestationController {
   async save(req, res) {
     // Cria a manifestação e salva no banco
-    const { categories, ...data } = req.body;
+    const { categories_id, ...data } = req.body;
 
     let manifestation;
 
@@ -23,8 +23,8 @@ class ManifestationController {
 
     // adicionar as categorias
     try {
-      if (categories && categories.length > 0) {
-        await manifestation.setCategories(categories);
+      if (categories_id && categories_id.length > 0) {
+        await manifestation.setCategories(categories_id);
       }
     } catch (error) {
       manifestation.destroy();
@@ -71,7 +71,10 @@ class ManifestationController {
 
     // pesquisa com filtro
     if (text || options) {
-      const manifestations = await ManifestationService.search(text, options);
+      const manifestations = await SearchManifestationService.run(
+        text,
+        options
+      );
 
       return res.status(200).json(manifestations);
     }

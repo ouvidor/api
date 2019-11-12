@@ -4,7 +4,7 @@ import Manifestation from '../models/Manifestation';
 import Type from '../models/Type';
 import Category from '../models/Category';
 
-class ManifestationService {
+class SearchManifestationService {
   async fetchOptionsIds(options) {
     let types = [];
     let categories = [];
@@ -39,7 +39,35 @@ class ManifestationService {
     return [filteredTypes, filteredCategories];
   }
 
-  async search(text, options) {
+  makeWhereQuery(text, types, categories) {
+    const whereQuery = {
+      [Op.and]: [
+        text
+          ? {
+              title: { [Op.like]: `%${text}%` },
+            }
+          : undefined,
+        types.length > 0
+          ? {
+              type_id: {
+                [Op.or]: [...types],
+              },
+            }
+          : undefined,
+        categories.length > 0
+          ? {
+              '$categories.id$': {
+                [Op.or]: [...categories],
+              },
+            }
+          : undefined,
+      ],
+    };
+
+    return whereQuery;
+  }
+
+  async run(text, options) {
     let types = [];
     let categories = [];
 
@@ -47,38 +75,12 @@ class ManifestationService {
       [types, categories] = await this.fetchOptionsIds(options);
     }
 
+    const typesIds = types.map(type => type.id);
+    const categoriesIds = categories.map(category => category.id);
+
+    const whereQuery = this.makeWhereQuery(text, typesIds, categoriesIds);
+
     const manifestations = await Manifestation.findAll({
-      where: {
-        [Op.and]: [
-          {
-            title: text
-              ? {
-                  [Op.like]: `%${text}%`,
-                }
-              : undefined,
-          },
-          // {
-          //   [Op.or]: [
-          //     {
-          //       type_id:
-          //         types.length > 0
-          //           ? {
-          //               type_id: [...types],
-          //             }
-          //           : undefined,
-          //     },
-          //     {
-          //       categories_id:
-          //         categories.length > 0
-          //           ? {
-          //               categories_id: [...categories],
-          //             }
-          //           : undefined,
-          //     },
-          //   ],
-          // },
-        ],
-      },
       include: [
         {
           model: Category,
@@ -94,10 +96,11 @@ class ManifestationService {
           attributes: ['id', 'title'],
         },
       ],
+      where: whereQuery,
     });
 
     return manifestations;
   }
 }
 
-export default new ManifestationService();
+export default new SearchManifestationService();
