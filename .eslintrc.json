@@ -21,6 +21,7 @@
     "camelcase": "off",
     "no-console": "off",
     "no-unused-vars": ["error", { "ignorePattern": "next" }],
-    "import/no-dynamic-require": "off"
+    "import/no-dynamic-require": "off",
+    "no-restricted-syntax": 0
   }
 }

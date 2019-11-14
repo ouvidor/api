@@ -26,11 +26,11 @@ import AuthMiddleware from './app/middlewares/auth';
 import RolesMiddleware from './app/middlewares/roles';
 
 // validators
-import CreateUserValidator from './app/middlewares/validators/CreateUser';
+import UserValidator from './app/middlewares/validators/User';
 import ManifestationValidator from './app/middlewares/validators/Manifestation';
 import UserLoginValidator from './app/middlewares/validators/UserLogin';
 import GenericValidator from './app/middlewares/validators/Generic';
-import RoleValidation from './app/middlewares/validators/RoleValidation';
+import RoleValidation from './app/middlewares/validators/Role';
 import SecretaryValidator from './app/middlewares/validators/Secretary';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
@@ -57,7 +57,7 @@ router.get('/user/:id?*', UserController.fetch);
  * somente para criação de usuários admin
  */
 
-router.post('/user', CreateUserValidator, UserController.save);
+router.post('/user', UserValidator.save, UserController.save);
 router.post('/auth', UserLoginValidator, AuthController.login);
 
 /**

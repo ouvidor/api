@@ -5,7 +5,7 @@
  */
 import { object, string, array, number } from 'yup';
 
-class SecretaryValidator {
+class ManifestationValidator {
   async save(request, response, next) {
     try {
       const schema = object().shape({
@@ -60,4 +60,4 @@ class SecretaryValidator {
   }
 }
 
-export default new SecretaryValidator();
+export default new ManifestationValidator();

@@ -1,9 +1,9 @@
 /**
- * Middleware de validação para Secretary
+ * Middleware de validação para Role
  */
 import { object, string, number } from 'yup';
 
-class SecretaryValidator {
+class RoleValidator {
   async save(request, response, next) {
     try {
       const schema = object().shape({
@@ -47,4 +47,4 @@ class SecretaryValidator {
   }
 }
 
-export default new SecretaryValidator();
+export default new RoleValidator();
