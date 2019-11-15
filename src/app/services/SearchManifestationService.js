@@ -39,32 +39,55 @@ class SearchManifestationService {
     return [filteredTypes, filteredCategories];
   }
 
-  makeWhereQuery(text, types, categories) {
-    const whereQuery = {
-      [Op.and]: [
-        text
-          ? {
-              title: { [Op.like]: `%${text}%` },
-            }
-          : undefined,
-        types.length > 0
-          ? {
-              type_id: {
-                [Op.or]: [...types],
-              },
-            }
-          : undefined,
-        categories.length > 0
-          ? {
-              '$categories.id$': {
-                [Op.or]: [...categories],
-              },
-            }
-          : undefined,
+  makeWhereQuery(text, types, categories, page) {
+    const query = {
+      include: [
+        {
+          model: Category,
+          as: 'categories',
+          // só pega o id e o título
+          attributes: ['id', 'title'],
+          // a linha abaixo previne que venham informações desnecessárias
+          through: { attributes: [] },
+          where: {
+            [Op.and]: [
+              categories.length > 0
+                ? {
+                    id: {
+                      [Op.or]: [...categories],
+                    },
+                  }
+                : undefined,
+            ],
+          },
+        },
+        {
+          model: Type,
+          as: 'type',
+          attributes: ['id', 'title'],
+        },
       ],
+      where: {
+        [Op.and]: [
+          text
+            ? {
+                title: { [Op.like]: `%${text}%` },
+              }
+            : undefined,
+          types.length > 0
+            ? {
+                type_id: {
+                  [Op.or]: [...types],
+                },
+              }
+            : undefined,
+        ],
+      },
+      limit: 10,
+      offset: 10 * page - 10,
     };
 
-    return whereQuery;
+    return query;
   }
 
   async run(text, options, page = 1) {
@@ -78,28 +101,9 @@ class SearchManifestationService {
     const typesIds = types.map(type => type.id);
     const categoriesIds = categories.map(category => category.id);
 
-    const whereQuery = this.makeWhereQuery(text, typesIds, categoriesIds);
+    const query = this.makeWhereQuery(text, typesIds, categoriesIds, page);
 
-    const manifestations = await Manifestation.findAll({
-      include: [
-        {
-          model: Category,
-          as: 'categories',
-          // só pega o id e o título
-          attributes: ['id', 'title'],
-          // a linha abaixo previne que venham informações desnecessárias
-          through: { attributes: [] },
-        },
-        {
-          model: Type,
-          as: 'type',
-          attributes: ['id', 'title'],
-        },
-      ],
-      where: whereQuery,
-      limit: 10,
-      offset: 10 * page - 10,
-    });
+    const manifestations = await Manifestation.findAll(query);
 
     return manifestations;
   }
