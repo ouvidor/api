@@ -18,6 +18,7 @@ import ftpConfig from '../../config/ftp';
 import User from '../models/User';
 import Manifestation from '../models/Manifestation';
 import File from '../models/File';
+import { restElement } from '@babel/types';
 
 /**
  * Funções usadas dentro da classe
@@ -116,6 +117,8 @@ class FileController {
       deleteTempFile(req.file);
       return res.status(500).json({ message: 'manifestação não existe' });
     }
+
+    // checa se Usuário existe
     if (!user) {
       deleteTempFile(req.file);
       return res.status(500).json({ message: 'usuario não existe' });
@@ -159,16 +162,48 @@ class FileController {
       }
     }
 
-    /**
-     * Funções Auxiliares
-     */
-
     deleteTempFile(req.file);
 
     return res.status(401).json({
       message:
         'Não autorizado, apenas administradores e criadores da propria manifestação podem enviar anexos para a mesma',
     });
+  }
+
+  // Faz um download usando a api como proxy
+  async download(req, res) {
+    const { file_id } = req.params;
+    const file = await File.findByPk(file_id);
+    if (!file) {
+      return res.status(401).json({
+        message: 'Arquivo não existe',
+      });
+    }
+    try {
+      console.log('conectando no ftp...');
+      const c = new Ftp();
+      await new Promise((resolve, reject) => {
+        c.connect(ftpConfig.ftpServerConfig);
+        c.on('ready', () => {
+          console.log('Conexão estabelecida com sucesso!');
+
+          // Muda o diretório sendo utilizado para pasta em que o arquivo se encontra
+          c.cwd('tmp/' + file.ManifestationId, err => {
+            if (err) throw err;
+            console.log('diretório de trabalho alterado para tmp/' + file.id);
+            c.get(file.file_name_in_server, (err, stream) => {
+              if (err) throw err;
+              res.attachment(file.file_name);
+              stream.pipe(res);
+            }); // fim do get
+          }); // fim do cwd
+        }); // fim do on
+      }); // fim da promise
+    } catch (error) {
+      return res.send(error);
+    }
+
+    return res.send(file);
   }
 } // fim da classe
 
