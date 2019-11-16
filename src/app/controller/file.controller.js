@@ -170,15 +170,39 @@ class FileController {
     });
   }
 
-  // Faz um download usando a api como proxy
+  // Usa a api como proxy e encaminha a stream do arquivod no servidor FTP para o requisitante
   async download(req, res) {
     const { file_id } = req.params;
     const file = await File.findByPk(file_id);
+    const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
+    const onwer = user.dataValues.id === file.dataValues.UserId;
+    const user_role = req.user_role[0];
+
+    // checa se File existe
     if (!file) {
-      return res.status(401).json({
+      return res.status(500).json({
         message: 'Arquivo não existe',
       });
     }
+
+    // checa se Usuário existe
+    if (!user) {
+      deleteTempFile(req.file);
+      return res.status(500).json({ message: 'usuario não existe' });
+    }
+
+    // checa se é dono do arquivo ou um admin
+    if (user_role.title !== 'master' || user_role.title !== 'admin') {
+      if (!onwer) {
+        return res.status(401).json({
+          message:
+            'Não autorizado, apenas administradores e donos do arquivo podem acessa-lo',
+        });
+      }
+    }
+
+    // Caso passe nas checagens, segue fluxo normal
+
     try {
       console.log('conectando no ftp...');
       const c = new Ftp();
@@ -190,20 +214,27 @@ class FileController {
           // Muda o diretório sendo utilizado para pasta em que o arquivo se encontra
           c.cwd('tmp/' + file.ManifestationId, err => {
             if (err) throw err;
-            console.log('diretório de trabalho alterado para tmp/' + file.id);
+            console.log(
+              'diretório de trabalho alterado para tmp/' + file.ManifestationId
+            );
             c.get(file.file_name_in_server, (err, stream) => {
               if (err) throw err;
-              res.attachment(file.file_name);
-              stream.pipe(res);
+              // Caso queira deixar o arquivo como anexo para download, descomentar linha abaixo
+              // res.attachment(file.file_name);
+              /**
+               * Caso tu do der certo termina na linha abaixo, a stream do arquivo é encaminhada
+               * para quem fez a requisição contendo o arquivo em uma readablestream se não me engano
+               */
+              return stream.pipe(res);
             }); // fim do get
           }); // fim do cwd
         }); // fim do on
+        reject();
       }); // fim da promise
     } catch (error) {
       return res.send(error);
     }
-
-    return res.send(file);
+    return res.status(500).json({ message: 'Algo deu errado' });
   }
 } // fim da classe
 
