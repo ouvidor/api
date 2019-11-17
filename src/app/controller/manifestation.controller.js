@@ -79,11 +79,16 @@ class ManifestationController {
     }
 
     // pesquisa por todas as manifestações
-    const manifestations = await Manifestation.findAll({
+    const manifestations = await Manifestation.findAndCountAll({
       ...query,
       limit: 10,
       offset: 10 * page - 10,
     });
+
+    // gambiarra, ele ta contando um a mais
+    manifestations.count -= 1;
+    // retorna qual a ultima página
+    manifestations.last_page = Math.ceil(manifestations.count / 10);
 
     return res.status(200).json(manifestations);
   }
