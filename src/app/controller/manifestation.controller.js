@@ -36,7 +36,16 @@ class ManifestationController {
   }
 
   async fetch(req, res) {
-    const { text, options, page = 1 } = req.query;
+    /**
+     * text: titulo da manifestação
+     * options: array de categorias e tipos de manifestações
+     * isRead: flag para pesquisar apenas por manifestações lidas, 0 ou 1
+     * page: a página para ser pesquisada, o resultado é limitado em 10 itens
+     */
+    const { text, options } = req.query;
+    let { page = 1, isRead = 1 } = req.query;
+    page = Number(page);
+    isRead = Number(isRead);
 
     const query = {
       include: [
@@ -72,7 +81,8 @@ class ManifestationController {
       const manifestations = await SearchManifestationService.run(
         text,
         options,
-        page
+        page,
+        isRead
       );
 
       return res.status(200).json(manifestations);
@@ -81,6 +91,8 @@ class ManifestationController {
     // pesquisa por todas as manifestações
     const manifestations = await Manifestation.findAndCountAll({
       ...query,
+      // caso receba isRead, pesquisa apenas por manifestações lidas
+      ...(!isRead && { where: { read: 0 } }),
       limit: 10,
       offset: 10 * page - 10,
     });

@@ -28,7 +28,7 @@ Contêm protocolo _HTTP_, endereço da rota, explicação do que é feito, o que
 ]
 ```
 
-- **GET** `user/:id?*`: essa mesma rota pode receber o id de um _users_ específico, retornando assim o usuário.
+- **GET** `user/:id?`: essa mesma rota pode receber o id de um _users_ específico, retornando assim o usuário.
 
 ```json
 {
@@ -124,6 +124,14 @@ _retorna_:
 ### manifestation
 
 - **GET** `manifestation/`: retorna todos os registros da tabela _manifestations_.
+  O resultado é limitado em 10 manifestações.
+
+Essa rota pode receber em sua query parâmetros opcionais.
+
+- page: valor _default_ é `1`, define a página a ser pesquisar.
+- isRead: valor _default_ é `1`, define a busca por manifestações não lidas.
+- text: define um título específico a ser pesquisado.
+- options: define um array de categorias e tipos de manifestações a serem pesquisados.
 
 _retorna_:
 
@@ -156,7 +164,7 @@ _retorna_:
 ]
 ```
 
-- **GET** `manifestation/:id?*`: essa mesma rota pode receber o id de uma manifestação específica, retornando assim a manifestação.
+- **GET** `manifestation/:id?`: essa mesma rota pode receber o id de uma manifestação específica, retornando assim a manifestação.
 
 _retorna_:
 
@@ -257,7 +265,7 @@ _retorna_:
 ]
 ```
 
-- **GET** `category/:id?*`: essa mesma rota pode receber o id de um _categories_ específico, retornando assim a categoria.
+- **GET** `category/:id?`: essa mesma rota pode receber o id de um _categories_ específico, retornando assim a categoria.
 
 ```json
 {
@@ -341,7 +349,7 @@ _retorna_:
 ]
 ```
 
-- **GET** `role/:id?*`: essa mesma rota pode receber o id de um _role_ específico, retornando assim o role.
+- **GET** `role/:id?`: essa mesma rota pode receber o id de um _role_ específico, retornando assim o role.
 
 ```json
 {
@@ -418,7 +426,7 @@ _retorna_:
 ]
 ```
 
-- **GET** `type/:id?*`: essa mesma rota pode receber o id de um _type_ específico, retornando assim o status.
+- **GET** `type/:id?`: essa mesma rota pode receber o id de um _type_ específico, retornando assim o status.
 
 ```json
 {
@@ -491,7 +499,7 @@ _retorna_:
 ]
 ```
 
-- **GET** `status/:id?*`: essa mesma rota pode receber o id de um _status_ específico, retornando assim o status.
+- **GET** `status/:id?`: essa mesma rota pode receber o id de um _status_ específico, retornando assim o status.
 
 ```json
 {
@@ -565,7 +573,7 @@ _retorna_:
 ]
 ```
 
-- **GET** `secretary/:id?*`: essa mesma rota pode receber o id de um _secretariats_ específico, retornando assim a secretaria.
+- **GET** `secretary/:id?`: essa mesma rota pode receber o id de um _secretariats_ específico, retornando assim a secretaria.
 
 ```json
 {

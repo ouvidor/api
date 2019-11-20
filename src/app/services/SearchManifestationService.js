@@ -30,6 +30,7 @@ class SearchManifestationService {
       }
     }
 
+    // resolve todas as promises depois de acabar
     types = await Promise.all(types);
     categories = await Promise.all(categories);
 
@@ -39,7 +40,7 @@ class SearchManifestationService {
     return [filteredTypes, filteredCategories];
   }
 
-  makeWhereQuery(text, types, categories, page) {
+  makeWhereQuery(text, types, categories, page, isRead) {
     const query = {
       include: [
         {
@@ -68,6 +69,7 @@ class SearchManifestationService {
         },
       ],
       where: {
+        ...(!isRead && { read: 0 }),
         [Op.and]: [
           text
             ? {
@@ -90,7 +92,7 @@ class SearchManifestationService {
     return query;
   }
 
-  async run(text, options, page = 1) {
+  async run(text, options, page = 1, isRead = true) {
     let types = [];
     let categories = [];
 
@@ -101,7 +103,13 @@ class SearchManifestationService {
     const typesIds = types.map(type => type.id);
     const categoriesIds = categories.map(category => category.id);
 
-    const query = this.makeWhereQuery(text, typesIds, categoriesIds, page);
+    const query = this.makeWhereQuery(
+      text,
+      typesIds,
+      categoriesIds,
+      page,
+      isRead
+    );
 
     const manifestations = await Manifestation.findAndCountAll(query);
 

@@ -6,6 +6,31 @@
 import { object, string, array, number } from 'yup';
 
 class ManifestationValidator {
+  async fetch(request, response, next) {
+    try {
+      const schema = object().shape({
+        text: string(),
+        options: array().of(string()),
+        page: number('page deve ser um número').positive(
+          'page não pode ser igual ou abaixo de 0'
+        ),
+        isRead: number('isRead deve ser um número').oneOf(
+          [0, 1],
+          'isRead deve ser 0 ou 1'
+        ),
+      });
+
+      await schema.validate(request.query, { abortEarly: false });
+      return next();
+    } catch (error) {
+      return response.status(400).json({
+        error: 'Validação da query falhou',
+        // pega apenas a mensagens do erros
+        messages: error.inner.map(err => err.message),
+      });
+    }
+  }
+
   async save(request, response, next) {
     try {
       const schema = object().shape({
