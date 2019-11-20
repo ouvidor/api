@@ -42,9 +42,10 @@ describe('Search Manifestation Service', () => {
     }
 
     const manifestations = await searchManifestationService.run('rua');
-    expect(manifestations).toBeDefined();
-    expect(manifestations[0]).toBeDefined();
-    expect(manifestations[0]).toEqual(
+    expect(manifestations).toHaveProperty('count');
+    expect(manifestations).toHaveProperty('last_page');
+    expect(manifestations).toHaveProperty('rows');
+    expect(manifestations.rows[0]).toEqual(
       expect.objectContaining({
         title: 'rua',
         description: 'descrição',
@@ -52,7 +53,7 @@ describe('Search Manifestation Service', () => {
         type_id: type.id,
       })
     );
-    expect(manifestations[0].categories[0]).toEqual(
+    expect(manifestations.rows[0].categories[0]).toEqual(
       expect.objectContaining({
         title: 'Saneamento',
         id: category.id,
