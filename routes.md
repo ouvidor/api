@@ -136,32 +136,36 @@ Essa rota pode receber em sua query parâmetros opcionais.
 _retorna_:
 
 ```json
-[
-  {
-    "id": 2,
-    "title": "Problema na rua",
-    "description": "texto texto texto texto",
-    "read": 0,
-    "location": "Rua da restinga, Cabo Frio",
-    "latitude": null,
-    "longitude": null,
-    "created_at": "2019-11-07T00:47:49.000Z",
-    "updated_at": "2019-11-07T00:47:49.000Z",
-    "secretary_id": null,
-    "user_id": 1,
-    "type_id": 1,
-    "categories": [
-      {
+{
+  "count": 1,
+  "rows": [
+    {
+      "id": 18,
+      "title": "Na rua da restinga tem um problema",
+      "description": "desc",
+      "read": 1,
+      "location": "Rua da Restinga, Bairro Foguete",
+      "latitude": "-22.9242297",
+      "longitude": "-42.0406372",
+      "created_at": "2019-11-12T15:23:24.000Z",
+      "updated_at": "2019-11-21T22:26:00.000Z",
+      "secretary_id": null,
+      "user_id": 1,
+      "type_id": 1,
+      "categories": [
+        {
+          "id": 3,
+          "title": "Saúde"
+        }
+      ],
+      "type": {
         "id": 1,
-        "title": "Saneamento"
+        "title": "Reclamação"
       }
-    ],
-    "type": {
-      "id": 1,
-      "title": "Reclamação"
     }
-  }
-]
+  ],
+  "last_page": 1
+}
 ```
 
 - **GET** `manifestation/:id?`: essa mesma rota pode receber o id de uma manifestação específica, retornando assim a manifestação.
@@ -201,11 +205,12 @@ _requisição_:
 
 ```json
 {
-  "title": "Problema na rua",
-  "description": "texto texto texto texto",
-  "categories": [1],
+  "title": "Local",
+  "description": "Essa manifestação tem um local",
+  "categories_id": [1],
   "type_id": 1,
-  "location": "Rua da restinga, Cabo Frio"
+  "latitude": -22.9242297,
+  "longitude": -42.0406372
 }
 ```
 
@@ -213,14 +218,16 @@ _retorna_:
 
 ```json
 {
-  "id": 2,
-  "title": "Problema na rua",
-  "description": "texto texto texto texto",
+  "id": 49,
+  "title": "Local",
+  "description": "Essa manifestação tem um local",
   "type_id": 1,
-  "location": "Rua da restinga, Cabo Frio",
+  "latitude": -22.9242297,
+  "longitude": -42.0406372,
+  "location": "Rua da Restinga, Foguete",
   "user_id": 1,
-  "updated_at": "2019-11-07T00:47:49.861Z",
-  "created_at": "2019-11-07T00:47:49.861Z"
+  "updated_at": "2019-11-21T22:32:24.902Z",
+  "created_at": "2019-11-21T22:32:24.902Z"
 }
 ```
 
