@@ -2,6 +2,7 @@ import Manifestation from '../models/Manifestation';
 import Category from '../models/Category';
 import Type from '../models/Type';
 import SearchManifestationService from '../services/SearchManifestationService';
+import GeolocationService from '../services/GeolocationService';
 
 class ManifestationController {
   async save(req, res) {
@@ -10,9 +11,12 @@ class ManifestationController {
 
     let manifestation;
 
+    const geolocationData = await GeolocationService.run(data);
+    const formattedData = { ...data, ...geolocationData };
+
     try {
       manifestation = await Manifestation.create({
-        ...data,
+        ...formattedData,
         user_id: req.user_id,
       });
     } catch (error) {
@@ -107,6 +111,8 @@ class ManifestationController {
 
   async update(req, res) {
     let manifestation = await Manifestation.findByPk(req.params.id);
+    const geolocationData = await GeolocationService.run(req.body);
+    const formattedData = { ...req.body, ...geolocationData };
 
     if (!manifestation) {
       return res
@@ -115,7 +121,7 @@ class ManifestationController {
     }
 
     // atualiza a instancia
-    manifestation = await manifestation.update(req.body);
+    manifestation = await manifestation.update(formattedData);
 
     return res.status(200).json(manifestation);
   }
