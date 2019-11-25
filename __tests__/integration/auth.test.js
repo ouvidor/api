@@ -4,7 +4,7 @@ import { decode } from 'jsonwebtoken';
 import app from '../../src/App';
 import factory from '../factories';
 import truncate from '../util/truncate';
-import registerUser from '../util/registerUser';
+import sign from '../util/sign';
 
 describe('Auth', () => {
   // entre todos os testes é feito o truncate da tabela
@@ -15,7 +15,7 @@ describe('Auth', () => {
   it('should be able to login', async () => {
     const user = await factory.attrs('User');
 
-    await registerUser(user);
+    await sign.up(user);
 
     const response = await request(app)
       .post('/auth')
@@ -41,7 +41,7 @@ describe('Auth', () => {
   it('should not find user, wrong password', async () => {
     const user = await factory.attrs('User');
 
-    await registerUser({ ...user, email: 'umemail@gmail.com' });
+    await sign.up({ ...user, email: 'umemail@gmail.com' });
 
     const response = await request(app)
       .post('/auth')

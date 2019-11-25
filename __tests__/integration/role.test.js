@@ -1,10 +1,14 @@
 import request from 'supertest';
-import { decode } from 'jsonwebtoken';
 
 import app from '../../src/App';
-import factory from '../factories';
 import truncate from '../util/truncate';
-import registerUser from '../util/registerUser';
+import sign from '../util/sign';
+import factory from '../factories';
+
+const adminMaster = {
+  email: 'root@gmail.com',
+  password: '123456',
+};
 
 describe('Role', () => {
   // entre todos os testes é feito o truncate da tabela
@@ -13,12 +17,7 @@ describe('Role', () => {
   });
 
   it('should list all roles', async () => {
-    const loginResponse = await request(app)
-      .post('/auth')
-      .send({ email: 'root@gmail.com', password: '123456' });
-    expect(loginResponse.status).toBe(200);
-
-    const { token } = loginResponse.body;
+    const { token } = await sign.in(adminMaster);
 
     const response = await request(app)
       .get('/role')
@@ -37,24 +36,32 @@ describe('Role', () => {
     expect(response.status).toBe(200);
   });
 
+  it('should list a specific role', async () => {
+    const { token } = await sign.in(adminMaster);
+
+    const { body: role } = await request(app)
+      .post('/role')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'Role de teste', level: 2 });
+
+    const response = await request(app)
+      .get(`/role/${role.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send();
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id', 'title', 'level');
+    expect(response.body).toEqual(
+      expect.objectContaining({ title: 'Role de teste', level: 2 })
+    );
+  });
+
   it("citizens shouldn't list all roles", async () => {
-    const citizen = {
-      first_name: 'user',
-      last_name: 'tester',
-      email: 'user@gmail.com',
-      password: '123456',
-    };
+    const citizen = await factory.attrs('User');
 
-    await request(app)
-      .post('/user')
-      .send(citizen);
+    await sign.up(citizen);
 
-    const loginResponse = await request(app)
-      .post('/auth')
-      .send(citizen);
-    expect(loginResponse.status).toBe(200);
-
-    const { token } = loginResponse.body;
+    const { token } = await sign.in(citizen);
 
     const response = await request(app)
       .get('/role')
@@ -64,5 +71,80 @@ describe('Role', () => {
     expect(response.status).toBe(401);
     expect(response.body).toHaveProperty('error');
     expect(response.body.error).toStrictEqual('Acesso exclusivo para Admins');
+  });
+
+  it('should create role', async () => {
+    const { token } = await sign.in(adminMaster);
+
+    const response = await request(app)
+      .post('/role')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'Role de teste', level: 2 });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id', 'title', 'level');
+    expect(response.body).toEqual(
+      expect.objectContaining({ title: 'Role de teste', level: 2 })
+    );
+  });
+
+  it("shouldn't duplicated role", async () => {
+    const { token } = await sign.in(adminMaster);
+
+    await request(app)
+      .post('/role')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'Role de teste', level: 2 });
+
+    const response = await request(app)
+      .post('/role')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'Role de teste', level: 2 });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('error');
+    expect(response.body).toEqual(
+      expect.objectContaining({ error: 'Role já cadastrado' })
+    );
+  });
+
+  it('should update role', async () => {
+    const { token } = await sign.in(adminMaster);
+
+    const createRoleResponse = await request(app)
+      .post('/role')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'Role de teste', level: 2 });
+
+    const response = await request(app)
+      .put(`/role/${createRoleResponse.body.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'Role atualizada', level: 2 });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id', 'title', 'level');
+    expect(response.body).toEqual(
+      expect.objectContaining({ title: 'Role atualizada', level: 2 })
+    );
+  });
+
+  it('should update role', async () => {
+    const { token } = await sign.in(adminMaster);
+
+    const createRoleResponse = await request(app)
+      .post('/role')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'Role de teste', level: 2 });
+
+    const response = await request(app)
+      .delete(`/role/${createRoleResponse.body.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send();
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id', 'title', 'level');
+    expect(response.body).toEqual(
+      expect.objectContaining({ title: 'Role de teste', level: 2 })
+    );
   });
 });
