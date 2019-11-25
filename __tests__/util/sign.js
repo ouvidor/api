@@ -9,7 +9,7 @@ class Sign {
       .post('/user')
       .send(user);
 
-    return response.body;
+    return response;
   }
 
   // login
@@ -18,7 +18,7 @@ class Sign {
       .post('/auth')
       .send(user);
 
-    return response.body;
+    return response;
   }
 }
 

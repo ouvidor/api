@@ -52,7 +52,6 @@ class UserController {
         },
       ],
     };
-
     if (req.params.id) {
       const user = await User.findByPk(req.params.id, queryConfig);
       if (!user) {

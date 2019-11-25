@@ -45,7 +45,7 @@ if (process.env.NODE_ENV === 'test') {
 /**
  * Rotas de Teste
  */
-router.get('/user/:id?*', UserController.fetch);
+router.get('/user/:id?', UserController.fetch);
 
 /**
  *  Rotas publicas

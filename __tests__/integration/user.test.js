@@ -4,6 +4,12 @@ import Bcrypt from 'bcrypt';
 import app from '../../src/App';
 import factory from '../factories';
 import truncate from '../util/truncate';
+import sign from '../util/sign';
+
+const adminMaster = {
+  email: 'root@gmail.com',
+  password: '123456',
+};
 
 describe('User', () => {
   // entre todos os testes é feito o truncate da tabela
@@ -25,12 +31,26 @@ describe('User', () => {
   it('should be able to register', async () => {
     const user = await factory.attrs('User');
 
-    // registra usuário
+    const response = await sign.up(user);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty(
+      'id',
+      'email',
+      'first_name',
+      'last_name'
+    );
+  });
+
+  it('should register a user with admin master', async () => {
+    const { body: master } = await sign.in(adminMaster);
+    const user = await factory.attrs('User');
+
     const response = await request(app)
       .post('/user')
+      .set('Authorization', `Bearer ${master.token}`)
       .send(user);
 
-    // checa se tem as seguintes propriedades
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty(
       'id',
@@ -43,13 +63,9 @@ describe('User', () => {
   it("shouldn't be able to register duplicated email", async () => {
     const user = await factory.attrs('User');
 
-    await request(app)
-      .post('/user')
-      .send(user);
+    await sign.up(user);
 
-    const response = await request(app)
-      .post('/user')
-      .send(user);
+    const response = await sign.up(user);
 
     // checa se o status da resposta HTTP é 400
     expect(response.status).toBe(400);
@@ -60,13 +76,9 @@ describe('User', () => {
   });
 
   it("shouldn't register, invalid password and email", async () => {
-    const user = await factory.attrs('User');
-    user.password = '123';
-    user.email = 'a';
+    const user = await factory.attrs('User', { password: '123', email: 'a' });
 
-    const response = await request(app)
-      .post('/user')
-      .send(user);
+    const response = await sign.up(user);
 
     // espera requisição invalida
     expect(response.status).toBe(400);
@@ -77,9 +89,7 @@ describe('User', () => {
   });
 
   it("shouldn't register, missing name, password and email", async () => {
-    const response = await request(app)
-      .post('/user')
-      .send();
+    const response = await sign.up();
 
     expect(response.status).toBe(400);
     expect(response.body.error).toContain('Validação falhou');
@@ -98,7 +108,6 @@ describe('User', () => {
       .get('/user')
       .send();
 
-    expect(response.body).toEqual(expect.arrayContaining([]));
     expect(response.body[0]).toHaveProperty(
       'email',
       'first_name',
@@ -108,5 +117,31 @@ describe('User', () => {
     );
 
     expect(response.body[0].role[0]).toHaveProperty('level', 'id', 'title');
+  });
+
+  it('should list a specific users', async () => {
+    const { body } = await sign.up(await factory.attrs('User'));
+
+    const response = await request(app)
+      .get(`/user/${body.id}`)
+      .send();
+
+    expect(response.body).toHaveProperty(
+      'email',
+      'first_name',
+      'id',
+      'last_name',
+      'role'
+    );
+
+    expect(response.body.role[0]).toHaveProperty('level', 'id', 'title');
+  });
+
+  it("shouldn't list a specific users", async () => {
+    const response = await request(app)
+      .get(`/user/0`)
+      .send();
+
+    expect(response.body).toHaveProperty('error', 'esse usuário não existe');
   });
 });

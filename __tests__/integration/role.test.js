@@ -17,7 +17,9 @@ describe('Role', () => {
   });
 
   it('should list all roles', async () => {
-    const { token } = await sign.in(adminMaster);
+    const {
+      body: { token },
+    } = await sign.in(adminMaster);
 
     const response = await request(app)
       .get('/role')
@@ -37,7 +39,9 @@ describe('Role', () => {
   });
 
   it('should list a specific role', async () => {
-    const { token } = await sign.in(adminMaster);
+    const {
+      body: { token },
+    } = await sign.in(adminMaster);
 
     const { body: role } = await request(app)
       .post('/role')
@@ -61,7 +65,9 @@ describe('Role', () => {
 
     await sign.up(citizen);
 
-    const { token } = await sign.in(citizen);
+    const {
+      body: { token },
+    } = await sign.in(citizen);
 
     const response = await request(app)
       .get('/role')
@@ -74,7 +80,9 @@ describe('Role', () => {
   });
 
   it('should create role', async () => {
-    const { token } = await sign.in(adminMaster);
+    const {
+      body: { token },
+    } = await sign.in(adminMaster);
 
     const response = await request(app)
       .post('/role')
@@ -89,7 +97,9 @@ describe('Role', () => {
   });
 
   it("shouldn't duplicated role", async () => {
-    const { token } = await sign.in(adminMaster);
+    const {
+      body: { token },
+    } = await sign.in(adminMaster);
 
     await request(app)
       .post('/role')
@@ -109,7 +119,9 @@ describe('Role', () => {
   });
 
   it('should update role', async () => {
-    const { token } = await sign.in(adminMaster);
+    const {
+      body: { token },
+    } = await sign.in(adminMaster);
 
     const createRoleResponse = await request(app)
       .post('/role')
@@ -129,7 +141,9 @@ describe('Role', () => {
   });
 
   it('should update role', async () => {
-    const { token } = await sign.in(adminMaster);
+    const {
+      body: { token },
+    } = await sign.in(adminMaster);
 
     const createRoleResponse = await request(app)
       .post('/role')
