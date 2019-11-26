@@ -102,7 +102,8 @@ class ManifestationController {
     });
 
     // gambiarra, ele ta contando um a mais
-    manifestations.count -= 1;
+    // manifestations.count -= 1;
+
     // retorna qual a ultima página
     manifestations.last_page = Math.ceil(manifestations.count / 10);
 

@@ -22,13 +22,12 @@ class Roles {
     try {
       const highestLevel = getMostImportantLevel(req.user_roles);
       if (highestLevel > 2) {
-        return res.status(401).json({ error: 'Acesso exclusivo para Admins' });
+        return res.status(403).json({ error: 'Acesso exclusivo para Admins' });
       }
 
       return next();
     } catch (err) {
-      console.log(err);
-      return res.status(401).json(err);
+      return res.status(500).json(err);
     }
   }
 
@@ -38,14 +37,13 @@ class Roles {
 
       if (highestLevel > 1) {
         return res
-          .status(401)
+          .status(403)
           .json({ error: 'Acesso exclusivo para Admins Master' });
       }
 
       return next();
     } catch (err) {
-      console.log(err);
-      return res.status(401).json(err);
+      return res.status(500).json(err);
     }
   }
 }

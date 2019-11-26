@@ -74,7 +74,7 @@ describe('Role', () => {
       .set('Authorization', `Bearer ${token}`)
       .send();
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
     expect(response.body).toHaveProperty('error');
     expect(response.body.error).toStrictEqual('Acesso exclusivo para Admins');
   });
