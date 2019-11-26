@@ -1,5 +1,7 @@
 # Ouvidor API
 
+[![CircleCI](https://circleci.com/gh/ouvidor/api.svg?style=svg)](https://circleci.com/gh/ouvidor/api)
+
 ## Como usar
 
 Primeiro instale todas as dependências com: `yarn install`
