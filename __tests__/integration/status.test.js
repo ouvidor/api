@@ -15,6 +15,19 @@ describe('Status', () => {
     await truncate();
   });
 
+  it('should create a status', async () => {
+    const { body } = await sign.in(adminMaster);
+
+    // criar
+    const response = await request(app)
+      .post('/status')
+      .set('Authorization', `Bearer ${body.token}`)
+      .send({ title: 'status' });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(expect.objectContaining({ title: 'status' }));
+  });
+
   it('should list all status', async () => {
     const { body } = await sign.in(adminMaster);
 
@@ -57,19 +70,6 @@ describe('Status', () => {
     expect(response.body).toEqual(
       expect.objectContaining({ title: 'status', id })
     );
-  });
-
-  it('should create a status', async () => {
-    const { body } = await sign.in(adminMaster);
-
-    // criar
-    const response = await request(app)
-      .post('/status')
-      .set('Authorization', `Bearer ${body.token}`)
-      .send({ title: 'status' });
-
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual(expect.objectContaining({ title: 'status' }));
   });
 
   it('should update a status', async () => {

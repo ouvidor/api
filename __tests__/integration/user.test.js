@@ -137,11 +137,31 @@ describe('User', () => {
     expect(response.body.role[0]).toHaveProperty('level', 'id', 'title');
   });
 
-  it("shouldn't list a specific users", async () => {
+  it("shouldn't list a specific user", async () => {
     const response = await request(app)
       .get(`/user/0`)
       .send();
 
     expect(response.body).toHaveProperty('error', 'esse usuário não existe');
+  });
+
+  it('should be able to update', async () => {
+    const user = await factory.attrs('User');
+    // cadastro
+    await sign.up(user);
+    // login
+    const { body } = await sign.in(user);
+
+    const response = await request(app)
+      .put(`/user/${body.user.id}`)
+      .set('Authorization', `Bearer ${body.token}`)
+      .send({ email: 'new@email.com' });
+
+    expect(response.body).toHaveProperty(
+      'id',
+      'email',
+      'first_name',
+      'last_name'
+    );
   });
 });

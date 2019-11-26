@@ -118,6 +118,35 @@ class UserController {
       email: user.email,
     });
   }
+
+  // atualizar usuário
+  async update(req, res) {
+    // busca pelo id de usuário
+    const user = await User.findByPk(req.params.id);
+
+    if (!user) {
+      return res
+        .status(401)
+        .json({ error: 'essa role não pode ser encontrado' });
+    }
+
+    if (req.body.email && req.body.email !== user.email) {
+      const checkIfEmailExists = await User.findOne({
+        where: { email: req.body.email },
+      });
+
+      if (checkIfEmailExists) {
+        return res
+          .status(400)
+          .json({ error: 'um usuário já existe com esse email' });
+      }
+    }
+
+    // atualiza a instancia
+    await user.update(req.body);
+
+    return res.status(200).json(user);
+  }
 } // fim da classe
 
 export default new UserController();

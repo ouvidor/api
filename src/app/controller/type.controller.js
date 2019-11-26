@@ -28,7 +28,9 @@ class TypeController {
 
     // caso o type já exista
     if (doesTypeExist) {
-      return res.status(400).json({ error: 'tipo ja existe' });
+      return res
+        .status(400)
+        .json({ error: 'um tipo com esse título ja existe' });
     }
 
     // criar type

@@ -83,6 +83,7 @@ router.put(
   ManifestationValidator.update,
   ManifestationController.update
 );
+router.put('/user/:id', UserValidator.update, UserController.update);
 router.get('/category/:id?', CategoryController.fetch);
 router.get('/type/:id?', TypeController.fetch);
 router.get(

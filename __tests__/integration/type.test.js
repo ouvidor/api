@@ -8,26 +8,43 @@ const adminMaster = {
   email: 'root@gmail.com',
   password: '123456',
 };
+let token;
+let type;
 
 describe('Type', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeEach(async () => {
     await truncate();
+
+    const loginRes = await sign.in(adminMaster);
+    token = loginRes.body.token;
+
+    const typeRes = await request(app)
+      .post('/type')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'type' });
+    type = typeRes.body;
+  });
+
+  it("shouldn't create a type, duplicated title", async () => {
+    // criar
+    const response = await request(app)
+      .post('/type')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ title: 'type' });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('error');
+    expect(response.body.error).toStrictEqual(
+      'um tipo com esse título ja existe'
+    );
   });
 
   it('should list all types', async () => {
-    const { body } = await sign.in(adminMaster);
-
-    // criar
-    await request(app)
-      .post('/type')
-      .set('Authorization', `Bearer ${body.token}`)
-      .send({ title: 'type' });
-
     // listar
     const response = await request(app)
       .get('/type')
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send();
 
     expect(response.status).toBe(200);
@@ -37,56 +54,23 @@ describe('Type', () => {
   });
 
   it('should list a specific type', async () => {
-    const { body } = await sign.in(adminMaster);
-
-    // criar type
-    const {
-      body: { id },
-    } = await request(app)
-      .post('/type')
-      .set('Authorization', `Bearer ${body.token}`)
-      .send({ title: 'type' });
-
     // listar type
     const response = await request(app)
-      .get(`/type/${id}`)
-      .set('Authorization', `Bearer ${body.token}`)
+      .get(`/type/${type.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send();
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual(
-      expect.objectContaining({ title: 'type', id })
+      expect.objectContaining({ title: 'type', id: type.id })
     );
   });
 
-  it('should create a type', async () => {
-    const { body } = await sign.in(adminMaster);
-
-    // criar
-    const response = await request(app)
-      .post('/type')
-      .set('Authorization', `Bearer ${body.token}`)
-      .send({ title: 'type' });
-
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual(expect.objectContaining({ title: 'type' }));
-  });
-
   it('should update a type', async () => {
-    const { body } = await sign.in(adminMaster);
-
-    // criar
-    const {
-      body: { id },
-    } = await request(app)
-      .post('/type')
-      .set('Authorization', `Bearer ${body.token}`)
-      .send({ title: 'type' });
-
     // update
     const response = await request(app)
-      .put(`/type/${id}`)
-      .set('Authorization', `Bearer ${body.token}`)
+      .put(`/type/${type.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ title: 'updated' });
 
     expect(response.status).toBe(200);
@@ -96,20 +80,10 @@ describe('Type', () => {
   });
 
   it('should delete a type', async () => {
-    const { body } = await sign.in(adminMaster);
-
-    // criar
-    const {
-      body: { id },
-    } = await request(app)
-      .post('/type')
-      .set('Authorization', `Bearer ${body.token}`)
-      .send({ title: 'type' });
-
     // delete
     const response = await request(app)
-      .delete(`/type/${id}`)
-      .set('Authorization', `Bearer ${body.token}`)
+      .delete(`/type/${type.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send();
 
     expect(response.status).toBe(200);

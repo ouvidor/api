@@ -77,6 +77,47 @@ describe('Manifestation', () => {
     );
   });
 
+  it('should search for manifestations', async () => {
+    // criar
+    await request(app)
+      .post('/manifestation')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title: 'title',
+        description: 'description',
+        type_id: type.id,
+        categories_id: [category.id],
+      });
+
+    // listar
+    const response = await request(app)
+      .get('/manifestation')
+      .query({ text: 'title' })
+      .set('Authorization', `Bearer ${token}`)
+      .send();
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(
+      expect.objectContaining({ count: 1, last_page: 1 })
+    );
+    expect(response.body.rows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ title: 'title', description: 'description' }),
+      ])
+    );
+    expect(response.body.rows[0]).toHaveProperty(
+      'id',
+      'title',
+      'description',
+      'type',
+      'categories',
+      'location',
+      'latitude',
+      'longitude',
+      'read'
+    );
+  });
+
   it('should list a specific manifestation', async () => {
     // criar
     const { body: manifestation } = await request(app)
