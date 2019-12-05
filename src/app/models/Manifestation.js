@@ -4,6 +4,7 @@ class Manifestation extends Model {
   static init(sequelize) {
     super.init(
       {
+        protocol: Sequelize.STRING,
         title: Sequelize.STRING,
         description: Sequelize.TEXT,
         read: Sequelize.TINYINT,
@@ -19,6 +20,17 @@ class Manifestation extends Model {
         updatedAt: 'updated_at',
       }
     );
+
+    // criação do protocolo. exemplo: 2019125-52
+    this.addHook('beforeSave', async manifestation => {
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDay();
+      const number = manifestation.id % 10000; // ultimos 4 números
+
+      manifestation.protocol = `${year}${month}${day}-${number}`;
+    });
 
     return this;
   }

@@ -18,6 +18,10 @@ module.exports = {
           autoIncrement: true,
           primaryKey: true,
         },
+        protocol: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
         title: {
           type: Sequelize.STRING,
           allowNull: false,
