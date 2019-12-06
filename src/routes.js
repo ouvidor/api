@@ -33,6 +33,7 @@ import UserLoginValidator from './app/middlewares/validators/UserLogin';
 import GenericValidator from './app/middlewares/validators/Generic';
 import RoleValidation from './app/middlewares/validators/Role';
 import SecretaryValidator from './app/middlewares/validators/Secretary';
+import MailValidator from './app/middlewares/validators/Mail';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
@@ -100,7 +101,7 @@ router.get('/role/:id?', RoleController.fetch);
 router.get('/status/:id?', StatusController.fetch);
 router.get('/secretary/:id?', SecretaryController.fetch);
 
-router.post('/email', MailController.save);
+router.post('/email', MailValidator, MailController.save);
 
 // A partir daqui serão rotas de Administradores Master
 router.use(RolesMiddleware.adminMaster);

@@ -3,11 +3,11 @@ import Mail from '../../lib/Mail';
 class MailController {
   // envia um email
   async save(req, res) {
-    const { title, text, secretary } = req.body;
+    const { title, text, email } = req.body;
 
     try {
       await Mail.sendMail({
-        to: `${secretary.title} <${secretary.email}>`,
+        to: `Secretária <${email}>`,
         subject: `[Ouvidoria] - ${title}`,
         template: 'manifestation',
         // variáveis a serem usadas no template
