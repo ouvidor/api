@@ -17,6 +17,7 @@ import TypeController from './app/controller/type.controller';
 import StatusController from './app/controller/status.controller';
 import RoleController from './app/controller/role.controller';
 import SecretaryController from './app/controller/secretary.controller';
+import MailController from './app/controller/mail.controller';
 
 // middleware para configurar os dados iniciais do banco
 import setupDbInitialData from './app/middlewares/setupDbInitialData';
@@ -98,6 +99,8 @@ router.use(RolesMiddleware.admin);
 router.get('/role/:id?', RoleController.fetch);
 router.get('/status/:id?', StatusController.fetch);
 router.get('/secretary/:id?', SecretaryController.fetch);
+
+router.post('/email', MailController.save);
 
 // A partir daqui serão rotas de Administradores Master
 router.use(RolesMiddleware.adminMaster);
