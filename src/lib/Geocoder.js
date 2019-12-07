@@ -1,3 +1,6 @@
+/**
+ * Classe responsável por fazer a geolocalização do endereço
+ */
 import NodeGeocoder from 'node-geocoder';
 
 import geocoderConfig from '../config/geocoder';

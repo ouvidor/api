@@ -645,3 +645,25 @@ _retorna_:
   "updated_at": "2019-10-31T23:55:51.000Z"
 }
 ```
+
+### email
+
+- **POST** `email/`: envia um email.
+
+_requisição_:
+
+```json
+{
+  "title": "Título teste",
+  "text": "textão",
+  "email": "seu@gmail.com"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "message": "Email: Título teste. enviado com sucesso"
+}
+```
