@@ -118,6 +118,77 @@ describe('Manifestation', () => {
     );
   });
 
+  it('should search for protocol', async () => {
+    // criar
+    const { body: createdManifestation } = await request(app)
+      .post('/manifestation')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title: 'title',
+        description: 'description',
+        type_id: type.id,
+        categories_id: [category.id],
+      });
+
+    // listar
+    const response = await request(app)
+      .get('/manifestation')
+      .query({ text: createdManifestation.protocol })
+      .set('Authorization', `Bearer ${token}`)
+      .send();
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(
+      expect.objectContaining({ count: 1, last_page: 1 })
+    );
+    expect(response.body.rows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          title: 'title',
+          description: 'description',
+          protocol: createdManifestation.protocol,
+        }),
+      ])
+    );
+  });
+
+  it('should search with options', async () => {
+    // criar
+    await request(app)
+      .post('/manifestation')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title: 'title',
+        description: 'description',
+        type_id: type.id,
+        categories_id: [category.id],
+      });
+
+    // listar
+    const response = await request(app)
+      .get('/manifestation')
+      .query({ options: 'category' })
+      .set('Authorization', `Bearer ${token}`)
+      .send();
+
+    expect(response.body).toEqual(
+      expect.objectContaining({ count: 1, last_page: 1 })
+    );
+    expect(response.body.rows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          title: 'title',
+          description: 'description',
+          categories: expect.arrayContaining([
+            expect.objectContaining({
+              title: 'category',
+            }),
+          ]),
+        }),
+      ])
+    );
+  });
+
   it('should list a specific manifestation', async () => {
     // criar
     const { body: manifestation } = await request(app)

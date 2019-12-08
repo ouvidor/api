@@ -3,14 +3,19 @@
  * Docs do yup:
  * https://github.com/jquense/yup
  */
-import { object, string, array, number } from 'yup';
+import { object, string, array, number, mixed } from 'yup';
 
 class ManifestationValidator {
   async fetch(request, response, next) {
     try {
       const schema = object().shape({
         text: string(),
-        options: array().of(string()),
+        // pode ser tanto array como uma string normal
+        options: mixed().when('isArray', {
+          is: Array.isArray,
+          then: array().of(string()),
+          otherwise: string(),
+        }),
         page: number('page deve ser um número').positive(
           'page não pode ser igual ou abaixo de 0'
         ),

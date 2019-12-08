@@ -41,7 +41,7 @@ class SearchManifestationService {
   }
 
   checkIfProtocol(text) {
-    if (!text.match(/\d*-\d/)) return false;
+    if (text && !text.match(/\d*-\d/)) return false;
 
     return true;
   }
