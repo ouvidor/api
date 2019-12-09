@@ -4,7 +4,10 @@ class Manifestation extends Model {
   static init(sequelize) {
     super.init(
       {
-        protocol: Sequelize.STRING,
+        protocol: {
+          defaultValue: 0,
+          type: Sequelize.STRING,
+        },
         title: Sequelize.STRING,
         description: Sequelize.TEXT,
         read: Sequelize.TINYINT,
@@ -22,7 +25,7 @@ class Manifestation extends Model {
     );
 
     // criação do protocolo. exemplo: 2019125-52
-    this.addHook('beforeSave', async manifestation => {
+    this.addHook('afterCreate', async manifestation => {
       const date = new Date();
       const year = date.getFullYear();
       const month = date.getMonth() + 1;
