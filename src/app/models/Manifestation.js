@@ -31,8 +31,12 @@ class Manifestation extends Model {
       const month = date.getMonth() + 1;
       const day = date.getDay();
       const number = manifestation.id % 10000; // ultimos 4 números
+      const protocol = `${year}${month}${day}-${number}`;
 
-      manifestation.protocol = `${year}${month}${day}-${number}`;
+      return Manifestation.update(
+        { protocol },
+        { where: { id: manifestation.id } }
+      );
     });
 
     return this;
