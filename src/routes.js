@@ -1,6 +1,7 @@
 /**
  * Arquivo responsável por expor todas as rotas para a classe App
  */
+
 import { Router } from 'express';
 
 // controllers
@@ -13,6 +14,7 @@ import StatusController from './app/controller/status.controller';
 import RoleController from './app/controller/role.controller';
 import SecretaryController from './app/controller/secretary.controller';
 import MailController from './app/controller/mail.controller';
+import ManifestationStatusHistoryController from './app/controller/manifestationStatusHistory.controller';
 
 // middleware para configurar os dados iniciais do banco
 import setupDbInitialData from './app/middlewares/setupDbInitialData';
@@ -29,6 +31,7 @@ import GenericValidator from './app/middlewares/validators/Generic';
 import RoleValidation from './app/middlewares/validators/Role';
 import SecretaryValidator from './app/middlewares/validators/Secretary';
 import MailValidator from './app/middlewares/validators/Mail';
+import ManifestationStatusHistoryValidor from './app/middlewares/validators/ManifestationStatusHistory';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
@@ -103,9 +106,30 @@ router.get('/secretary/:id', SecretaryController.show);
 router.get('/user', UserController.fetch);
 router.get('/user/:id', UserController.show);
 
+router.get(
+  '/manifestation/:manifestationId/status',
+  ManifestationStatusHistoryController.fetch
+);
+router.get(
+  '/manifestation/status/:id',
+  ManifestationStatusHistoryController.show
+);
+router.post(
+  '/manifestation/:manifestationId/status',
+  ManifestationStatusHistoryValidor.save,
+  ManifestationStatusHistoryController.save
+);
+router.put(
+  '/manifestation/status/:id',
+  ManifestationStatusHistoryValidor.update,
+  ManifestationStatusHistoryController.update
+);
+
 router.post('/email', MailValidator, MailController.send);
 
-// A partir daqui serão rotas de Administradores Master
+/**
+ * Rotas de Admin Master
+ */
 router.use(RolesMiddleware.adminMaster);
 
 router.post('/category', GenericValidator.save, CategoryController.save);

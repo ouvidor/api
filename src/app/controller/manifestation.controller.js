@@ -7,7 +7,7 @@ import GeolocationService from '../services/GeolocationService';
 class ManifestationController {
   async fetch(req, res) {
     /**
-     * text: titulo da manifestação
+     * text: titulo da manifestação ou protocolo
      * options: array de categorias e tipos de manifestações
      * isRead: flag para pesquisar apenas por manifestações lidas, 0 ou 1
      * page: a página para ser pesquisada, o resultado é limitado em 10 itens

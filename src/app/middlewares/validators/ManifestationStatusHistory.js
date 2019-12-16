@@ -48,9 +48,6 @@ class ManifestationStatusHistoryValidator {
 
       // validar PARAMS
       schema = object().shape({
-        manifestationId: number()
-          .min(1)
-          .required('Id da manifestação deve ser passado'),
         id: number().required('Id do status da manifestação é necessário'),
       });
       await schema.validate(request.params, { abortEarly: false });

@@ -2,61 +2,46 @@ import Manifestation from '../models/Manifestation';
 import ManifestationStatusHistory from '../models/ManifestationStatusHistory';
 
 class ManifestationStatusHistoryController {
-  async fetchManifestation(id) {
-    const manifestation = await Manifestation.findByPk(id);
-
-    if (!manifestation) throw new Error('Essa manifestação não existe');
-
-    return manifestation;
-  }
-
   async save(req, res) {
     const { description, status_id, secretary_id } = req.body;
     const { manifestationId } = req.params;
 
-    try {
-      await this.fetchManifestation(req.params.manifestationId);
-    } catch (error) {
-      return res.status(400).json({ error });
+    const manifestation = await Manifestation.findByPk(manifestationId, {
+      attributes: ['id'],
+    });
+    if (!manifestation) {
+      return res.status(400).json({ errro: 'Essa manifestação não existe' });
     }
 
     try {
       const manifestationStatus = await ManifestationStatusHistory.create({
         description,
-        manifestation_id: manifestationId,
+        manifestation_id: manifestation.id,
         status_id,
         secretary_id,
       });
 
       return res.status(200).json(manifestationStatus);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ error: 'Erro interno no servidor' });
     }
   }
 
   async fetch(req, res) {
-    const { manifestationId, id } = req.params;
+    const { manifestationId } = req.params;
 
     // checar se a manifestação existe
-    try {
-      await this.fetchManifestation(manifestationId);
-    } catch (error) {
-      return res.status(400).json({ error });
+    const manifestation = await Manifestation.findByPk(manifestationId, {
+      attributes: ['id'],
+    });
+    if (!manifestation) {
+      return res.status(400).json({ errro: 'Essa manifestação não existe' });
     }
 
     try {
-      // caso esteja buscando um status de manifestação específico
-      if (id) {
-        const manifestationStatus = await ManifestationStatusHistory.findByPk(
-          id
-        );
-
-        return res.status(200).json(manifestationStatus);
-      }
-
-      // caso normal, onde não é especificado o id
       const manifestationStatusHistory = await ManifestationStatusHistory.findAll(
-        { where: { manifestation_id: manifestationId } }
+        { where: { manifestation_id: manifestation.id } }
       );
 
       return res.status(200).json(manifestationStatusHistory);
@@ -65,21 +50,38 @@ class ManifestationStatusHistoryController {
     }
   }
 
-  async update(req, res) {
-    const { manifestationId, id } = req.params;
-
-    try {
-      await this.fetchManifestation(manifestationId);
-    } catch (error) {
-      return res.status(400).json({ error });
-    }
+  async show(req, res) {
+    const { id } = req.params;
 
     try {
       const manifestationStatus = await ManifestationStatusHistory.findByPk(id);
 
-      const updatedManifestationStatus = await manifestationStatus.update(
-        req.body
-      );
+      if (!manifestationStatus) {
+        return res
+          .status(400)
+          .json({ error: 'Esse status de manifestação não existe' });
+      }
+
+      return res.status(200).json(manifestationStatus);
+    } catch (error) {
+      return res.status(500).json({ error: 'Erro interno no servidor' });
+    }
+  }
+
+  async update(req, res) {
+    const { id } = req.params;
+    const { body: data } = req;
+
+    try {
+      const manifestationStatus = await ManifestationStatusHistory.findByPk(id);
+
+      if (!manifestationStatus) {
+        return res
+          .status(400)
+          .json({ error: 'Esse status de manifestação não existe' });
+      }
+
+      const updatedManifestationStatus = await manifestationStatus.update(data);
 
       return res.status(200).json(updatedManifestationStatus);
     } catch (error) {
