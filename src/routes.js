@@ -1,10 +1,5 @@
 /**
  * Arquivo responsável por expor todas as rotas para a classe App
- *
- * Funciona assim:
- *  router.get('caminho da rota', funçãoQueVaiTratarARota)
- *
- * router.get(), router.post(), router.put(), router.delete()
  */
 import { Router } from 'express';
 
@@ -45,18 +40,7 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 /**
- * Rotas de Teste
- */
-router.get('/user/:id?', UserController.fetch);
-
-/**
  *  Rotas publicas
- */
-
-/*
- * TODO: para criar um User definindo uma Role é necessário saber a Role, mas ela só é passada
- * após a execução do middleware de autenticação, talvez seja necessário criar uma rota
- * somente para criação de usuários admin
  */
 
 router.post('/user', UserValidator.save, UserController.save);
@@ -75,33 +59,51 @@ router.use(AuthMiddleware);
  * Rotas privadas
  * necessário um Token
  */
+
 router.post(
   '/manifestation',
   ManifestationValidator.save,
   ManifestationController.save
 );
+
 router.put(
   '/manifestation/:id',
   ManifestationValidator.update,
   ManifestationController.update
 );
 router.put('/user/:id', UserValidator.update, UserController.update);
-router.get('/category/:id?', CategoryController.fetch);
-router.get('/type/:id?', TypeController.fetch);
+
+router.get('/category', CategoryController.fetch);
+router.get('/category/:id', CategoryController.show);
+
+router.get('/type', TypeController.fetch);
+router.get('/type/:id', TypeController.show);
+
 router.get(
-  '/manifestation/:id?',
+  '/manifestation',
   ManifestationValidator.fetch,
   ManifestationController.fetch
 );
+router.get('/manifestation/:idOrProtocol', ManifestationController.show);
 
-// A partir daqui serão rotas de Administradores
+/**
+ * Rotas de Administrador
+ */
 router.use(RolesMiddleware.admin);
 
-router.get('/role/:id?', RoleController.fetch);
-router.get('/status/:id?', StatusController.fetch);
-router.get('/secretary/:id?', SecretaryController.fetch);
+router.get('/role', RoleController.fetch);
+router.get('/role/:id', RoleController.show);
 
-router.post('/email', MailValidator, MailController.save);
+router.get('/status', StatusController.fetch);
+router.get('/status/:id', StatusController.show);
+
+router.get('/secretary', SecretaryController.fetch);
+router.get('/secretary/:id', SecretaryController.show);
+
+router.get('/user', UserController.fetch);
+router.get('/user/:id', UserController.show);
+
+router.post('/email', MailValidator, MailController.send);
 
 // A partir daqui serão rotas de Administradores Master
 router.use(RolesMiddleware.adminMaster);

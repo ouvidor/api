@@ -1,21 +1,22 @@
 import Type from '../models/Type';
 
 class TypeController {
-  // retorna todos os Type registrados
+  // retorna todos os Type
   async fetch(req, res) {
-    if (req.params.id) {
-      const type = await Type.findByPk(req.params.id, {
-        attributes: ['id', 'title'],
-      });
-
-      if (!type) {
-        return res.status(400).json({ error: 'esse tipo não existe' });
-      }
-
-      return res.status(200).json(type);
-    }
-
     const type = await Type.findAll({ attributes: ['id', 'title'] });
+
+    return res.status(200).json(type);
+  }
+
+  // retorna apenas um Type
+  async show(req, res) {
+    const type = await Type.findByPk(req.params.id, {
+      attributes: ['id', 'title'],
+    });
+
+    if (!type) {
+      return res.status(400).json({ error: 'esse tipo não existe' });
+    }
 
     return res.status(200).json(type);
   }

@@ -2,7 +2,7 @@ import Mail from '../../lib/Mail';
 
 class MailController {
   // envia um email
-  async save(req, res) {
+  async send(req, res) {
     const { title, text, email } = req.body;
 
     try {

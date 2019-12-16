@@ -1,22 +1,24 @@
 import Category from '../models/Category';
 
 class CategoryController {
+  // retorna todas as categorias
   async fetch(req, res) {
-    if (req.params.id) {
-      const type = await Category.findByPk(req.params.id, {
-        attributes: ['id', 'title'],
-      });
-
-      if (!type) {
-        return res.status(400).json({ error: 'essa categoria não existe' });
-      }
-
-      return res.status(200).json(type);
-    }
-
     const categories = await Category.findAll({ attributes: ['id', 'title'] });
 
     return res.status(200).json(categories);
+  }
+
+  // retorna apenas uma Categoria
+  async show(req, res) {
+    const type = await Category.findByPk(req.params.id, {
+      attributes: ['id', 'title'],
+    });
+
+    if (!type) {
+      return res.status(400).json({ error: 'essa categoria não existe' });
+    }
+
+    return res.status(200).json(type);
   }
 
   // salva a category no banco

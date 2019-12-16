@@ -1,21 +1,22 @@
 import Status from '../models/Status';
 
 class StatusController {
-  // retorna todos os Status registrados
+  // retorna todos os Status
   async fetch(req, res) {
-    if (req.params.id) {
-      const status = await Status.findByPk(req.params.id, {
-        attributes: ['id', 'title'],
-      });
-
-      if (!status) {
-        return res.status(400).json({ error: 'esse status não existe' });
-      }
-
-      return res.status(200).json(status);
-    }
-
     const status = await Status.findAll({ attributes: ['id', 'title'] });
+
+    return res.status(200).json(status);
+  }
+
+  // retorna apenas um Status
+  async show(req, res) {
+    const status = await Status.findByPk(req.params.id, {
+      attributes: ['id', 'title'],
+    });
+
+    if (!status) {
+      return res.status(400).json({ error: 'esse status não existe' });
+    }
 
     return res.status(200).json(status);
   }
