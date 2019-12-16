@@ -113,7 +113,6 @@ class ManifestationController {
         ...formattedData,
         user_id: req.user_id,
       });
-      console.log(manifestation);
     } catch (error) {
       // é possivel que ocorra um erro se o token estiver invalido
       console.error(error);
@@ -131,6 +130,8 @@ class ManifestationController {
       return res.status(500).json({ error: 'Erro interno no servidor' });
     }
 
+    // o protocolo não foi gerado ainda, portanto ele fica 0
+    delete manifestation.dataValues.protocol;
     return res.status(200).json(manifestation);
   }
 

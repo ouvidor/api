@@ -27,9 +27,9 @@ class Manifestation extends Model {
     // criação do protocolo. exemplo: 2019125-52
     this.addHook('afterCreate', async manifestation => {
       const date = new Date();
-      const year = date.getFullYear();
+      const year = date.getFullYear() % 100; // ultimos dois digitos
       const month = date.getMonth() + 1;
-      const day = date.getDay();
+      const day = date.getDate();
       const number = manifestation.id % 10000; // ultimos 4 números
       const protocol = `${year}${month}${day}-${number}`;
 
