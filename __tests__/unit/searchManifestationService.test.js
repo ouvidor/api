@@ -6,21 +6,24 @@ import Category from '../../src/app/models/Category';
 import searchManifestationService from '../../src/app/services/SearchManifestationService';
 import User from '../../src/app/models/User';
 
+let type;
+let category;
+
 describe('Search Manifestation Service', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeEach(async () => {
     await truncate();
-  });
 
-  it('should search for manifestations', async () => {
-    const type = await Type.create({ title: 'Reclamação' });
+    type = await Type.create({ title: 'Reclamação' });
     expect(type).toBeDefined();
     expect(type).toHaveProperty('id');
 
-    const category = await Category.create({ title: 'Saneamento' });
+    category = await Category.create({ title: 'Saneamento' });
     expect(category).toBeDefined();
     expect(category).toHaveProperty('id');
+  });
 
+  it('should search for manifestations', async () => {
     const user = await User.create({
       email: 'email@gmail.com',
       first_name: 'Nome',
@@ -42,6 +45,7 @@ describe('Search Manifestation Service', () => {
     }
 
     const manifestations = await searchManifestationService.run('rua');
+
     expect(manifestations).toHaveProperty('count');
     expect(manifestations).toHaveProperty('last_page');
     expect(manifestations).toHaveProperty('rows');

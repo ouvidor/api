@@ -130,25 +130,27 @@ describe('Manifestation', () => {
         categories_id: [category.id],
       });
 
+    // pegar o protocolo
+    const {
+      body: { protocol },
+    } = await request(app)
+      .get(`/manifestation/${createdManifestation.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send();
+
     // listar
     const response = await request(app)
-      .get('/manifestation')
-      .query({ text: createdManifestation.protocol })
+      .get(`/manifestation/${protocol}`)
       .set('Authorization', `Bearer ${token}`)
       .send();
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual(
-      expect.objectContaining({ count: 1, last_page: 1 })
-    );
-    expect(response.body.rows).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          title: 'title',
-          description: 'description',
-          protocol: createdManifestation.protocol,
-        }),
-      ])
+      expect.objectContaining({
+        title: 'title',
+        description: 'description',
+        protocol,
+      })
     );
   });
 

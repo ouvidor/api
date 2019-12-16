@@ -107,9 +107,10 @@ class SearchManifestationService {
       isRead
     );
 
-    console.log(query.where);
-
     const manifestations = await Manifestation.findAndCountAll(query);
+
+    // retorna qual a ultima página
+    manifestations.last_page = Math.ceil(manifestations.count / 10);
 
     return manifestations;
   }
