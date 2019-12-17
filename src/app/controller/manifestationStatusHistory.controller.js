@@ -1,4 +1,5 @@
 import Manifestation from '../models/Manifestation';
+import Status from '../models/Status';
 import ManifestationStatusHistory from '../models/ManifestationStatusHistory';
 
 class ManifestationStatusHistoryController {
@@ -43,6 +44,7 @@ class ManifestationStatusHistoryController {
         // procura por manifestação com esse protocolo
         const manifestation = await Manifestation.findOne({
           where: { protocol: idOrProtocol },
+          attributes: ['id'],
         });
 
         // agora que tem o protocolo busca pelo id
@@ -52,6 +54,13 @@ class ManifestationStatusHistoryController {
       } else {
         manifestationStatusHistory = await ManifestationStatusHistory.findAll({
           where: { manifestation_id: idOrProtocol },
+          include: [
+            {
+              model: Status,
+              as: 'status',
+              attributes: ['title'],
+            },
+          ],
         });
       }
 
