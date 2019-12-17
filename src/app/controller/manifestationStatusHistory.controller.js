@@ -29,20 +29,31 @@ class ManifestationStatusHistoryController {
   }
 
   async fetch(req, res) {
-    const { manifestationId } = req.params;
+    const { idOrProtocol } = req.params;
+    let isProtocol = false;
+    let manifestationStatusHistory;
 
-    // checar se a manifestação existe
-    const manifestation = await Manifestation.findByPk(manifestationId, {
-      attributes: ['id'],
-    });
-    if (!manifestation) {
-      return res.status(400).json({ errro: 'Essa manifestação não existe' });
+    // checa se é um protocolo
+    if (idOrProtocol && idOrProtocol.match(/\d*-\d/)) {
+      isProtocol = true;
     }
 
     try {
-      const manifestationStatusHistory = await ManifestationStatusHistory.findAll(
-        { where: { manifestation_id: manifestation.id } }
-      );
+      if (isProtocol) {
+        // procura por manifestação com esse protocolo
+        const manifestation = await Manifestation.findOne({
+          where: { protocol: idOrProtocol },
+        });
+
+        // agora que tem o protocolo busca pelo id
+        manifestationStatusHistory = await ManifestationStatusHistory.findAll({
+          where: { manifestation_id: manifestation.id },
+        });
+      } else {
+        manifestationStatusHistory = await ManifestationStatusHistory.findAll({
+          where: { manifestation_id: idOrProtocol },
+        });
+      }
 
       return res.status(200).json(manifestationStatusHistory);
     } catch (error) {

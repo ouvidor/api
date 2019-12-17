@@ -107,7 +107,7 @@ router.get('/user', UserController.fetch);
 router.get('/user/:id', UserController.show);
 
 router.get(
-  '/manifestation/:manifestationId/status',
+  '/manifestation/:idOrProtocol/status',
   ManifestationStatusHistoryController.fetch
 );
 router.get(

@@ -568,7 +568,7 @@ _retorna_:
 
 ### manifestation status history
 
-- **GET** `manifestation/:manifestationId/status`: retorna todos os status de uma manifestação.
+- **GET** `manifestation/:idOrProtocol/status`: retorna todos os status de uma manifestação.
 
 ```json
 [
