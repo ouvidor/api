@@ -104,10 +104,17 @@ describe('User', () => {
   });
 
   it('should list all users', async () => {
+    const user = { email: 'root@gmail.com', password: '123456' };
+
+    // login
+    const { body } = await sign.in(user);
+
     const response = await request(app)
       .get('/user')
+      .set('Authorization', `Bearer ${body.token}`)
       .send();
 
+    expect(response.status).toBe(200);
     expect(response.body[0]).toHaveProperty(
       'email',
       'first_name',
@@ -119,11 +126,13 @@ describe('User', () => {
     expect(response.body[0].role[0]).toHaveProperty('level', 'id', 'title');
   });
 
-  it('should list a specific users', async () => {
-    const { body } = await sign.up(await factory.attrs('User'));
+  it('should list a specific user', async () => {
+    const user = { email: 'root@gmail.com', password: '123456' };
+    const { body } = await sign.in(user); // login
 
     const response = await request(app)
-      .get(`/user/${body.id}`)
+      .get(`/user/${body.user.id}`)
+      .set('Authorization', `Bearer ${body.token}`)
       .send();
 
     expect(response.body).toHaveProperty(
@@ -133,13 +142,20 @@ describe('User', () => {
       'last_name',
       'role'
     );
-
     expect(response.body.role[0]).toHaveProperty('level', 'id', 'title');
   });
 
   it("shouldn't list a specific user", async () => {
+    const user = { email: 'root@gmail.com', password: '123456' };
+
+    // cadastro
+    await sign.up(user);
+    // login
+    const { body } = await sign.in(user);
+
     const response = await request(app)
       .get(`/user/0`)
+      .set('Authorization', `Bearer ${body.token}`)
       .send();
 
     expect(response.body).toHaveProperty('error', 'esse usuário não existe');

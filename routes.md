@@ -28,7 +28,7 @@ Contêm protocolo _HTTP_, endereço da rota, explicação do que é feito, o que
 ]
 ```
 
-- **GET** `user/:id?`: essa mesma rota pode receber o id de um _users_ específico, retornando assim o usuário.
+- **GET** `user/:id`: retorna o usuário que tem esse id.
 
 ```json
 {
@@ -45,9 +45,9 @@ Contêm protocolo _HTTP_, endereço da rota, explicação do que é feito, o que
 }
 ```
 
-- **POST** `user/create`: cria um novo registro na tabela de _users_.
+- **POST** `user/`: cria um novo registro na tabela de _users_.
 
-Existem dois tipos de requisições possiveis aqui, uma incluí o atributo 'role' mas é necessário um token de usuário de nivel master no header na requisição, e a outra é sem o atributo role.
+Existem **dois** tipos de requisições possiveis aqui, uma incluí o atributo 'role' mas é **necessário um token** de usuário de nivel master no header na requisição, e a outra é sem o atributo role.
 
 _requisição sem role_:
 
@@ -168,7 +168,7 @@ _retorna_:
 }
 ```
 
-- **GET** `manifestation/:id?`: essa mesma rota pode receber o id de uma manifestação específica, retornando assim a manifestação.
+- **GET** `manifestation/:id`: retorna a manifestação que tem esse id.
 
 _retorna_:
 
@@ -272,7 +272,7 @@ _retorna_:
 ]
 ```
 
-- **GET** `category/:id?`: essa mesma rota pode receber o id de um _categories_ específico, retornando assim a categoria.
+- **GET** `category/:id`: retorna a categoria que tem esse id.
 
 ```json
 {
@@ -356,7 +356,7 @@ _retorna_:
 ]
 ```
 
-- **GET** `role/:id?`: essa mesma rota pode receber o id de um _role_ específico, retornando assim o role.
+- **GET** `role/:id`: retorna a Role que tem esse id.
 
 ```json
 {
@@ -433,7 +433,7 @@ _retorna_:
 ]
 ```
 
-- **GET** `type/:id?`: essa mesma rota pode receber o id de um _type_ específico, retornando assim o status.
+- **GET** `type/:id`: retorna o Type que tem esse id.
 
 ```json
 {
@@ -506,7 +506,7 @@ _retorna_:
 ]
 ```
 
-- **GET** `status/:id?`: essa mesma rota pode receber o id de um _status_ específico, retornando assim o status.
+- **GET** `status/:id`: retorna o Status que tem esse id.
 
 ```json
 {
@@ -566,6 +566,101 @@ _retorna_:
 }
 ```
 
+### manifestation status history
+
+- **GET** `manifestation/:idOrProtocol/status`: retorna todos os status de uma manifestação.
+
+```json
+[
+  {
+    "id": 1,
+    "description": "descrição, motivo para a mudança do status",
+    "created_at": "2019-12-16T17:24:58.000Z",
+    "updated_at": "2019-12-16T17:24:58.000Z",
+    "status_id": 1,
+    "manifestation_id": 4,
+    "secretary_id": 1
+  }
+]
+```
+
+- **GET** `manifestation/status/:id`: retorna um status específico de uma manifestação.
+
+```json
+{
+  "id": 1,
+  "description": "descrição, motivo para a mudança do status",
+  "created_at": "2019-12-16T17:24:58.000Z",
+  "updated_at": "2019-12-16T17:24:58.000Z",
+  "status_id": 1,
+  "manifestation_id": 4,
+  "secretary_id": 1
+}
+```
+
+- **POST** `/manifestation/:manifestationId/status`: cria um novo status para a manifestação.
+
+_requisição_:
+
+```json
+{
+  "description": "descrição, motivo para a mudança do status",
+  "status_id": 1,
+  "secretary_id": 1
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "description": "descrição, motivo para a mudança do status",
+  "manifestation_id": "4",
+  "status_id": 1,
+  "secretary_id": 1,
+  "updated_at": "2019-12-16T17:24:58.115Z",
+  "created_at": "2019-12-16T17:24:58.115Z"
+}
+```
+
+- **PUT** `manifestation/status/:id`: atualiza um status específico de uma manifestação.
+
+_requisição_:
+
+```json
+{
+  "description": "descrição atualizada"
+}
+```
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "description": "descrição atualizada",
+  "created_at": "2019-12-16T17:24:58.000Z",
+  "updated_at": "2019-12-16T17:40:57.859Z",
+  "status_id": 1,
+  "manifestation_id": 4,
+  "secretary_id": 1
+}
+```
+
+- **DELETE** `status/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _status_.
+
+_retorna_:
+
+```json
+{
+  "id": 1,
+  "title": "Em andamento",
+  "created_at": "2019-10-31T17:01:37.000Z",
+  "updated_at": "2019-10-31T17:01:37.000Z"
+}
+```
+
 ### secretary
 
 - **GET** `secretary/`: retorna todos os registros na tabela de _secretariats_.
@@ -580,7 +675,7 @@ _retorna_:
 ]
 ```
 
-- **GET** `secretary/:id?`: essa mesma rota pode receber o id de um _secretariats_ específico, retornando assim a secretaria.
+- **GET** `secretary/:id`: retorna a secretaria que tem esse id.
 
 ```json
 {

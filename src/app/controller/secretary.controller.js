@@ -3,19 +3,22 @@ import Secretary from '../models/Secretary';
 class SecretaryController {
   // retorna todos os Secretary registrados
   async fetch(req, res) {
-    const query = { attributes: ['id', 'title', 'email'] };
+    const secretary = await Secretary.findAll({
+      attributes: ['id', 'title', 'email'],
+    });
 
-    if (req.params.id) {
-      const secretary = await Secretary.findByPk(req.params.id, query);
+    return res.status(200).json(secretary);
+  }
 
-      if (!secretary) {
-        return res.status(400).json({ error: 'essa secretaria não existe' });
-      }
+  // retorna apenas uma Secretary
+  async show(req, res) {
+    const secretary = await Secretary.findByPk(req.params.id, {
+      attributes: ['id', 'title', 'email'],
+    });
 
-      return res.status(200).json(secretary);
+    if (!secretary) {
+      return res.status(400).json({ error: 'essa secretaria não existe' });
     }
-
-    const secretary = await Secretary.findAll(query);
 
     return res.status(200).json(secretary);
   }

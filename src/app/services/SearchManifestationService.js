@@ -40,27 +40,7 @@ class SearchManifestationService {
     return [filteredTypes, filteredCategories];
   }
 
-  checkIfProtocol(text) {
-    if (text && !text.match(/\d*-\d/)) return false;
-
-    return true;
-  }
-
-  makeWhereQuery(text, types, categories, page, isRead, isProtocol) {
-    let textSearch;
-
-    if (text) {
-      if (isProtocol) {
-        // define busca por protocolo
-        textSearch = { protocol: text };
-      } else {
-        // define busca por título
-        textSearch = {
-          title: { [Op.like]: `%${text}%` },
-        };
-      }
-    }
-
+  makeWhereQuery(text, types, categories, page, isRead) {
     const query = {
       include: [
         {
@@ -91,7 +71,7 @@ class SearchManifestationService {
       where: {
         ...(!isRead && { read: 0 }),
         [Op.and]: [
-          textSearch,
+          text ? { title: { [Op.like]: `%${text}%` } } : undefined,
           types.length > 0
             ? {
                 type_id: {
@@ -111,7 +91,6 @@ class SearchManifestationService {
   async run(text, options, page = 1, isRead = true) {
     let types = [];
     let categories = [];
-    const isProtocol = this.checkIfProtocol(text);
 
     if (options) {
       [types, categories] = await this.fetchOptionsIds(options);
@@ -125,8 +104,7 @@ class SearchManifestationService {
       typesIds,
       categoriesIds,
       page,
-      isRead,
-      isProtocol
+      isRead
     );
 
     const manifestations = await Manifestation.findAndCountAll(query);

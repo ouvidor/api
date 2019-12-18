@@ -18,10 +18,6 @@ module.exports = {
           autoIncrement: true,
           primaryKey: true,
         },
-        title: {
-          type: Sequelize.STRING,
-          allowNull: false,
-        },
         description: {
           type: Sequelize.TEXT,
           allowNull: false,
@@ -40,7 +36,13 @@ module.exports = {
           onDelete: 'CASCADE',
           allowNull: false,
         },
-        // TODO: REFERÊNCIA A SECRETARIA AQUI
+        secretary_id: {
+          type: Sequelize.INTEGER,
+          references: { model: 'secretariats', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
+          allowNull: true,
+        },
         created_at: {
           type: Sequelize.DATE,
           allowNull: false,

@@ -1,13 +1,13 @@
+/**
+ * Model para a tabela manifestation_status_history
+ * Responsável por guardar o historico de status das manifestações
+ */
 import Sequelize, { Model } from 'sequelize';
 
 class ManifestationStatusHistory extends Model {
   static init(sequelize) {
     super.init(
       {
-        title: {
-          type: Sequelize.STRING,
-          unique: true,
-        },
         description: {
           type: Sequelize.TEXT,
           unique: true,
@@ -27,12 +27,23 @@ class ManifestationStatusHistory extends Model {
     return this;
   }
 
-  // static associate(models) {
-  //   this.hasMany(models.Status);
-  //   this.hasOne(models.Manifestation, {
-  //     foreignKey: 'manifestation_id',
-  //   });
-  // }
+  static associate(models) {
+    this.belongsTo(models.Status, {
+      foreignKey: 'status_id',
+      as: 'status',
+      targetKey: 'id',
+    });
+    this.belongsTo(models.Manifestation, {
+      foreignKey: 'manifestation_id',
+      as: 'manifestation',
+      targetKey: 'id',
+    });
+    this.belongsTo(models.Secretary, {
+      foreignKey: 'secretary_id',
+      as: 'secretary',
+      targetKey: 'id',
+    });
+  }
 }
 
 export default ManifestationStatusHistory;
