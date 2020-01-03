@@ -7,9 +7,10 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "nodemon src/index.js",
-    "start-dev": "nodemon src/index.js",
-    "start-local": "cross-env NODE_ENV=local yarn start",
+    "build": "rollup -c",
+    "dev": "nodemon src/index.js",
+    "start": "node build/bundle.js",
+    "dev-local": "cross-env NODE_ENV=local yarn dev",
     "migrate-local": "cross-env NODE_ENV=local yarn sequelize db:migrate",
     "migrate": "yarn sequelize db:migrate",
     "pretest": "cross-env NODE_ENV=test sequelize db:migrate",
@@ -41,6 +42,7 @@
     "yup": "^0.27.0"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.0",
     "@sucrase/jest-plugin": "^2.0.0",
     "@types/jest": "^24.0.18",
     "cross-env": "^6.0.0",
@@ -54,6 +56,10 @@
     "jest": "^24.9.0",
     "nodemon": "^1.19.2",
     "prettier": "^1.18.2",
+    "rollup": "^1.27.14",
+    "rollup-plugin-analyzer": "^3.2.2",
+    "rollup-plugin-progress": "^1.1.1",
+    "rollup-plugin-visualizer": "^3.3.1",
     "sequelize-cli": "^5.5.1",
     "sqlite3": "^4.1.0",
     "sucrase": "^3.10.1",
