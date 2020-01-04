@@ -6,7 +6,7 @@ import auth from '../../config/auth';
 
 class AuthController {
   // Loga e retorna um Tolken
-  static async login(req, res) {
+  async login(req, res) {
     req.password = String(req.password);
 
     const user = await User.findOne({
@@ -50,4 +50,4 @@ class AuthController {
   }
 } // fim da classe
 
-module.exports = AuthController;
+export default new AuthController();
