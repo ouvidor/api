@@ -74,6 +74,7 @@ router.post('/manifestation', ManifestationController.fetchById);
 
 router.post('/upload', upload.single('file'), fileController.upload);
 router.get('/download/:file_id', fileController.download);
+router.get('/remove/:file_id', fileController.remove);
 // A daqui serão rotas de Administradores
 /**
  * TODO Verificar Role com um middleware aqui e averiguar se é admin
