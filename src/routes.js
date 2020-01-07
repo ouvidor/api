@@ -3,6 +3,7 @@
  */
 
 import { Router } from 'express';
+import Multer from 'multer';
 
 // controllers
 import UserController from './app/controller/user.controller';
@@ -32,6 +33,10 @@ import RoleValidation from './app/middlewares/validators/Role';
 import SecretaryValidator from './app/middlewares/validators/Secretary';
 import MailValidator from './app/middlewares/validators/Mail';
 import ManifestationStatusHistoryValidor from './app/middlewares/validators/ManifestationStatusHistory';
+import fileController from './app/controller/file.controller';
+
+// configs
+import ftpConfig from './config/ftp';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
@@ -41,6 +46,8 @@ const router = new Router();
 if (process.env.NODE_ENV === 'test') {
   router.use(setupDbInitialData);
 }
+// let upload = Multer({ dest: 'temp/' });
+const upload = Multer(ftpConfig.multerOptions);
 
 /**
  *  Rotas publicas
@@ -127,6 +134,14 @@ router.put(
 
 router.post('/email', MailValidator, MailController.send);
 
+/**
+ * Rotas de File/FTP/Upload
+ */
+
+router.post('/upload', upload.single('file'), fileController.upload);
+router.get('/download/:file_id', fileController.download);
+router.get('/remove/:file_id', fileController.remove);
+// A daqui serão rotas de Administradores
 /**
  * Rotas de Admin Master
  */

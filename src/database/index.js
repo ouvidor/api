@@ -12,6 +12,7 @@ import Type from '../app/models/Type';
 import Status from '../app/models/Status';
 import Role from '../app/models/Role';
 import Secretary from '../app/models/Secretary';
+import File from '../app/models/File';
 
 require('dotenv');
 
@@ -25,7 +26,9 @@ const models = [
   Role,
   Manifestation,
   ManifestationStatusHistory,
+  File,
 ];
+
 
 class Database {
   constructor() {
