@@ -9,6 +9,7 @@ import Manifestation from '../app/models/Manifestation';
 import ManifestationStatusHistory from '../app/models/ManifestationStatusHistory';
 import Category from '../app/models/Category';
 import Type from '../app/models/Type';
+import Category from '../app/models/Category';
 import Status from '../app/models/Status';
 import Role from '../app/models/Role';
 import Secretary from '../app/models/Secretary';
@@ -28,7 +29,6 @@ const models = [
   ManifestationStatusHistory,
   File,
 ];
-
 
 class Database {
   constructor() {
@@ -74,6 +74,20 @@ class Database {
         });
 
         await user.setRole(await Role.findOne({ where: { title: 'master' } }));
+      }
+
+      const types = await Type.findAll();
+      if (types.length === 0) {
+        await Type.create({
+          title: 'Reclamação',
+        });
+      }
+
+      const categories = await Category.findAll();
+      if (categories.length === 0) {
+        await Category.create({
+          title: 'Saneamento',
+        });
       }
     } catch (error) {
       console.log(error);

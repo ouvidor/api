@@ -1,5 +1,6 @@
 import Role from '../models/Role';
 import User from '../models/User';
+import Type from '../models/Type';
 
 async function setupDbInitialData(req, res, next) {
   try {

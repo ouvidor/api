@@ -63,7 +63,7 @@ class FileController {
 
     // Checa se quem fez a requisição é o dono da manifestação ou um administrador
     const onwer = user.dataValues.id === manifestation.dataValues.UserId;
-    const user_role = req.user_role[0];
+    const user_role = req.user_roles[0];
 
     if (onwer || user_role.title === 'master' || user_role.title === 'admin') {
       // const status = await sendToRemoteFileServer(req.file, manifestation_id);
@@ -160,11 +160,11 @@ class FileController {
           file_name_in_server: req.file.filename,
           extension,
         };
-        const f = await File.create(data);
-        f.setUser(user);
-        f.setManifestation(manifestation);
+        const uploaded_file = await File.create(data);
+        uploaded_file.setUser(user);
+        uploaded_file.setManifestation(manifestation);
 
-        return res.status(200).json({ message: 'ok', f });
+        return res.status(200).json({ message: 'ok', uploaded_file });
       } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Erro', error });
