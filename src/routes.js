@@ -17,7 +17,7 @@ import MailController from './app/controller/mail.controller';
 import ManifestationStatusHistoryController from './app/controller/manifestationStatusHistory.controller';
 
 // middleware usado apenas em Tests
-import setupDbInitialData from './app/middlewares/setupDbInitialData';
+import setupDbInitialData from './app/middlewares/initialDbSetupForTests';
 
 // middlewares de autenticação
 import AuthMiddleware from './app/middlewares/auth';
