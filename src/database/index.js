@@ -15,7 +15,7 @@ import Secretary from '../app/models/Secretary';
 
 require('dotenv');
 
-// a ordem é importante caso queira testar com sync()
+// a ordem é importante
 const models = [
   User,
   Type,
@@ -29,7 +29,6 @@ const models = [
 
 class Database {
   constructor() {
-    // Aqui é necessário informar se está utilizando as configurações de banco local ou remoto
     this.connection = new Sequelize(databaseConfig);
     this.init();
     this.associate();
