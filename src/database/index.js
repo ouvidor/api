@@ -12,10 +12,11 @@ import Type from '../app/models/Type';
 import Status from '../app/models/Status';
 import Role from '../app/models/Role';
 import Secretary from '../app/models/Secretary';
+import setupDbInitialData from '../app/utils/setupDbInitialData';
 
 require('dotenv');
 
-// a ordem é importante caso queira testar com sync()
+// a ordem é importante
 const models = [
   User,
   Type,
@@ -29,7 +30,6 @@ const models = [
 
 class Database {
   constructor() {
-    // Aqui é necessário informar se está utilizando as configurações de banco local ou remoto
     this.connection = new Sequelize(databaseConfig);
     this.init();
     this.associate();
@@ -54,24 +54,7 @@ class Database {
   // essa função cria entries iniciais necessárias para o uso
   async checkDefaultEntries() {
     try {
-      const roles = await Role.findAll();
-      if (roles.length === 0) {
-        await Role.create({ title: 'master', level: 1 });
-        await Role.create({ title: 'admin', level: 2 });
-        await Role.create({ title: 'citizen', level: 3 });
-      }
-
-      const users = await User.findAll();
-      if (users.length === 0) {
-        const user = await User.create({
-          first_name: 'master',
-          last_name: 'root',
-          email: 'root@gmail.com',
-          password: '123456',
-        });
-
-        await user.setRole(await Role.findOne({ where: { title: 'master' } }));
-      }
+      await setupDbInitialData();
     } catch (error) {
       console.log(error);
     }
