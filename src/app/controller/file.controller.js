@@ -36,7 +36,7 @@ class FileController {
    */
 
   // Realiza o upload de um arquivo para o servidor FTP
-  async upload(req, res) {
+  async upload(req, res, next) {
     const { manifestation_id } = req.body;
     const { file } = req; // Pega o arquivo que o multer(middleware) tratou e colocou na req
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
@@ -78,7 +78,13 @@ class FileController {
       console.log('conectando no ftp...');
       const c = new Ftp();
       await new Promise((resolve, reject) => {
-        c.connect(ftpConfig.ftpServerConfig);
+        c.connect(ftpConfig.ftpServerConfig, err => {
+          console.log('aaaaaaaaaaaaaaaaa');
+          if (err) {
+            console.log('deu merda');
+            next(err);
+          }
+        });
         c.on('ready', () => {
           console.log('Conexão estabelecida com sucesso!');
 
@@ -185,7 +191,9 @@ class FileController {
     const file = await File.findByPk(file_id);
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
     const onwer = user.dataValues.id === file.dataValues.UserId;
-    const user_role = req.user_role[0];
+    const user_role = req.user_roles[0];
+
+    console.log(file);
 
     // checa se File existe
     if (!file) {
@@ -213,7 +221,7 @@ class FileController {
     // Caso passe nas checagens, segue fluxo normal
 
     try {
-      console.log('conectando no ftp...');
+      console.log('conectando no ftp para...');
       const c = new Ftp();
       await new Promise(() => {
         c.connect(ftpConfig.ftpServerConfig);
@@ -228,14 +236,23 @@ class FileController {
             );
             c.get(file.file_name_in_server, (err, stream) => {
               if (err) throw err;
-              // Caso queira deixar o arquivo como anexo para download, usar linha abaixo
-              // res.attachment(file.file_name);
               /**
                * Caso tu do der certo termina na linha abaixo, a stream do arquivo é encaminhada
                * para quem fez a requisição
                */
 
+              /**
+               * O Header abaixo serve para que o nome do arquivo seja definido corretamente remove-lo fara
+               * com que a stream de dados seja encaminhada para resposta mas com nome e extensão incorretos
+               */
+
+              res.header(
+                'Content-Disposition',
+                'attachment; filename=' + file.file_name
+              );
+
               console.log('Encaminhando Stream de dados para Resposta....');
+
               return stream.pipe(res);
             }); // fim do get
           }); // fim do cwd

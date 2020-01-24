@@ -41,13 +41,14 @@ import ftpConfig from './config/ftp';
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
 
+// multer é usado como middleware nas rotas de Upload relacionadas ao módulo FTP
+const upload = Multer(ftpConfig.multerOptions);
+
 // middleware para tests
 // esse middleware garante o setup inicial em todo test
 if (process.env.NODE_ENV === 'test') {
   router.use(setupDbInitialData);
 }
-// let upload = Multer({ dest: 'temp/' });
-const upload = Multer(ftpConfig.multerOptions);
 
 /**
  *  Rotas publicas
@@ -141,6 +142,7 @@ router.post('/email', MailValidator, MailController.send);
 router.post('/upload', upload.single('file'), fileController.upload);
 router.get('/download/:file_id', fileController.download);
 router.get('/remove/:file_id', fileController.remove);
+
 // A daqui serão rotas de Administradores
 /**
  * Rotas de Admin Master

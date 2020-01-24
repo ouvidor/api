@@ -7,7 +7,6 @@ import './bootstrap';
 import express from 'express';
 import cors from 'cors';
 import ErrorHandler from './app/middlewares/ErrorHandler';
-
 // inicia a instancia do Sequelize, fazendo a conexão com o Database
 import './database';
 
@@ -41,7 +40,11 @@ class App {
   // conecta as rotas ao app
   routes() {
     this.server.use(routes);
-    this.server.use(ErrorHandler);
+    // Error handler padrão do Express
+    this.server.use(ErrorHandler.expressErrorHandler);
+
+    // Todas exceções não tratadas caem aqui
+    // process.on('uncaughtException', ErrorHandler.genericErrorHandler);
   }
 }
 
