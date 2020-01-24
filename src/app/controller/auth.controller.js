@@ -5,7 +5,7 @@ import Role from '../models/Role';
 import auth from '../../config/auth';
 
 class AuthController {
-  // Loga e retorna um Tolken
+  // Loga e retorna um Token
   async login(req, res) {
     req.password = String(req.password);
 

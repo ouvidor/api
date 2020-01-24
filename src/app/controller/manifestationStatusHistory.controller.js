@@ -58,7 +58,7 @@ class ManifestationStatusHistoryController {
             {
               model: Status,
               as: 'status',
-              attributes: ['title'],
+              attributes: ['id', 'title'],
             },
           ],
         });

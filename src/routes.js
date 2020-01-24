@@ -17,8 +17,8 @@ import SecretaryController from './app/controller/secretary.controller';
 import MailController from './app/controller/mail.controller';
 import ManifestationStatusHistoryController from './app/controller/manifestationStatusHistory.controller';
 
-// middleware para configurar os dados iniciais do banco
-import setupDbInitialData from './app/middlewares/setupDbInitialData';
+// middleware usado apenas em Tests
+import setupDbInitialData from './app/middlewares/initialDbSetupForTests';
 
 // middlewares de autenticação
 import AuthMiddleware from './app/middlewares/auth';
