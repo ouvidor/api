@@ -1,7 +1,7 @@
 // A regra do eslint abaixo é importante
 /* eslint-disable prefer-template */
 /**
- * Arquivo responsavel por salvar temproariamente a imagem no folder 'temp', e envia-la para um servidor de arquivos remoto.
+ * Arquivo responsavel por salvar temproariamente a imagem no folder 'temp', e envia-la para um servidor de arquivos remoto através de FTP.
  *
  * Documentação do modulo FTP -> https://www.npmjs.com/package/ftp
  */
@@ -24,6 +24,7 @@ import File from '../models/File';
  * Funções usadas dentro da classe
  */
 
+// Deleta o arquivo criado temporariamente na pasta temp
 function deleteTempFile(file) {
   fs.unlink(`${process.cwd()}/temp/${file.filename}`, err => {
     if (err) throw err;
@@ -62,7 +63,7 @@ class FileController {
     }
 
     // Checa se quem fez a requisição é o dono da manifestação ou um administrador
-    const onwer = user.dataValues.id === manifestation.dataValues.UserId;
+    const onwer = user.dataValues.id === manifestation.dataValues.user_id;
     const user_role = req.user_roles[0];
 
     if (onwer || user_role.title === 'master' || user_role.title === 'admin') {
@@ -190,7 +191,7 @@ class FileController {
     const { file_id } = req.params;
     const file = await File.findByPk(file_id);
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
-    const onwer = user.dataValues.id === file.dataValues.UserId;
+    const onwer = user.dataValues.id === file.dataValues.user_id;
     const user_role = req.user_roles[0];
 
     console.log(file);
@@ -268,13 +269,13 @@ class FileController {
     });
   }
 
-  // Usa a api como proxy e encaminha a stream do arquivod no servidor FTP para o requisitante
+  // Remove o arquivo do servidor FTP e remove as associações com a manifestação.
   async remove(req, res) {
     const { file_id } = req.params;
     const file = await File.findByPk(file_id);
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
     const onwer = user.dataValues.id === file.dataValues.UserId;
-    const user_role = req.user_role[0];
+    const user_role = req.user_roles[0];
 
     // checa se File existe
     if (!file) {
@@ -340,6 +341,31 @@ class FileController {
       message: 'Algo deu errado',
       error: 'sem mensagem de erro para exibir',
     });
+  }
+
+  // Lista todos os arquivos vinculados a manifestação escolhida para consulta
+  async list(req, res) {
+    const { manifestation_id } = req.params;
+    try {
+      const manifestation = await Manifestation.findOne({
+        where: { id: manifestation_id },
+      });
+
+      // checa se a manifestação existe mesmo
+      if (!manifestation) {
+        return res.status(404).json({ message: 'Manifestação não existe' });
+      }
+
+      const files = await File.findAll({
+        where: {
+          ManifestationId: manifestation_id,
+        },
+        raw: true,
+      });
+      return res.status(200).json({ files });
+    } catch (error) {
+      return res.status(500).json({ message: 'Erro interno', error });
+    }
   }
 } // fim da classe
 

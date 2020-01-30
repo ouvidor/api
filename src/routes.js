@@ -95,7 +95,17 @@ router.get(
   ManifestationValidator.fetch,
   ManifestationController.fetch
 );
+
 router.get('/manifestation/:idOrProtocol', ManifestationController.show);
+
+/**
+ * Rotas de File/FTP/Upload
+ */
+
+router.post('/ftp/upload', upload.single('file'), fileController.upload);
+router.get('/ftp/download/:file_id', fileController.download);
+router.delete('/ftp/remove/:file_id', fileController.remove);
+router.get('/ftp/:manifestation_id', fileController.list);
 
 /**
  * Rotas de Administrador
@@ -134,14 +144,6 @@ router.put(
 );
 
 router.post('/email', MailValidator, MailController.send);
-
-/**
- * Rotas de File/FTP/Upload
- */
-
-router.post('/upload', upload.single('file'), fileController.upload);
-router.get('/download/:file_id', fileController.download);
-router.get('/remove/:file_id', fileController.remove);
 
 // A daqui serão rotas de Administradores
 /**
