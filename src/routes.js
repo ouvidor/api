@@ -16,6 +16,7 @@ import RoleController from './app/controller/role.controller';
 import SecretaryController from './app/controller/secretary.controller';
 import MailController from './app/controller/mail.controller';
 import ManifestationStatusHistoryController from './app/controller/manifestationStatusHistory.controller';
+import fileController from './app/controller/file.controller';
 
 // middleware usado apenas em Tests
 import setupDbInitialData from './app/middlewares/initialDbSetupForTests';
@@ -33,7 +34,7 @@ import RoleValidation from './app/middlewares/validators/Role';
 import SecretaryValidator from './app/middlewares/validators/Secretary';
 import MailValidator from './app/middlewares/validators/Mail';
 import ManifestationStatusHistoryValidor from './app/middlewares/validators/ManifestationStatusHistory';
-import fileController from './app/controller/file.controller';
+import FTPValidator from './app/middlewares/validators/FTP';
 
 // configs
 import ftpConfig from './config/ftp';

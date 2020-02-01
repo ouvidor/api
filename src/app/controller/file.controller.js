@@ -9,7 +9,7 @@
 /**
  * TODO:
  *  - Limitar a quantidade de arquivos que uma manifestação pode ter.
- *  - Filtrar os mimetype.
+ *  - Filtrar os mimetype (escolher quais tipos de arquivos podem ser enviados).
  *  - Verificar o Remove dos arquivos, tratar algumas exceções, upload e download estão prontos praticamente
  */
 
@@ -26,9 +26,11 @@ import File from '../models/File';
 
 // Deleta o arquivo criado temporariamente na pasta temp
 function deleteTempFile(file) {
-  fs.unlink(`${process.cwd()}/temp/${file.filename}`, err => {
-    if (err) throw err;
-  });
+  if (file) {
+    fs.unlink(`${process.cwd()}/temp/${file.filename}`, err => {
+      if (err) throw err;
+    });
+  }
 }
 
 class FileController {
@@ -67,13 +69,6 @@ class FileController {
     const user_role = req.user_roles[0];
 
     if (onwer || user_role.title === 'master' || user_role.title === 'admin') {
-      // const status = await sendToRemoteFileServer(req.file, manifestation_id);
-      // console.log('enviou res');
-      // deleteTempFile(req.file);
-      // if (status === 500) {
-      //   return res.status(status).json({ message: 'erro' });
-      // }
-
       // INICIO DO UPLOAD FTP -----------------
 
       console.log('conectando no ftp...');
@@ -157,6 +152,8 @@ class FileController {
           reject(err);
         });
       });
+      c.end();
+      console.log('fechou a conexão');
       // FIM DO UPLOAD FTP -----------------------
 
       // Se chegar até aqui quer dizer que o upload do arquivo foi um sucesso, agora salvaremos a referencia no banco com o model File
@@ -191,24 +188,22 @@ class FileController {
     const { file_id } = req.params;
     const file = await File.findByPk(file_id);
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
-    const onwer = user.dataValues.id === file.dataValues.user_id;
-    const user_role = req.user_roles[0];
-
-    console.log(file);
 
     // checa se File existe
     if (!file) {
-      return res.status(500).json({
+      return res.status(404).json({
         message: 'Arquivo não existe',
       });
     }
 
+    const onwer = user.dataValues.id === file.dataValues.UserId;
+    const user_role = req.user_roles[0];
+
     // checa se Usuário existe
     if (!user) {
       deleteTempFile(req.file);
-      return res.status(500).json({ message: 'usuario não existe' });
+      return res.status(404).json({ message: 'usuario não existe' });
     }
-
     // checa se é dono do arquivo ou um admin
     if (user_role.title !== 'master' || user_role.title !== 'admin') {
       if (!onwer) {
@@ -273,21 +268,22 @@ class FileController {
   async remove(req, res) {
     const { file_id } = req.params;
     const file = await File.findByPk(file_id);
-    const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
-    const onwer = user.dataValues.id === file.dataValues.UserId;
-    const user_role = req.user_roles[0];
 
     // checa se File existe
     if (!file) {
-      return res.status(500).json({
+      return res.status(404).json({
         message: 'Arquivo não existe',
       });
     }
 
+    const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
+    const onwer = user.dataValues.id === file.dataValues.UserId;
+    const user_role = req.user_roles[0];
+
     // checa se Usuário existe
     if (!user) {
       deleteTempFile(req.file);
-      return res.status(500).json({ message: 'usuario não existe' });
+      return res.status(404).json({ message: 'usuario não existe' });
     }
 
     // checa se é dono do arquivo ou um admin
@@ -346,10 +342,25 @@ class FileController {
   // Lista todos os arquivos vinculados a manifestação escolhida para consulta
   async list(req, res) {
     const { manifestation_id } = req.params;
+    const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
+    const user_role = req.user_roles[0];
+
     try {
       const manifestation = await Manifestation.findOne({
         where: { id: manifestation_id },
       });
+
+      const onwer = user.dataValues.id === manifestation.dataValues.user_id;
+
+      // checa se é dono do arquivo ou um admin
+      if (user_role.title !== 'master' || user_role.title !== 'admin') {
+        if (!onwer) {
+          return res.status(401).json({
+            message:
+              'Não autorizado, apenas administradores e donos do arquivo podem acessa-lo',
+          });
+        }
+      }
 
       // checa se a manifestação existe mesmo
       if (!manifestation) {
