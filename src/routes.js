@@ -4,6 +4,9 @@
 
 import { Router } from 'express';
 
+import multer from 'multer';
+import multerConfig from './config/multer';
+
 // controllers
 import UserController from './app/controller/user.controller';
 import AuthController from './app/controller/auth.controller';
@@ -15,6 +18,7 @@ import RoleController from './app/controller/role.controller';
 import SecretaryController from './app/controller/secretary.controller';
 import MailController from './app/controller/mail.controller';
 import ManifestationStatusHistoryController from './app/controller/manifestationStatusHistory.controller';
+import FileController from './app/controller/file.controller';
 
 // middleware usado apenas em Tests
 import setupDbInitialData from './app/middlewares/initialDbSetupForTests';
@@ -35,6 +39,7 @@ import ManifestationStatusHistoryValidor from './app/middlewares/validators/Mani
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
+const upload = multer(multerConfig);
 
 // middleware para tests
 // esse middleware garante o setup inicial em todo test
@@ -62,7 +67,7 @@ router.use(AuthMiddleware);
  * Rotas privadas
  * necessário um Token
  */
-
+router.post('/files', upload.array('file'), FileController.store);
 router.post(
   '/manifestation',
   ManifestationValidator.save,
