@@ -67,7 +67,7 @@ router.use(AuthMiddleware);
  * Rotas privadas
  * necessário um Token
  */
-router.post('/files', upload.array('file'), FileController.store);
+router.post('/files', upload.array('file'), FileController.save);
 router.post(
   '/manifestation',
   ManifestationValidator.save,

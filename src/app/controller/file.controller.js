@@ -1,7 +1,7 @@
 import File from '../models/File';
 
 class FileController {
-  async store(req, res) {
+  async save(req, res) {
     const uploadedFiles = req.files.map(file => ({
       name: file.originalname,
       path: file.filename,
