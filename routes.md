@@ -121,6 +121,39 @@ _retorna_:
 
 ## Autenticação necessária
 
+### files
+
+- **POST** `files`: faz upload de arquivos, esses arquivos ficam temporariamente em uma pasta chamada `tmp/uploads/` e ficam permanentemente na tabela _files_.
+
+_requisição_:
+
+Um Multipart Form Data, que deve conter 1 ou mais campos `file` e recebe um arquivo.
+
+_retorna_:
+
+```json
+{
+  "files": [
+    {
+      "url": "http://127.0.0.1:3003/files/15f5f5ab6741b5208ddfee3200a0e9a1.txt",
+      "id": 9,
+      "name": "Texto.txt",
+      "path": "15f5f5ab6741b5208ddfee3200a0e9a1.txt",
+      "created_at": "2020-02-07T15:55:17.689Z",
+      "updated_at": "2020-02-07T15:55:17.689Z"
+    },
+    {
+      "url": "http://127.0.0.1:3003/files/cde1063914e9ed4e9d2cbc3d21347f32.pdf",
+      "id": 10,
+      "name": "Documento.pdf",
+      "path": "cde1063914e9ed4e9d2cbc3d21347f32.pdf",
+      "created_at": "2020-02-07T15:55:17.689Z",
+      "updated_at": "2020-02-07T15:55:17.689Z"
+    }
+  ]
+}
+```
+
 ### manifestation
 
 - **GET** `manifestation/`: retorna todos os registros da tabela _manifestations_.
