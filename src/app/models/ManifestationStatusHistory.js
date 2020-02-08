@@ -38,11 +38,6 @@ class ManifestationStatusHistory extends Model {
       as: 'manifestation',
       targetKey: 'id',
     });
-    this.belongsTo(models.Secretary, {
-      foreignKey: 'secretary_id',
-      as: 'secretary',
-      targetKey: 'id',
-    });
   }
 }
 
