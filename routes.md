@@ -132,26 +132,24 @@ Um Multipart Form Data, que deve conter 1 ou mais campos `file` e recebe um arqu
 _retorna_:
 
 ```json
-{
-  "files": [
-    {
-      "url": "http://127.0.0.1:3003/files/15f5f5ab6741b5208ddfee3200a0e9a1.txt",
-      "id": 9,
-      "name": "Texto.txt",
-      "path": "15f5f5ab6741b5208ddfee3200a0e9a1.txt",
-      "created_at": "2020-02-07T15:55:17.689Z",
-      "updated_at": "2020-02-07T15:55:17.689Z"
-    },
-    {
-      "url": "http://127.0.0.1:3003/files/cde1063914e9ed4e9d2cbc3d21347f32.pdf",
-      "id": 10,
-      "name": "Documento.pdf",
-      "path": "cde1063914e9ed4e9d2cbc3d21347f32.pdf",
-      "created_at": "2020-02-07T15:55:17.689Z",
-      "updated_at": "2020-02-07T15:55:17.689Z"
-    }
-  ]
-}
+[
+  {
+    "url": "http://127.0.0.1:3003/files/c322b14af33436685e53aaf234be2004.txt",
+    "id": 15,
+    "name": "Texto.txt",
+    "path": "c322b14af33436685e53aaf234be2004.txt",
+    "created_at": "2020-02-08T16:55:57.331Z",
+    "updated_at": "2020-02-08T16:55:57.331Z"
+  },
+  {
+    "url": "http://127.0.0.1:3003/files/9d6c4cc7fe93c42aceb2169de74d5f43.pdf",
+    "id": 16,
+    "name": "Documento.pdf",
+    "path": "9d6c4cc7fe93c42aceb2169de74d5f43.pdf",
+    "created_at": "2020-02-08T16:55:57.331Z",
+    "updated_at": "2020-02-08T16:55:57.331Z"
+  }
+]
 ```
 
 ### manifestation

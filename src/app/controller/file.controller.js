@@ -9,7 +9,7 @@ class FileController {
 
     const files = await File.bulkCreate(uploadedFiles, { returning: true });
 
-    return res.json({ files });
+    return res.json(files);
   }
 }
 
