@@ -6,6 +6,7 @@
 import './bootstrap';
 import express from 'express';
 import cors from 'cors';
+import { resolve } from 'path';
 
 // inicia a instancia do Sequelize, fazendo a conexão com o Database
 import './database';
@@ -35,6 +36,11 @@ class App {
     // exclui o 'x-powered-by' da Header, por motivos de segurança
     // isso permitia que a pessoa acessando soubesse o framework usado no server
     this.server.disable('x-powered-by');
+
+    this.server.use(
+      '/files',
+      express.static(resolve(__dirname, '..', 'tmp', 'uploads'))
+    );
   }
 
   // conecta as rotas ao app
