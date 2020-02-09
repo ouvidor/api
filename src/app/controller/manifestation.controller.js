@@ -1,6 +1,8 @@
 import Manifestation from '../models/Manifestation';
 import Category from '../models/Category';
 import Type from '../models/Type';
+import User from '../models/User';
+import File from '../models/File';
 import SearchManifestationService from '../services/SearchManifestationService';
 import GeolocationService from '../services/GeolocationService';
 
@@ -66,7 +68,7 @@ class ManifestationController {
     let isProtocol = false;
 
     // checa se é um protocolo
-    if (idOrProtocol && idOrProtocol.match(/\d*-\d/)) {
+    if (idOrProtocol && idOrProtocol.match(/([a-z])\w+/)) {
       isProtocol = true;
     }
 
@@ -101,37 +103,47 @@ class ManifestationController {
 
   async save(req, res) {
     // Cria a manifestação e salva no banco
-    const { categories_id, ...data } = req.body;
+    const { categories_id, files_id, ...data } = req.body;
+
+    // caso o token informado seja de um usuário que não existe
+    const user = await User.findByPk(req.user_id);
+    if (!user) {
+      return res.status(401).json({ error: 'Esse usuário não existe' });
+    }
 
     let manifestation;
 
     const geolocationData = await GeolocationService.run(data);
     const formattedData = { ...data, ...geolocationData };
-
     try {
       manifestation = await Manifestation.create({
         ...formattedData,
         user_id: req.user_id,
       });
     } catch (error) {
-      // é possivel que ocorra um erro se o token estiver invalido
       console.error(error);
       return res.status(500).json({ error: 'Erro interno no servidor' });
     }
 
-    // adicionar as categorias
+    // adicionar as categorias e arquivos
     try {
-      if (categories_id && categories_id.length > 0) {
+      if (categories_id && categories_id.length) {
         await manifestation.setCategories(categories_id);
+      }
+
+      if (files_id && files_id.length) {
+        await manifestation.setFiles(files_id);
       }
     } catch (error) {
       manifestation.destroy();
-      console.log(error);
+
+      if (files_id.length) {
+        await File.destroy({ where: { id: files_id } });
+      }
+
       return res.status(500).json({ error: 'Erro interno no servidor' });
     }
 
-    // o protocolo não foi gerado ainda, portanto ele fica 0
-    delete manifestation.dataValues.protocol;
     return res.status(200).json(manifestation);
   }
 
