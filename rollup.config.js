@@ -29,5 +29,7 @@ export default {
     'express-handlebars',
     'util',
     'path',
+    'multer',
+    'crypto',
   ],
 };

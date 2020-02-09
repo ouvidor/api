@@ -240,8 +240,8 @@ _requisição_:
   "description": "Essa manifestação tem um local",
   "categories_id": [1],
   "type_id": 1,
-  "latitude": -22.9242297,
-  "longitude": -42.0406372
+  "latitude": -22.9230097,
+  "longitude": -42.9230097
 }
 ```
 
@@ -253,12 +253,13 @@ _retorna_:
   "title": "Local",
   "description": "Essa manifestação tem um local",
   "type_id": 1,
-  "latitude": -22.9242297,
-  "longitude": -42.0406372,
-  "location": "Rua da Restinga, Foguete",
+  "latitude": -22.9230097,
+  "longitude": -42.9230097,
+  "location": "Rua Inglaterra, Cabo Frio",
   "user_id": 1,
-  "updated_at": "2019-11-21T22:32:24.902Z",
-  "created_at": "2019-11-21T22:32:24.902Z"
+  "updated_at": "2020-02-09T15:54:11.342Z",
+  "created_at": "2020-02-09T15:54:11.342Z",
+  "protocol": "k6f7ju38"
 }
 ```
 
