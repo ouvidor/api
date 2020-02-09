@@ -2,11 +2,10 @@
  * O ErrorHandler.js implementa a manipulação de erros padrão do Express JS, é utilizado como um
  * Midleware, mais informações ----> https://expressjs.com/pt-br/guide/error-handling.html
  *
- * Atenção, o error handler do express apenas trata problemas ocorridos nas rotas ou midlewares, erros
- * de libs ou eventos não tratados devem ser tratados de forma diferente.
+ * Atenção, o error handler do express apenas trata problemas ocorridos nas rotas ou midlewares.
  *
  * Para adicionar um novo tratamento de erro, deve se atentar ao codigo de erro reportado quando acontecer uma
- * exceção, toda vez que um erro ocorrer e não estiver mapeado, a linha 13 desse arquivo será executada
+ * exceção, toda vez que um erro ocorrer e não estiver mapeado, a linha 16 desse arquivo será executada
  * informando qual o codigo do erro ocorrido, com isso é só criar mais um case e tratar o erro
  * individualmente.
  *
@@ -31,9 +30,6 @@ class ErrorHandler {
 
   async genericErrorHandler(err) {
     switch (err.message) {
-      // case "I can't accept more than 5 connections as the same user":
-      //   console.log('numero maximo de conexões ao servidor FTP');
-      //   break;
       default:
         console.log('Erro generico sem tratamento definido');
         console.log(`Codigo do erro:${err.code}`);

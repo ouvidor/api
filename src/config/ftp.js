@@ -22,6 +22,6 @@ module.exports = {
         cb(null, `${file.fieldname}-${Date.now()}.${extension}`);
       },
     }),
-    limits: { fileSize: 8000 * 1024 },
+    limits: { fileSize: process.env.MAX_FILE_SIZE * 1024 },
   },
 };

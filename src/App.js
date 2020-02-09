@@ -7,6 +7,9 @@ import './bootstrap';
 import express from 'express';
 import cors from 'cors';
 import ErrorHandler from './app/middlewares/ErrorHandler';
+import fs from 'fs';
+import path from 'path';
+
 // inicia a instancia do Sequelize, fazendo a conexão com o Database
 import './database';
 
@@ -19,6 +22,7 @@ class App {
 
     this.config();
     this.routes();
+    this.clearTempFolder();
   }
 
   // middlewares de configuração
@@ -45,6 +49,19 @@ class App {
 
     // Todas exceções não tratadas caem aqui
     // process.on('uncaughtException', ErrorHandler.genericErrorHandler);
+  }
+
+  // Garante que o diretório temp vai estarr sempre vazio
+  clearTempFolder() {
+    fs.readdir(`${process.cwd()}/temp/`, (err, files) => {
+      if (err) throw err;
+
+      for (const file of files) {
+        fs.unlink(path.join(`${process.cwd()}/temp/`, file), err => {
+          if (err) throw err;
+        });
+      }
+    });
   }
 }
 

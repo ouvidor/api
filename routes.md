@@ -304,6 +304,8 @@ O corpo para envio dessa requisição se da através de um Multipart From na seg
 
 Para que o envio ocorra com sucesso, o token de autenticação deve ser do **AUTOR** da manifestação, ou de algum usuário com role **ADMIN** ou **MASTER**
 
+## _**ATENÇÃO, devido as limitações da solução gratis de host FTP que estamos usando (000webhost), existe um numero limitado de conexões simultaneas, por favor evitar multiplos uploads em um intervalo de tempo muito curto, ex: 5 uploads em 20 segundos**_
+
 exemplo de retorno:
 
 ```json
