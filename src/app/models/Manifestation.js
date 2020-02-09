@@ -4,10 +4,7 @@ class Manifestation extends Model {
   static init(sequelize) {
     super.init(
       {
-        protocol: {
-          defaultValue: 0,
-          type: Sequelize.STRING,
-        },
+        protocol: Sequelize.STRING,
         title: Sequelize.STRING,
         description: Sequelize.TEXT,
         read: Sequelize.TINYINT,
@@ -24,19 +21,10 @@ class Manifestation extends Model {
       }
     );
 
-    // criação do protocolo. exemplo: 2019125-52
-    this.addHook('afterCreate', async manifestation => {
-      const date = new Date();
-      const year = date.getFullYear() % 100; // ultimos dois digitos
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-      const number = manifestation.id % 10000; // ultimos 4 números
-      const protocol = `${year}${month}${day}-${number}`;
-
-      return Manifestation.update(
-        { protocol },
-        { where: { id: manifestation.id } }
-      );
+    // criação do protocolo. exemplo: k6f2uhi9
+    this.addHook('beforeSave', async manifestation => {
+      // converte o tempo UNIX em Base36
+      manifestation.protocol = Date.now().toString(36);
     });
 
     return this;
@@ -61,6 +49,12 @@ class Manifestation extends Model {
     this.belongsToMany(models.Category, {
       through: 'manifestation_category',
       as: 'categories',
+      foreignKey: 'manifestation_id',
+      constraints: false,
+    });
+    this.belongsToMany(models.File, {
+      through: 'manifestation_file',
+      as: 'files',
       foreignKey: 'manifestation_id',
       constraints: false,
     });

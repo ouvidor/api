@@ -23,6 +23,15 @@ class File extends Model {
 
     return this;
   }
+
+  static associate(models) {
+    this.belongsToMany(models.Manifestation, {
+      through: 'manifestation_category',
+      as: 'manifestation',
+      foreignKey: 'file_id',
+      constraints: false,
+    });
+  }
 }
 
 export default File;
