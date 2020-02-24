@@ -6,6 +6,7 @@
 import './bootstrap';
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import { resolve } from 'path';
 
 // inicia a instancia do Sequelize, fazendo a conexão com o Database
@@ -27,15 +28,14 @@ class App {
     // permite intenficação de json nas rotas
     this.server.use(express.json());
 
+    // Previne Cross-site scripting, remove o X-Powered-By e muitas outras coisas
+    this.server.use(helmet());
+
     // CORS permite acesso de qualquer ip à API
     this.server.use(cors());
 
     // nessecario para que ao receber uma requisição com JSON, consiga ler ele como objeto sem problemas
     this.server.use(express.urlencoded({ extended: true }));
-
-    // exclui o 'x-powered-by' da Header, por motivos de segurança
-    // isso permitia que a pessoa acessando soubesse o framework usado no server
-    this.server.disable('x-powered-by');
 
     this.server.use(
       '/files',
