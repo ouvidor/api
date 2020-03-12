@@ -1,10 +1,10 @@
 import Manifestation from '../models/Manifestation';
-import Category from '../models/Category';
-import Type from '../models/Type';
 import User from '../models/User';
 import File from '../models/File';
 import SearchManifestationService from '../services/SearchManifestationService';
 import GeolocationService from '../services/GeolocationService';
+
+import manifestationIncludes from '../utils/manifestationIncludes';
 
 class ManifestationController {
   async fetch(req, res) {
@@ -32,21 +32,7 @@ class ManifestationController {
     } else {
       // pesquisa por todas as manifestações
       manifestations = await Manifestation.findAndCountAll({
-        include: [
-          {
-            model: Category,
-            as: 'categories',
-            // só pega o id e o título
-            attributes: ['id', 'title'],
-            // a linha abaixo previne que venham informações desnecessárias
-            through: { attributes: [] },
-          },
-          {
-            model: Type,
-            as: 'type',
-            attributes: ['id', 'title'],
-          },
-        ],
+        include: manifestationIncludes,
         // caso receba isRead, pesquisa apenas por manifestações lidas
         ...(!isRead && { where: { read: 0 } }),
         limit: 10,
@@ -77,21 +63,7 @@ class ManifestationController {
         // decide se busca por protocolo ou id
         ...(isProtocol ? { protocol: idOrProtocol } : { id: idOrProtocol }),
       },
-      include: [
-        {
-          model: Category,
-          as: 'categories',
-          // só pega o id e o título
-          attributes: ['id', 'title'],
-          // a linha abaixo previne que venham informações desnecessárias
-          through: { attributes: [] },
-        },
-        {
-          model: Type,
-          as: 'type',
-          attributes: ['id', 'title'],
-        },
-      ],
+      include: manifestationIncludes,
     });
 
     if (!manifestation) {
