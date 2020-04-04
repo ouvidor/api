@@ -23,12 +23,12 @@ class AuthController {
 
     // caso não exista
     if (!user) {
-      return res.status(401).json({ error: 'Usuário não encontrado' });
+      return res.status(401).json({ error: 'Email ou senha incorretos' });
     }
 
     // Checa se a senha está correta
     if (!(await user.checkPassword(req.body.password))) {
-      return res.status(401).json({ error: 'Senha incorreta' });
+      return res.status(401).json({ error: 'Email ou senha incorretos' });
     }
 
     const { id, first_name, last_name, email, role } = user;
