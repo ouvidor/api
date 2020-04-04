@@ -19,6 +19,8 @@ import SecretaryController from './app/controller/secretary.controller';
 import MailController from './app/controller/mail.controller';
 import ManifestationStatusHistoryController from './app/controller/manifestationStatusHistory.controller';
 import FileController from './app/controller/file.controller';
+import OmbudsmanController from './app/controller/ombudsman.controller';
+import PrefectureController from './app/controller/prefecture.controller';
 
 // middleware usado apenas em Tests
 import setupDbInitialData from './app/middlewares/initialDbSetupForTests';
@@ -35,7 +37,8 @@ import GenericValidator from './app/middlewares/validators/Generic';
 import RoleValidation from './app/middlewares/validators/Role';
 import SecretaryValidator from './app/middlewares/validators/Secretary';
 import MailValidator from './app/middlewares/validators/Mail';
-import ManifestationStatusHistoryValidor from './app/middlewares/validators/ManifestationStatusHistory';
+import ManifestationStatusHistoryValidator from './app/middlewares/validators/ManifestationStatusHistory';
+import PrefectureAndOmbudsmanValidator from './app/middlewares/validators/PrefectureAndOmbudsman';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
@@ -67,6 +70,9 @@ router.use(AuthMiddleware);
  * Rotas privadas
  * necessário um Token
  */
+router.get('/ombudsman', OmbudsmanController.fetch);
+router.get('/prefecture', PrefectureController.fetch);
+
 router.post('/files', upload.array('file'), FileController.save);
 router.post(
   '/manifestation',
@@ -121,12 +127,12 @@ router.get(
 );
 router.post(
   '/manifestation/:manifestationId/status',
-  ManifestationStatusHistoryValidor.save,
+  ManifestationStatusHistoryValidator.save,
   ManifestationStatusHistoryController.save
 );
 router.put(
   '/manifestation/status/:id',
-  ManifestationStatusHistoryValidor.update,
+  ManifestationStatusHistoryValidator.update,
   ManifestationStatusHistoryController.update
 );
 
@@ -136,6 +142,17 @@ router.post('/email', MailValidator, MailController.send);
  * Rotas de Admin Master
  */
 router.use(RolesMiddleware.adminMaster);
+
+router.put(
+  '/ombudsman',
+  PrefectureAndOmbudsmanValidator.update,
+  OmbudsmanController.update
+);
+router.put(
+  '/prefecture',
+  PrefectureAndOmbudsmanValidator.update,
+  PrefectureController.update
+);
 
 router.post('/category', GenericValidator.save, CategoryController.save);
 router.put('/category/:id', GenericValidator.update, CategoryController.update);

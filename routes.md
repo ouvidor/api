@@ -121,6 +121,100 @@ _retorna_:
 
 ## Autenticação necessária
 
+### prefecture
+
+- **GET** `prefecture`: retorna os dados da prefeitura que estão na tabela `prefecture`.
+
+```json
+{
+  "id": 1,
+  "location": "Centro",
+  "telephone": "(22)1010-1010",
+  "email": "prefeitura@prefeitura.com",
+  "site": "www.google.com",
+  "attendance": "24 horas por dia, todos os dias",
+  "created_at": "2020-04-04T18:12:16.000Z",
+  "updated_at": "2020-04-04T18:14:47.118Z"
+}
+```
+
+- **PUT** `prefecture`: atualiza os dados na tabela `prefecture`.
+
+_requisição_
+
+```json
+{
+  "id": 1,
+  "location": "Centro",
+  "telephone": "(22)1010-1010",
+  "email": "prefeitura@prefeitura.com",
+  "site": "www.google.com",
+  "attendance": "24 horas por dia, todos os dias"
+}
+```
+
+_retorna_
+
+```json
+{
+  "id": 1,
+  "location": "Centro",
+  "telephone": "(22)1010-1010",
+  "email": "prefeitura@prefeitura.com",
+  "site": "www.google.com",
+  "attendance": "24 horas por dia, todos os dias",
+  "created_at": "2020-04-04T18:12:16.000Z",
+  "updated_at": "2020-04-04T18:14:47.118Z"
+}
+```
+
+### ombudsman
+
+- **GET** `ombudsman`: retorna os dados da prefeitura que estão na tabela `ombudsman`.
+
+```json
+{
+  "id": 1,
+  "location": "Centro",
+  "telephone": "(22)1010-1010",
+  "email": "prefeitura@prefeitura.com",
+  "site": "www.google.com",
+  "attendance": "24 horas por dia, todos os dias",
+  "created_at": "2020-04-04T18:12:16.000Z",
+  "updated_at": "2020-04-04T18:14:47.118Z"
+}
+```
+
+- **PUT** `ombudsman`: atualiza os dados na tabela `ombudsman`.
+
+_requisição_
+
+```json
+{
+  "id": 1,
+  "location": "Centro",
+  "telephone": "(22)1010-1010",
+  "email": "prefeitura@prefeitura.com",
+  "site": "www.google.com",
+  "attendance": "24 horas por dia, todos os dias"
+}
+```
+
+_retorna_
+
+```json
+{
+  "id": 1,
+  "location": "Centro",
+  "telephone": "(22)1010-1010",
+  "email": "prefeitura@prefeitura.com",
+  "site": "www.google.com",
+  "attendance": "24 horas por dia, todos os dias",
+  "created_at": "2020-04-04T18:12:16.000Z",
+  "updated_at": "2020-04-04T18:14:47.118Z"
+}
+```
+
 ### files
 
 - **POST** `files`: faz upload de arquivos, esses arquivos ficam temporariamente em uma pasta chamada `tmp/uploads/` e ficam permanentemente na tabela _files_.
