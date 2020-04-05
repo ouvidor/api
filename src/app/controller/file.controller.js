@@ -41,6 +41,7 @@ class FileController {
 
   // Realiza o upload de um arquivo para o servidor FTP
   async upload(req, res, next) {
+    console.log('upload');
     const { manifestation_id } = req.body;
     const { file } = req; // Pega o arquivo que o multer(middleware) tratou e colocou na req
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload

@@ -13,12 +13,15 @@ import Status from '../app/models/Status';
 import Role from '../app/models/Role';
 import Secretary from '../app/models/Secretary';
 import File from '../app/models/File';
+import Ombudsman from '../app/models/Ombudsman';
+import Prefecture from '../app/models/Prefecture';
 import setupDbInitialData from '../app/utils/setupDbInitialData';
 
 require('dotenv');
 
 // a ordem é importante
 const models = [
+  File,
   User,
   Type,
   Status,
@@ -27,7 +30,8 @@ const models = [
   Role,
   Manifestation,
   ManifestationStatusHistory,
-  File,
+  Ombudsman,
+  Prefecture,
 ];
 
 class Database {

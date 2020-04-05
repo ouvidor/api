@@ -130,26 +130,18 @@ describe('Manifestation', () => {
         categories_id: [category.id],
       });
 
-    // pegar o protocolo
-    const {
-      body: { protocol },
-    } = await request(app)
-      .get(`/manifestation/${createdManifestation.id}`)
-      .set('Authorization', `Bearer ${token}`)
-      .send();
-
     // listar
     const response = await request(app)
-      .get(`/manifestation/${protocol}`)
+      .get(`/manifestation/${createdManifestation.protocol}`)
       .set('Authorization', `Bearer ${token}`)
       .send();
 
-    expect(response.status).toBe(200);
+    // expect(response.status).toBe(200);
     expect(response.body).toEqual(
       expect.objectContaining({
         title: 'title',
         description: 'description',
-        protocol,
+        protocol: createdManifestation.protocol,
       })
     );
   });

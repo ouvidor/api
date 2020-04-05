@@ -10,3 +10,8 @@ __tests__/coverage
 
 #ignora a pasta de build
 build
+
+#ignora todos arquivos temporários
+/tmp
+
+.prettierrc

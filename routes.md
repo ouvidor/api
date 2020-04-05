@@ -123,6 +123,131 @@ _retorna_:
 
 ## Autenticação necessária
 
+### prefecture
+
+- **GET** `prefecture`: retorna os dados da prefeitura que estão na tabela `prefecture`.
+
+```json
+{
+  "id": 1,
+  "location": "Centro",
+  "telephone": "(22)1010-1010",
+  "email": "prefeitura@prefeitura.com",
+  "site": "www.google.com",
+  "attendance": "24 horas por dia, todos os dias",
+  "created_at": "2020-04-04T18:12:16.000Z",
+  "updated_at": "2020-04-04T18:14:47.118Z"
+}
+```
+
+- **PUT** `prefecture`: atualiza os dados na tabela `prefecture`.
+
+_requisição_
+
+```json
+{
+  "id": 1,
+  "location": "Centro",
+  "telephone": "(22)1010-1010",
+  "email": "prefeitura@prefeitura.com",
+  "site": "www.google.com",
+  "attendance": "24 horas por dia, todos os dias"
+}
+```
+
+_retorna_
+
+```json
+{
+  "id": 1,
+  "location": "Centro",
+  "telephone": "(22)1010-1010",
+  "email": "prefeitura@prefeitura.com",
+  "site": "www.google.com",
+  "attendance": "24 horas por dia, todos os dias",
+  "created_at": "2020-04-04T18:12:16.000Z",
+  "updated_at": "2020-04-04T18:14:47.118Z"
+}
+```
+
+### ombudsman
+
+- **GET** `ombudsman`: retorna os dados da prefeitura que estão na tabela `ombudsman`.
+
+```json
+{
+  "id": 1,
+  "location": "Centro",
+  "telephone": "(22)1010-1010",
+  "email": "prefeitura@prefeitura.com",
+  "site": "www.google.com",
+  "attendance": "24 horas por dia, todos os dias",
+  "created_at": "2020-04-04T18:12:16.000Z",
+  "updated_at": "2020-04-04T18:14:47.118Z"
+}
+```
+
+- **PUT** `ombudsman`: atualiza os dados na tabela `ombudsman`.
+
+_requisição_
+
+```json
+{
+  "id": 1,
+  "location": "Centro",
+  "telephone": "(22)1010-1010",
+  "email": "prefeitura@prefeitura.com",
+  "site": "www.google.com",
+  "attendance": "24 horas por dia, todos os dias"
+}
+```
+
+_retorna_
+
+```json
+{
+  "id": 1,
+  "location": "Centro",
+  "telephone": "(22)1010-1010",
+  "email": "prefeitura@prefeitura.com",
+  "site": "www.google.com",
+  "attendance": "24 horas por dia, todos os dias",
+  "created_at": "2020-04-04T18:12:16.000Z",
+  "updated_at": "2020-04-04T18:14:47.118Z"
+}
+```
+
+### files
+
+- **POST** `files`: faz upload de arquivos, esses arquivos ficam temporariamente em uma pasta chamada `tmp/uploads/` e ficam permanentemente na tabela _files_.
+
+_requisição_:
+
+Um Multipart Form Data, que deve conter 1 ou mais campos `file` e recebe um arquivo.
+
+_retorna_:
+
+```json
+[
+  {
+    "url": "http://127.0.0.1:3003/files/c322b14af33436685e53aaf234be2004.txt",
+    "id": 15,
+    "name": "Texto.txt",
+    "path": "c322b14af33436685e53aaf234be2004.txt",
+    "created_at": "2020-02-08T16:55:57.331Z",
+    "updated_at": "2020-02-08T16:55:57.331Z"
+  },
+  {
+    "url": "http://127.0.0.1:3003/files/9d6c4cc7fe93c42aceb2169de74d5f43.pdf",
+    "id": 16,
+    "name": "Documento.pdf",
+    "path": "9d6c4cc7fe93c42aceb2169de74d5f43.pdf",
+    "created_at": "2020-02-08T16:55:57.331Z",
+    "updated_at": "2020-02-08T16:55:57.331Z"
+  }
+]
+```
+
 ### manifestation
 
 - **GET** `manifestation/`: retorna todos os registros da tabela _manifestations_.
@@ -211,8 +336,8 @@ _requisição_:
   "description": "Essa manifestação tem um local",
   "categories_id": [1],
   "type_id": 1,
-  "latitude": -22.9242297,
-  "longitude": -42.0406372
+  "latitude": -22.9230097,
+  "longitude": -42.9230097
 }
 ```
 
@@ -224,12 +349,13 @@ _retorna_:
   "title": "Local",
   "description": "Essa manifestação tem um local",
   "type_id": 1,
-  "latitude": -22.9242297,
-  "longitude": -42.0406372,
-  "location": "Rua da Restinga, Foguete",
+  "latitude": -22.9230097,
+  "longitude": -42.9230097,
+  "location": "Rua Inglaterra, Cabo Frio",
   "user_id": 1,
-  "updated_at": "2019-11-21T22:32:24.902Z",
-  "created_at": "2019-11-21T22:32:24.902Z"
+  "updated_at": "2020-02-09T15:54:11.342Z",
+  "created_at": "2020-02-09T15:54:11.342Z",
+  "protocol": "k6f7ju38"
 }
 ```
 

@@ -5,6 +5,9 @@
 import { Router } from 'express';
 import Multer from 'multer';
 
+import multer from 'multer';
+import multerConfig from './config/multer';
+
 // controllers
 import UserController from './app/controller/user.controller';
 import AuthController from './app/controller/auth.controller';
@@ -16,7 +19,9 @@ import RoleController from './app/controller/role.controller';
 import SecretaryController from './app/controller/secretary.controller';
 import MailController from './app/controller/mail.controller';
 import ManifestationStatusHistoryController from './app/controller/manifestationStatusHistory.controller';
-import fileController from './app/controller/file.controller';
+import FileController from './app/controller/file.controller';
+import OmbudsmanController from './app/controller/ombudsman.controller';
+import PrefectureController from './app/controller/prefecture.controller';
 
 // middleware usado apenas em Tests
 import setupDbInitialData from './app/middlewares/initialDbSetupForTests';
@@ -33,8 +38,10 @@ import GenericValidator from './app/middlewares/validators/Generic';
 import RoleValidation from './app/middlewares/validators/Role';
 import SecretaryValidator from './app/middlewares/validators/Secretary';
 import MailValidator from './app/middlewares/validators/Mail';
-import ManifestationStatusHistoryValidor from './app/middlewares/validators/ManifestationStatusHistory';
 import FTPValidator from './app/middlewares/validators/FTP';
+
+import ManifestationStatusHistoryValidator from './app/middlewares/validators/ManifestationStatusHistory';
+import PrefectureAndOmbudsmanValidator from './app/middlewares/validators/PrefectureAndOmbudsman';
 
 // configs
 import ftpConfig from './config/ftp';
@@ -71,6 +78,8 @@ router.use(AuthMiddleware);
  * Rotas privadas
  * necessário um Token
  */
+router.get('/ombudsman', OmbudsmanController.fetch);
+router.get('/prefecture', PrefectureController.fetch);
 
 router.post(
   '/manifestation',
@@ -103,10 +112,10 @@ router.get('/manifestation/:idOrProtocol', ManifestationController.show);
  * Rotas de File/FTP/Upload
  */
 
-router.post('/ftp/upload', upload.single('file'), fileController.upload);
-router.get('/ftp/download/:file_id', fileController.download);
-router.delete('/ftp/remove/:file_id', fileController.remove);
-router.get('/ftp/:manifestation_id', fileController.list);
+router.post('/ftp/upload', upload.single('file'), FileController.upload);
+router.get('/ftp/download/:file_id', FileController.download);
+router.delete('/ftp/remove/:file_id', FileController.remove);
+router.get('/ftp/:manifestation_id', FileController.list);
 
 /**
  * Rotas de Administrador
@@ -135,12 +144,12 @@ router.get(
 );
 router.post(
   '/manifestation/:manifestationId/status',
-  ManifestationStatusHistoryValidor.save,
+  ManifestationStatusHistoryValidator.save,
   ManifestationStatusHistoryController.save
 );
 router.put(
   '/manifestation/status/:id',
-  ManifestationStatusHistoryValidor.update,
+  ManifestationStatusHistoryValidator.update,
   ManifestationStatusHistoryController.update
 );
 
@@ -151,6 +160,17 @@ router.post('/email', MailValidator, MailController.send);
  * Rotas de Admin Master
  */
 router.use(RolesMiddleware.adminMaster);
+
+router.put(
+  '/ombudsman',
+  PrefectureAndOmbudsmanValidator.update,
+  OmbudsmanController.update
+);
+router.put(
+  '/prefecture',
+  PrefectureAndOmbudsmanValidator.update,
+  PrefectureController.update
+);
 
 router.post('/category', GenericValidator.save, CategoryController.save);
 router.put('/category/:id', GenericValidator.update, CategoryController.update);
