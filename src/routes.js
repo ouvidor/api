@@ -112,10 +112,10 @@ router.get('/manifestation/:idOrProtocol', ManifestationController.show);
  * Rotas de File/FTP/Upload
  */
 
-router.post('/ftp/upload', upload.single('file'), FileController.upload);
-router.get('/ftp/download/:file_id', FileController.download);
-router.delete('/ftp/remove/:file_id', FileController.remove);
-router.get('/ftp/:manifestation_id', FileController.list);
+router.post('/ftp/', upload.single('file'), FileController.upload);
+router.get('/ftp/:file_id', FileController.download);
+router.delete('/ftp/:file_id', FileController.remove);
+router.get('/ftp/list/:manifestation_id', FileController.list);
 
 /**
  * Rotas de Administrador

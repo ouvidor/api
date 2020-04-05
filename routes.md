@@ -389,7 +389,7 @@ _retorna_:
 
 ### FTP
 
-- **GET** `ftp/:manifestation_id`: retorna todos os arquivos associados à _manifestação_ buscada.
+- **GET** `ftp/list/:manifestation_id`: retorna todos os arquivos associados à _manifestação_ buscada.
 
 ```json
 {
@@ -419,7 +419,7 @@ _retorna_:
 }
 ```
 
-- **POST** `ftp/upload`: envia o arquivo selecionado para o servidor _FTP_ e o vincula a uma _manifestação_
+- **POST** `ftp/`: envia o arquivo selecionado para o servidor _FTP_ e o vincula a uma _manifestação_
 
 O corpo para envio dessa requisição se da através de um Multipart From na seguinte estrutura:
 | key | value | | | |
@@ -450,13 +450,13 @@ exemplo de retorno:
 }
 ```
 
-- **GET** `ftp/download/:file_id`: Realiza o download do arquivo escolhido.
+- **GET** `ftp/:file_id`: Realiza o download do arquivo escolhido.
 
 É necessário apenas informar o **ID** do arquivo no endereço e estar com o **TOKEN** de autenticação da pessoa que realizou o upload ou de algum usuário com role **ADMIN** ou **MASTER**.
 
 O retorno é o arquivo para download...
 
-- **DELETE** `ftp/remove/:file_id`: Realiza a exclusão do arquivo do servidor FTP e das ligações que o mesmo possua com manifestações.
+- **DELETE** `ftp/:file_id`: Realiza a exclusão do arquivo do servidor FTP e das ligações que o mesmo possua com manifestações.
 
 É necessário apenas informar o **ID** do arquivo no endereço e estar com o **TOKEN** de autenticação da pessoa que realizou o upload ou de algum usuário com role **ADMIN** ou **MASTER**.
 
@@ -477,12 +477,6 @@ exemplo de retorno:
   }
 }
 ```
-
-- **GET** `ftp/download/:file_id`: Realiza o download do arquivo escolhido.
-
-É necessário apenas informar o **ID** do arquivo no endereço e estar com o **TOKEN** de autenticação da pessoa que realizou o upload ou de algum usuário com role **ADMIN** ou **MASTER**.
-
-O retorno é o arquivo para download...
 
 ---
 
