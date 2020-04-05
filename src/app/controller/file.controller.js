@@ -9,12 +9,14 @@
 /**
  * TODO:
  *  - Limitar a quantidade de arquivos que uma manifestação pode ter.
- *  - Filtrar os mimetype (escolher quais tipos de arquivos podem ser enviados).
+ *  - Filtrar os arquivos por extensão (escolher quais tipos de arquivos podem ser enviados).
  *  - Verificar o Remove dos arquivos, tratar algumas exceções, upload e download estão prontos praticamente
  */
 
 import Ftp from 'ftp';
-import fs from 'fs';
+import fileSystem from 'fs';
+import { extname } from 'path';
+
 import ftpConfig from '../../config/ftp';
 import User from '../models/User';
 import Manifestation from '../models/Manifestation';
@@ -28,8 +30,9 @@ import File from '../models/File';
 // chamada sempre que um upload terminar pois limpa o cache local do folder da apliucação.
 function deleteTempFile(file) {
   if (file) {
-    fs.unlink(`${process.cwd()}/temp/${file.filename}`, err => {
-      if (err) throw err;
+    fileSystem.unlink(`${process.cwd()}/temp/${file.filename}`, error => {
+      if (error) throw error;
+      console.log(`Arquivo ${file.filename} deletado!`);
     });
   }
 }
@@ -40,7 +43,7 @@ class FileController {
    */
 
   // Realiza o upload de um arquivo para o servidor FTP
-  async upload(req, res, next) {
+  async save(req, res, next) {
     console.log('upload');
     const { manifestation_id } = req.body;
     const { file } = req; // Pega o arquivo que o multer(middleware) tratou e colocou na req
@@ -76,17 +79,17 @@ class FileController {
       console.log('conectando no ftp...');
       const c = new Ftp();
       await new Promise((resolve, reject) => {
-        c.connect(ftpConfig.ftpServerConfig, err => {
-          if (err) {
-            next(err);
+        c.connect(ftpConfig, connError => {
+          if (connError) {
+            next(connError);
           }
         });
         c.on('ready', () => {
           console.log('Conexão estabelecida com sucesso!');
 
-          // Muda o diretório sendo utilizado para tmp que é uma pasta padrão do server ftp escolhido
-          c.cwd('tmp', () => {
-            console.log('diretório de trabalho alterado para tmp');
+          // Muda o diretório sendo utilizado para temp que é uma pasta padrão do server ftp escolhido
+          c.cwd('temp', () => {
+            console.log('diretório de trabalho alterado para temp');
 
             // checa se ja existe um folder para essa manifestação
             c.list((err, list) => {
@@ -98,12 +101,13 @@ class FileController {
               });
               // Se o folder não existir é criado
               if (!folderExist) {
-                c.mkdir('' + manifestation_id, err => {
-                  if (err) {
-                    console.log(err);
-                    res
-                      .status(500)
-                      .send({ message: 'falha ao criar diretório', err });
+                c.mkdir('' + manifestation_id, mkdirError => {
+                  if (mkdirError) {
+                    console.log(mkdirError);
+                    res.status(500).send({
+                      message: 'falha ao criar diretório',
+                      err: mkdirError,
+                    });
                   }
                   // Muda o folder para o que foi criado
                   c.cwd('' + manifestation_id, () => {
@@ -111,11 +115,12 @@ class FileController {
                     c.put(
                       '' + process.cwd() + '/temp/' + file.filename,
                       `${file.filename}`,
-                      err => {
-                        if (err) {
-                          res
-                            .status(500)
-                            .send({ message: 'falha ao realizar upload', err });
+                      putError => {
+                        if (putError) {
+                          res.status(500).send({
+                            message: 'falha ao realizar upload',
+                            err: putError,
+                          });
                         }
                         c.end();
                         resolve('ok');
@@ -132,11 +137,12 @@ class FileController {
                   c.put(
                     '' + process.cwd() + '/temp/' + file.filename,
                     `${file.filename}`,
-                    err => {
-                      if (err) {
-                        res
-                          .status(500)
-                          .send({ message: 'falha ao realizar upload', err });
+                    putError => {
+                      if (putError) {
+                        res.status(500).send({
+                          message: 'falha ao realizar upload',
+                          err: putError,
+                        });
                       }
                       c.end();
                       resolve('ok');
@@ -158,7 +164,7 @@ class FileController {
 
       // Se chegar até aqui quer dizer que o upload do arquivo foi um sucesso, agora salvaremos a referencia no banco com o model File
       try {
-        const [type, extension] = req.file.mimetype.split('/');
+        const extension = extname(req.file.originalname);
         const data = {
           file_name: req.file.originalname,
           file_name_in_server: req.file.filename,
@@ -186,7 +192,7 @@ class FileController {
   }
 
   // Usa a api como proxy e encaminha a stream do arquivo no servidor FTP para o requisitante
-  async download(req, res) {
+  async show(req, res) {
     const { file_id } = req.params;
     const file = await File.findByPk(file_id);
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
@@ -221,18 +227,18 @@ class FileController {
       console.log('conectando no servidor ftp...');
       const c = new Ftp();
       await new Promise(() => {
-        c.connect(ftpConfig.ftpServerConfig);
+        c.connect(ftpConfig);
         c.on('ready', () => {
           console.log('Conexão estabelecida com sucesso!');
 
           // Muda o diretório sendo utilizado para pasta em que o arquivo se encontra
-          c.cwd('tmp/' + file.ManifestationId, err => {
+          c.cwd('temp/' + file.ManifestationId, err => {
             if (err) throw err;
             console.log(
-              'diretório de trabalho alterado para tmp/' + file.ManifestationId
+              'diretório de trabalho alterado para temp/' + file.ManifestationId
             );
-            c.get(file.file_name_in_server, (err, stream) => {
-              if (err) throw err;
+            c.get(file.file_name_in_server, (getError, stream) => {
+              if (getError) throw getError;
               /**
                * Caso tudo der certo termina na linha abaixo, a stream do arquivo é encaminhada
                * para quem fez a requisição
@@ -266,7 +272,7 @@ class FileController {
   }
 
   // Remove o arquivo do servidor FTP e remove as associações com a manifestação.
-  async remove(req, res) {
+  async delete(req, res) {
     const { file_id } = req.params;
     const file = await File.findByPk(file_id);
 
@@ -302,18 +308,18 @@ class FileController {
       console.log('conectando no ftp...');
       const c = new Ftp();
       await new Promise(() => {
-        c.connect(ftpConfig.ftpServerConfig);
+        c.connect(ftpConfig);
         c.on('ready', () => {
           console.log('Conexão estabelecida com sucesso!');
 
           // Muda o diretório sendo utilizado para pasta em que o arquivo se encontra
-          c.cwd('tmp/' + file.ManifestationId, err => {
+          c.cwd('temp/' + file.ManifestationId, err => {
             if (err) throw err;
             console.log(
-              'diretório de trabalho alterado para tmp/' + file.ManifestationId
+              'diretório de trabalho alterado para temp/' + file.ManifestationId
             );
-            c.delete(file.file_name_in_server, err => {
-              if (err) throw err;
+            c.delete(file.file_name_in_server, deleteError => {
+              if (deleteError) throw deleteError;
               console.log('Arquivo' + file.file_name_in_server + ' apagado');
               return res
                 .status(200)
@@ -333,7 +339,7 @@ class FileController {
   }
 
   // Lista todos os arquivos vinculados a manifestação escolhida para consulta
-  async list(req, res) {
+  async fetch(req, res) {
     const { manifestation_id } = req.params;
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
     const user_role = req.user_roles[0];

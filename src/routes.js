@@ -3,10 +3,7 @@
  */
 
 import { Router } from 'express';
-import Multer from 'multer';
-
 import multer from 'multer';
-import multerConfig from './config/multer';
 
 // controllers
 import UserController from './app/controller/user.controller';
@@ -44,13 +41,13 @@ import ManifestationStatusHistoryValidator from './app/middlewares/validators/Ma
 import PrefectureAndOmbudsmanValidator from './app/middlewares/validators/PrefectureAndOmbudsman';
 
 // configs
-import ftpConfig from './config/ftp';
+import multerConfig from './config/multer';
 
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
 
 // multer é usado como middleware nas rotas de Upload relacionadas ao módulo FTP
-const upload = Multer(ftpConfig.multerOptions);
+const upload = multer(multerConfig);
 
 // middleware para tests
 // esse middleware garante o setup inicial em todo test
@@ -112,10 +109,10 @@ router.get('/manifestation/:idOrProtocol', ManifestationController.show);
  * Rotas de File/FTP/Upload
  */
 
-router.post('/ftp/', upload.single('file'), FileController.upload);
-router.get('/ftp/:file_id', FileController.download);
-router.delete('/ftp/:file_id', FileController.remove);
-router.get('/ftp/list/:manifestation_id', FileController.list);
+router.post('/files/', upload.single('file'), FileController.save);
+router.get('/files/:file_id', FileController.show);
+router.delete('/files/:file_id', FileController.delete);
+router.get('/manifestation/:manifestation_id/files', FileController.fetch);
 
 /**
  * Rotas de Administrador

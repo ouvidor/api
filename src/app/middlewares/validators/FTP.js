@@ -10,10 +10,10 @@
  * o YUP
  */
 
-import { object, string, ref, mixed, number, array } from 'yup';
+import { object, string } from 'yup';
 
 class FTPValidator {
-  async download(request, response, next) {
+  async show(request, response, next) {
     try {
       const schema = object().shape({
         file_id: string().required('ID da Manifestação é necessário'),
