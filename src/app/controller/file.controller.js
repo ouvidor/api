@@ -37,6 +37,11 @@ function deleteTempFile(file) {
   }
 }
 
+async function deleteFileFromDatabase(id) {
+  const file = await File.findByPk(id);
+  file.destroy();
+}
+
 class FileController {
   /**
    *  Funções usadas em rotas
@@ -99,6 +104,8 @@ class FileController {
               list.forEach(folder => {
                 folderExist = folder.name === manifestation_id;
               });
+              console.log(list);
+
               // Se o folder não existir é criado
               if (!folderExist) {
                 c.mkdir('' + manifestation_id, mkdirError => {
@@ -255,7 +262,6 @@ class FileController {
               );
 
               console.log('Encaminhando Stream de dados para Resposta....');
-
               return stream.pipe(res);
             }); // fim do get
           }); // fim do cwd
@@ -321,6 +327,7 @@ class FileController {
             c.delete(file.file_name_in_server, deleteError => {
               if (deleteError) throw deleteError;
               console.log('Arquivo' + file.file_name_in_server + ' apagado');
+              deleteFileFromDatabase(file_id);
               return res
                 .status(200)
                 .json({ message: 'arquivo apagado com sucesso', file });
