@@ -1,5 +1,4 @@
 // A regra do eslint abaixo é importante
-/* eslint-disable prefer-template */
 /**
  * Arquivo responsavel por salvar temproariamente a imagem no folder 'temp', e envia-la para um servidor de arquivos remoto através de FTP.
  *
@@ -76,10 +75,14 @@ class FileController {
     }
 
     // Checa se quem fez a requisição é o dono da manifestação ou um administrador
-    const onwer = user.dataValues.id === manifestation.dataValues.user_id;
+    const isOwner = user.dataValues.id === manifestation.dataValues.user_id;
     const user_role = req.user_roles[0];
 
-    if (onwer || user_role.title === 'master' || user_role.title === 'admin') {
+    if (
+      isOwner ||
+      user_role.title === 'master' ||
+      user_role.title === 'admin'
+    ) {
       // INICIO DO UPLOAD -----------------
       await storage
         .bucket(bucketName)
@@ -93,7 +96,7 @@ class FileController {
         .catch(err => {
           console.log(err);
           return res.status(401).json({
-            message: { msg: 'erro ', err },
+            message: { msg: 'erro', err },
           });
         });
 
@@ -137,7 +140,7 @@ class FileController {
       });
     }
 
-    const onwer = user.dataValues.id === file.dataValues.UserId;
+    const isOwner = user.dataValues.id === file.dataValues.UserId;
     const user_role = req.user_roles[0];
 
     // checa se Usuário existe
@@ -146,7 +149,7 @@ class FileController {
     }
     // checa se é dono do arquivo ou um admin
     if (user_role.title !== 'master' || user_role.title !== 'admin') {
-      if (!onwer) {
+      if (!isOwner) {
         return res.status(401).json({
           message:
             'Não autorizado, apenas administradores e donos do arquivo podem acessa-lo',
@@ -167,7 +170,7 @@ class FileController {
       // O reader abaixo faz com que o arquivo seja encaminhado para download
       res.header(
         'Content-Disposition',
-        'attachment; filename=' + file.file_name
+        `attachment; filename=${file.file_name}`
       );
 
       // O header abaixo o encaminha como INLINE, ou seja, o aparelho pega os dados para exibir, ex: um pdf mandado como inline é exibido no navegador
