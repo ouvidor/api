@@ -13,14 +13,18 @@
  *  - Verificar o Remove dos arquivos, tratar algumas exceções, upload e download estão prontos praticamente
  */
 
-import Ftp from 'ftp';
+import { Storage } from '@google-cloud/storage';
 import fileSystem from 'fs';
 import { extname } from 'path';
-
-import ftpConfig from '../../config/ftp';
-import User from '../models/User';
-import Manifestation from '../models/Manifestation';
 import File from '../models/File';
+import Manifestation from '../models/Manifestation';
+import User from '../models/User';
+
+/**
+ * Constantes da classe
+ */
+
+const bucketName = 'ouvidor';
 
 /**
  * Funções usadas dentro da classe
@@ -37,23 +41,20 @@ function deleteTempFile(file) {
   }
 }
 
-async function deleteFileFromDatabase(id) {
-  const file = await File.findByPk(id);
-  file.destroy();
-}
-
 class FileController {
   /**
    *  Funções usadas em rotas
    */
 
   // Realiza o upload de um arquivo para o servidor FTP
-  async save(req, res, next) {
+  async save(req, res) {
     console.log('upload');
     const { manifestation_id } = req.body;
     const { file } = req; // Pega o arquivo que o multer(middleware) tratou e colocou na req
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
     const manifestation = await Manifestation.findByPk(manifestation_id); // manifestação que irá receber o arquivo
+
+    const storage = new Storage();
 
     // checa se essa manifestação existe.
     if (!manifestation) {
@@ -79,126 +80,51 @@ class FileController {
     const user_role = req.user_roles[0];
 
     if (onwer || user_role.title === 'master' || user_role.title === 'admin') {
-      // INICIO DO UPLOAD FTP -----------------
+      // INICIO DO UPLOAD -----------------
+      await storage
+        .bucket(bucketName)
+        .upload(`${process.cwd()}/temp/${req.file.filename}`, {
+          gzip: true,
 
-      console.log('conectando no ftp...');
-      const c = new Ftp();
-      await new Promise((resolve, reject) => {
-        c.connect(ftpConfig, connError => {
-          if (connError) {
-            next(connError);
-          }
-        });
-        c.on('ready', () => {
-          console.log('Conexão estabelecida com sucesso!');
-
-          // Muda o diretório sendo utilizado para temp que é uma pasta padrão do server ftp escolhido
-          c.cwd('temp', () => {
-            console.log('diretório de trabalho alterado para temp');
-
-            // checa se ja existe um folder para essa manifestação
-            c.list((err, list) => {
-              console.log('checando diretórios...');
-
-              let folderExist = false;
-              list.forEach(folder => {
-                folderExist = folder.name === manifestation_id;
-              });
-              console.log(list);
-
-              // Se o folder não existir é criado
-              if (!folderExist) {
-                c.mkdir('' + manifestation_id, mkdirError => {
-                  if (mkdirError) {
-                    console.log(mkdirError);
-                    res.status(500).send({
-                      message: 'falha ao criar diretório',
-                      err: mkdirError,
-                    });
-                  }
-                  // Muda o folder para o que foi criado
-                  c.cwd('' + manifestation_id, () => {
-                    // realiza o upload
-                    c.put(
-                      '' + process.cwd() + '/temp/' + file.filename,
-                      `${file.filename}`,
-                      putError => {
-                        if (putError) {
-                          res.status(500).send({
-                            message: 'falha ao realizar upload',
-                            err: putError,
-                          });
-                        }
-                        c.end();
-                        resolve('ok');
-                      }
-                    );
-                  });
-                });
-              }
-              // Se folder existir
-              else {
-                // Muda o folder para o da requisição
-                c.cwd('' + manifestation_id, () => {
-                  // realiza o upload
-                  c.put(
-                    '' + process.cwd() + '/temp/' + file.filename,
-                    `${file.filename}`,
-                    putError => {
-                      if (putError) {
-                        res.status(500).send({
-                          message: 'falha ao realizar upload',
-                          err: putError,
-                        });
-                      }
-                      c.end();
-                      resolve('ok');
-                    }
-                  );
-                });
-              } // fim se não existir
-            });
+          metadata: {
+            cacheControl: 'no-cache',
+          },
+        })
+        .catch(err => {
+          console.log(err);
+          return res.status(401).json({
+            message: { msg: 'erro ', err },
           });
         });
-        c.on('error', err => {
-          console.log(err);
-          reject(err);
-        });
-      });
-      c.end();
-      console.log('fechou a conexão');
-      // FIM DO UPLOAD FTP -----------------------
 
       // Se chegar até aqui quer dizer que o upload do arquivo foi um sucesso, agora salvaremos a referencia no banco com o model File
       try {
-        const extension = extname(req.file.originalname);
+        const extension = extname(file.originalname);
         const data = {
-          file_name: req.file.originalname,
-          file_name_in_server: req.file.filename,
+          file_name: file.originalname,
+          file_name_in_server: file.filename,
           extension,
         };
         const uploaded_file = await File.create(data);
         await uploaded_file.setUser(user);
         await uploaded_file.setManifestation(manifestation);
 
+        deleteTempFile(file);
+
         return res
           .status(200)
           .json({ message: 'Arquivo enviado com sucesso', uploaded_file });
       } catch (error) {
         console.log(error);
+        deleteTempFile(file);
+
         return res.status(500).json({ message: 'Erro', error });
       }
     }
-
-    deleteTempFile(req.file);
-
-    return res.status(401).json({
-      message:
-        'Não autorizado, apenas administradores e criadores da propria manifestação podem enviar anexos para a mesma',
-    });
+    return res.status(500).json({ message: 'Erro' });
   }
 
-  // Usa a api como proxy e encaminha a stream do arquivo no servidor FTP para o requisitante
+  // Usa a api como proxy e encaminha a stream do arquivo no servidor de arquivos para o requisitante
   async show(req, res) {
     const { file_id } = req.params;
     const file = await File.findByPk(file_id);
@@ -229,52 +155,37 @@ class FileController {
     }
 
     // Caso passe nas checagens, segue fluxo normal
-
     try {
-      console.log('conectando no servidor ftp...');
-      const c = new Ftp();
-      await new Promise(() => {
-        c.connect(ftpConfig);
-        c.on('ready', () => {
-          console.log('Conexão estabelecida com sucesso!');
+      console.log('conectando no servidor de arquivos...');
+      const storage = new Storage();
 
-          // Muda o diretório sendo utilizado para pasta em que o arquivo se encontra
-          c.cwd('temp/' + file.ManifestationId, err => {
-            if (err) throw err;
-            console.log(
-              'diretório de trabalho alterado para temp/' + file.ManifestationId
-            );
-            c.get(file.file_name_in_server, (getError, stream) => {
-              if (getError) throw getError;
-              /**
-               * Caso tudo der certo termina na linha abaixo, a stream do arquivo é encaminhada
-               * para quem fez a requisição
-               */
+      // Downloads the file
+      const remote_file = storage
+        .bucket(bucketName)
+        .file(file.file_name_in_server);
 
-              /**
-               * O Header abaixo serve para que o nome do arquivo seja definido corretamente remove-lo fara
-               * com que a stream de dados seja encaminhada para resposta mas com nome e extensão incorretos
-               */
+      // O reader abaixo faz com que o arquivo seja encaminhado para download
+      res.header(
+        'Content-Disposition',
+        'attachment; filename=' + file.file_name
+      );
 
-              res.header(
-                'Content-Disposition',
-                'attachment; filename=' + file.file_name
-              );
+      // O header abaixo o encaminha como INLINE, ou seja, o aparelho pega os dados para exibir, ex: um pdf mandado como inline é exibido no navegador
+      // res.header(
+      //   'Content-Disposition',
+      //   'attachment; filename=' + file.file_name
+      // );
 
-              console.log('Encaminhando Stream de dados para Resposta....');
-              return stream.pipe(res);
-            }); // fim do get
-          }); // fim do cwd
-        }); // fim do on
-      }); // fim da promise
+      return remote_file
+        .createReadStream()
+        .on('error', err => {
+          console.log(err);
+        })
+        .pipe(res);
     } catch (error) {
       console.log(error);
       return res.status(500).json({ message: 'Algo deu errado' }, error);
     }
-    return res.status(500).json({
-      message: 'Algo deu errado',
-      error: 'sem mensagem de erro para exibir',
-    });
   }
 
   // Remove o arquivo do servidor FTP e remove as associações com a manifestação.
@@ -311,38 +222,26 @@ class FileController {
     // Caso passe nas checagens, segue fluxo normal
 
     try {
-      console.log('conectando no ftp...');
-      const c = new Ftp();
-      await new Promise(() => {
-        c.connect(ftpConfig);
-        c.on('ready', () => {
-          console.log('Conexão estabelecida com sucesso!');
+      console.log('conectando no servidor de arquivos...');
+      const storage = new Storage();
 
-          // Muda o diretório sendo utilizado para pasta em que o arquivo se encontra
-          c.cwd('temp/' + file.ManifestationId, err => {
-            if (err) throw err;
-            console.log(
-              'diretório de trabalho alterado para temp/' + file.ManifestationId
-            );
-            c.delete(file.file_name_in_server, deleteError => {
-              if (deleteError) throw deleteError;
-              console.log('Arquivo' + file.file_name_in_server + ' apagado');
-              deleteFileFromDatabase(file_id);
-              return res
-                .status(200)
-                .json({ message: 'arquivo apagado com sucesso', file });
-            }); // fim do get
-          }); // fim do cwd
-        }); // fim do on
-      }); // fim da promise
+      // Deletes the file from the bucket
+      await storage
+        .bucket(bucketName)
+        .file(file.file_name_in_server)
+        .delete();
+
+      // Deleta arquivo do DB
+      file.destroy();
+
+      return res.status(200).json({
+        message: 'Arquivo excluido com sucesso',
+        file,
+      });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ message: 'Algo deu errado' }, error);
     }
-    return res.status(500).json({
-      message: 'Algo deu errado',
-      error: 'sem mensagem de erro para exibir',
-    });
   }
 
   // Lista todos os arquivos vinculados a manifestação escolhida para consulta
