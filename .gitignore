@@ -1,8 +1,10 @@
 /node_modules
 .env
+/temp
 
 # ignora banco sqlite gerado
 __tests__/database.sqlite
+__tests__/database.sqlite-journal
 
 # ignora interface gerada para do coverage dos tests
 __tests__/coverage
@@ -12,3 +14,7 @@ build
 
 #ignora todos arquivos temporários
 /tmp
+
+.prettierrc
+
+shareable-3a5bf6d23043.json

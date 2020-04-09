@@ -1,7 +1,7 @@
 /**
- * Migration da tabela relacional de manifestations e files
+ * Migration da tabela de files
  * Para gerar uma migration similar basta executar o comando:
- * yarn sequelize migration:create --name=manifestation_file
+ * yarn sequelize migration:create --name=create-user
  *
  * para rodar a migration para o banco de dados
  * yarn sequelize db:migrate
@@ -10,7 +10,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'manifestation_file',
+      'files',
       {
         id: {
           type: Sequelize.INTEGER,
@@ -18,14 +18,26 @@ module.exports = {
           autoIncrement: true,
           primaryKey: true,
         },
+        file_name: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        file_name_in_server: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        extension: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        user_id: {
+          type: Sequelize.INTEGER,
+          references: { model: 'users', key: 'id' },
+          onDelete: 'CASCADE',
+        },
         manifestation_id: {
           type: Sequelize.INTEGER,
           references: { model: 'manifestations', key: 'id' },
-          onDelete: 'CASCADE',
-        },
-        file_id: {
-          type: Sequelize.INTEGER,
-          references: { model: 'files', key: 'id' },
           onDelete: 'CASCADE',
         },
         created_at: {
@@ -42,6 +54,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('manifestation_file');
+    return queryInterface.dropTable('files');
   },
 };

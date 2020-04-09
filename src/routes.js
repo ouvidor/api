@@ -3,9 +3,7 @@
  */
 
 import { Router } from 'express';
-
 import multer from 'multer';
-import multerConfig from './config/multer';
 
 // controllers
 import UserController from './app/controller/user.controller';
@@ -37,11 +35,18 @@ import GenericValidator from './app/middlewares/validators/Generic';
 import RoleValidation from './app/middlewares/validators/Role';
 import SecretaryValidator from './app/middlewares/validators/Secretary';
 import MailValidator from './app/middlewares/validators/Mail';
+import FTPValidator from './app/middlewares/validators/FTP';
+
 import ManifestationStatusHistoryValidator from './app/middlewares/validators/ManifestationStatusHistory';
 import PrefectureAndOmbudsmanValidator from './app/middlewares/validators/PrefectureAndOmbudsman';
 
+// configs
+import multerConfig from './config/multer';
+
 // a classe Router cria manipuladores de rotas modulares e montáveis
 const router = new Router();
+
+// multer é usado como middleware nas rotas de Upload relacionadas ao módulo FTP
 const upload = multer(multerConfig);
 
 // middleware para tests
@@ -73,7 +78,6 @@ router.use(AuthMiddleware);
 router.get('/ombudsman', OmbudsmanController.fetch);
 router.get('/prefecture', PrefectureController.fetch);
 
-router.post('/files', upload.array('file'), FileController.save);
 router.post(
   '/manifestation',
   ManifestationValidator.save,
@@ -98,7 +102,17 @@ router.get(
   ManifestationValidator.fetch,
   ManifestationController.fetch
 );
+
 router.get('/manifestation/:idOrProtocol', ManifestationController.show);
+
+/**
+ * Rotas de File/FTP/Upload
+ */
+
+router.post('/files/', upload.single('file'), FileController.save);
+router.get('/files/:file_id', FileController.show);
+router.delete('/files/:file_id', FileController.delete);
+router.get('/manifestation/:manifestation_id/files', FileController.fetch);
 
 /**
  * Rotas de Administrador
@@ -138,6 +152,7 @@ router.put(
 
 router.post('/email', MailValidator, MailController.send);
 
+// A daqui serão rotas de Administradores
 /**
  * Rotas de Admin Master
  */

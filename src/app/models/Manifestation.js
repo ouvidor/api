@@ -52,12 +52,6 @@ class Manifestation extends Model {
       foreignKey: 'manifestation_id',
       constraints: false,
     });
-    this.belongsToMany(models.File, {
-      through: 'manifestation_file',
-      as: 'files',
-      foreignKey: 'manifestation_id',
-      constraints: false,
-    });
   }
 }
 

@@ -83,6 +83,8 @@ _retorna_:
 }
 ```
 
+---
+
 ### auth
 
 - **POST** `auth/`: Insere as credenciais e loga no sistema. Retorna um _Token_ _JWT_, esse _Token_ é usado para acessar as rotas autenticadas.
@@ -385,6 +387,99 @@ _retorna_:
 
 ---
 
+### FTP
+
+- **GET** `/manifestation/:manifestation_id/files`: retorna todos os arquivos associados à _manifestação_ buscada.
+
+```json
+{
+  "files": [
+    {
+      "id": 1,
+      "file_name": "BOLETO_149291630.pdf",
+      "file_name_in_server": "file-1578530595944.pdf",
+      "extension": "pdf",
+      "created_at": "2020-01-09T00:43:23.000Z",
+      "updated_at": "2020-01-09T00:43:23.000Z",
+      "ManifestationId": 1,
+      "UserId": 1
+    },
+    {
+      "id": 2,
+      "file_name": "meu joguito.mp4",
+      "file_name_in_server": "file-1578530815755.mp4",
+      "extension": "mp4",
+      "created_at": "2020-01-09T00:47:04.000Z",
+      "updated_at": "2020-01-09T00:47:04.000Z",
+      "ManifestationId": 1,
+      "UserId": 1
+    },
+    ...
+  ]
+}
+```
+
+- **POST** `/files/`: envia o arquivo selecionado para o servidor _FTP_ e o vincula a uma _manifestação_
+
+O corpo para envio dessa requisição se da através de um Multipart From na seguinte estrutura:
+| key | value | | | |
+|------------------|------------|---|---|---|
+| file | boleto.pdf | | | |
+| manifestation_id | 3 | | | |
+| | | | | |
+
+Para que o envio ocorra com sucesso, o token de autenticação deve ser do **AUTOR** da manifestação, ou de algum usuário com role **ADMIN** ou **MASTER**
+
+## _**ATENÇÃO, devido as limitações da solução gratis de host FTP que estamos usando (000webhost), existe um numero limitado de conexões simultaneas, por favor evitar multiplos uploads em um intervalo de tempo muito curto, ex: 5 uploads em 20 segundos**_
+
+exemplo de retorno:
+
+```json
+{
+  "message": "ok",
+  "uploaded_file": {
+    "id": 3,
+    "file_name": "boleto.pdf",
+    "file_name_in_server": "file-1580349056443.pdf",
+    "extension": "pdf",
+    "updated_at": "2020-01-30T01:50:59.355Z",
+    "created_at": "2020-01-30T01:50:59.322Z",
+    "UserId": 2,
+    "ManifestationId": 3
+  }
+}
+```
+
+- **GET** `/files/:file_id`: Realiza o download do arquivo escolhido.
+
+É necessário apenas informar o **ID** do arquivo no endereço e estar com o **TOKEN** de autenticação da pessoa que realizou o upload ou de algum usuário com role **ADMIN** ou **MASTER**.
+
+O retorno é o arquivo para download...
+
+- **DELETE** `/files/:file_id`: Realiza a exclusão do arquivo do servidor FTP e das ligações que o mesmo possua com manifestações.
+
+É necessário apenas informar o **ID** do arquivo no endereço e estar com o **TOKEN** de autenticação da pessoa que realizou o upload ou de algum usuário com role **ADMIN** ou **MASTER**.
+
+exemplo de retorno:
+
+```json
+{
+  "message": "arquivo apagado com sucesso",
+  "file": {
+    "id": 3,
+    "file_name": "boleto.pdf",
+    "file_name_in_server": "file-1580349056443.pdf",
+    "extension": "pdf",
+    "created_at": "2020-01-30T01:50:59.000Z",
+    "updated_at": "2020-01-30T01:50:59.000Z",
+    "ManifestationId": 3,
+    "UserId": 2
+  }
+}
+```
+
+---
+
 ### category
 
 - **GET** `category/`: retorna todos os registros na tabela de _categories_.
@@ -457,6 +552,8 @@ _retorna_:
   "updated_at": "2019-10-31T18:29:13.000Z"
 }
 ```
+
+---
 
 ### role
 
@@ -546,6 +643,8 @@ _retorna_:
 }
 ```
 
+---
+
 ### type
 
 - **GET** `type/`: retorna todos os registros na tabela de _types_.
@@ -619,6 +718,8 @@ _retorna_:
 }
 ```
 
+---
+
 ### status
 
 - **GET** `status/`: retorna todos os registros na tabela de _status_.
@@ -691,6 +792,8 @@ _retorna_:
   "updated_at": "2019-10-31T17:01:37.000Z"
 }
 ```
+
+---
 
 ### manifestation status history
 
@@ -787,6 +890,8 @@ _retorna_:
 }
 ```
 
+---
+
 ### secretary
 
 - **GET** `secretary/`: retorna todos os registros na tabela de _secretariats_.
@@ -866,6 +971,8 @@ _retorna_:
   "updated_at": "2019-10-31T23:55:51.000Z"
 }
 ```
+
+---
 
 ### email
 

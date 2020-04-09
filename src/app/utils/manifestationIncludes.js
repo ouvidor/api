@@ -14,11 +14,4 @@ export default [
     as: 'type',
     attributes: ['id', 'title'],
   },
-  {
-    model: File,
-    as: 'files',
-    // path é necessário para a url funcionar
-    attributes: ['id', 'name', 'url', 'path'],
-    through: { attributes: [] }, // remove dados desnecessários
-  },
 ];

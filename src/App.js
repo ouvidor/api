@@ -7,7 +7,7 @@ import './bootstrap';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { resolve } from 'path';
+import ErrorHandler from './app/middlewares/ErrorHandler';
 
 // inicia a instancia do Sequelize, fazendo a conexão com o Database
 import './database';
@@ -36,16 +36,16 @@ class App {
 
     // nessecario para que ao receber uma requisição com JSON, consiga ler ele como objeto sem problemas
     this.server.use(express.urlencoded({ extended: true }));
-
-    this.server.use(
-      '/files',
-      express.static(resolve(__dirname, '..', 'tmp', 'uploads'))
-    );
   }
 
   // conecta as rotas ao app
   routes() {
     this.server.use(routes);
+    // Error handler padrão do Express
+    this.server.use(ErrorHandler.expressErrorHandler);
+
+    // Todas exceções não tratadas caem aqui
+    // process.on('uncaughtException', ErrorHandler.genericErrorHandler);
   }
 }
 

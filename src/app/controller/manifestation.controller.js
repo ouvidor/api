@@ -1,6 +1,5 @@
 import Manifestation from '../models/Manifestation';
 import User from '../models/User';
-import File from '../models/File';
 import SearchManifestationService from '../services/SearchManifestationService';
 import GeolocationService from '../services/GeolocationService';
 
@@ -75,7 +74,7 @@ class ManifestationController {
 
   async save(req, res) {
     // Cria a manifestação e salva no banco
-    const { categories_id, files_id, ...data } = req.body;
+    const { categories_id, ...data } = req.body;
 
     // caso o token informado seja de um usuário que não existe
     const user = await User.findByPk(req.user_id);
@@ -102,17 +101,9 @@ class ManifestationController {
       if (categories_id && categories_id.length) {
         await manifestation.setCategories(categories_id);
       }
-
-      if (files_id && files_id.length) {
-        await manifestation.setFiles(files_id);
-      }
     } catch (error) {
       manifestation.destroy();
-
-      if (files_id.length) {
-        await File.destroy({ where: { id: files_id } });
-      }
-
+      console.log(error);
       return res.status(500).json({ error: 'Erro interno no servidor' });
     }
 
