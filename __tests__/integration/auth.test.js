@@ -49,7 +49,7 @@ describe('Auth', () => {
 
     expect(response.status).toBe(401);
     expect(response.body).toHaveProperty('error');
-    expect(response.body.error).toStrictEqual('Senha incorreta');
+    expect(response.body.error).toStrictEqual('Email ou senha incorretos');
   });
 
   it('should not pass validation', async () => {
