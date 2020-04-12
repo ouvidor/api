@@ -7,7 +7,7 @@ Contêm protocolo _HTTP_, endereço da rota, explicação do que é feito, o que
 
 ## Publicas
 
-### user
+### User
 
 - **GET** `user/`: retorna todos os registros na tabela de _users_.
 
@@ -18,12 +18,10 @@ Contêm protocolo _HTTP_, endereço da rota, explicação do que é feito, o que
     "first_name": "master",
     "last_name": "root",
     "email": "root@gmail.com",
-    "role": [
-      {
-        "id": 1,
-        "title": "master"
-      }
-    ]
+    "role": {
+      "id": 3,
+      "title": "master"
+    }
   }
 ]
 ```
@@ -36,12 +34,10 @@ Contêm protocolo _HTTP_, endereço da rota, explicação do que é feito, o que
   "first_name": "master",
   "last_name": "root",
   "email": "root@gmail.com",
-  "role": [
-    {
-      "id": 1,
-      "title": "master"
-    }
-  ]
+  "role": {
+    "id": 3,
+    "title": "master"
+  }
 }
 ```
 
@@ -85,7 +81,7 @@ _retorna_:
 
 ---
 
-### auth
+### Auth
 
 - **POST** `auth/`: Insere as credenciais e loga no sistema. Retorna um _Token_ _JWT_, esse _Token_ é usado para acessar as rotas autenticadas.
 
@@ -107,15 +103,12 @@ _retorna_:
     "first_name": "a",
     "last_name": "last_name",
     "email": "aa@aa.com",
-    "role": [
-      {
-        "id": 3,
-        "title": "citizen",
-        "level": 3
-      }
-    ]
+    "role": {
+      "id": 1,
+      "title": "citizen"
+    }
   },
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6W3siaWQiOjMsInRpdGxlIjoiY2l0aXplbiIsImxldmVsIjozfV0sImlhdCI6MTU3MjgyMjk5NywiZXhwIjoxNTc1NDE0OTk3fQ.DLK849R9QNndfZ6aAWfWJki75U97GkjRGQQzNgXLnJ8"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MSwidGl0bGUiOiJjaXRpemVuIn0sImlhdCI6MTU4NjcxMTcwOCwiZXhwIjoxNTg5MzAzNzA4fQ.b_TjuCk2hGtbqUq6O7HgqaX9d1cWp_Ffj2vpN9iKW8U"
 }
 ```
 
@@ -123,7 +116,7 @@ _retorna_:
 
 ## Autenticação necessária
 
-### prefecture
+### Prefecture
 
 - **GET** `prefecture`: retorna os dados da prefeitura que estão na tabela `prefecture`.
 
@@ -170,7 +163,9 @@ _retorna_
 }
 ```
 
-### ombudsman
+---
+
+### Ombudsman
 
 - **GET** `ombudsman`: retorna os dados da prefeitura que estão na tabela `ombudsman`.
 
@@ -217,38 +212,9 @@ _retorna_
 }
 ```
 
-### files
+---
 
-- **POST** `files`: faz upload de arquivos, esses arquivos ficam temporariamente em uma pasta chamada `tmp/uploads/` e ficam permanentemente na tabela _files_.
-
-_requisição_:
-
-Um Multipart Form Data, que deve conter 1 ou mais campos `file` e recebe um arquivo.
-
-_retorna_:
-
-```json
-[
-  {
-    "url": "http://127.0.0.1:3003/files/c322b14af33436685e53aaf234be2004.txt",
-    "id": 15,
-    "name": "Texto.txt",
-    "path": "c322b14af33436685e53aaf234be2004.txt",
-    "created_at": "2020-02-08T16:55:57.331Z",
-    "updated_at": "2020-02-08T16:55:57.331Z"
-  },
-  {
-    "url": "http://127.0.0.1:3003/files/9d6c4cc7fe93c42aceb2169de74d5f43.pdf",
-    "id": 16,
-    "name": "Documento.pdf",
-    "path": "9d6c4cc7fe93c42aceb2169de74d5f43.pdf",
-    "created_at": "2020-02-08T16:55:57.331Z",
-    "updated_at": "2020-02-08T16:55:57.331Z"
-  }
-]
-```
-
-### manifestation
+### Manifestation
 
 - **GET** `manifestation/`: retorna todos os registros da tabela _manifestations_.
   O resultado é limitado em 10 manifestações.
@@ -295,7 +261,7 @@ _retorna_:
 }
 ```
 
-- **GET** `manifestation/:id`: retorna a manifestação que tem esse id.
+- **GET** `manifestation/:id`: retorna a manifestação que tem esse numero de protocolo, exemplo: `k8xde3pz`.
 
 _retorna_:
 
@@ -387,100 +353,86 @@ _retorna_:
 
 ---
 
-### FTP
+### File
 
 - **GET** `/manifestation/:manifestation_id/files`: retorna todos os arquivos associados à _manifestação_ buscada.
+
+_retorna_:
 
 ```json
 {
   "files": [
     {
       "id": 1,
-      "file_name": "BOLETO_149291630.pdf",
-      "file_name_in_server": "file-1578530595944.pdf",
-      "extension": "pdf",
-      "created_at": "2020-01-09T00:43:23.000Z",
-      "updated_at": "2020-01-09T00:43:23.000Z",
-      "ManifestationId": 1,
-      "UserId": 1
-    },
-    {
-      "id": 2,
-      "file_name": "meu joguito.mp4",
-      "file_name_in_server": "file-1578530815755.mp4",
-      "extension": "mp4",
-      "created_at": "2020-01-09T00:47:04.000Z",
-      "updated_at": "2020-01-09T00:47:04.000Z",
-      "ManifestationId": 1,
-      "UserId": 1
-    },
-    ...
+      "file_name": "imagem.jpg",
+      "file_name_in_server": "file-1586716408853.jpg",
+      "extension": ".jpg",
+      "created_at": "2020-04-12T18:33:31.000Z",
+      "updated_at": "2020-04-12T18:33:31.000Z",
+      "manifestation_id": 1,
+      "user_id": 2
+    }
   ]
 }
 ```
 
-- **POST** `/files/`: envia o arquivo selecionado para o servidor _FTP_ e o vincula a uma _manifestação_
+- **POST** `/files/`: faz upload de um arquivo para o server, o arquivo é vinculado a uma manifestação e tem seus dados salvos na tabela _files_, o arquivo em si é salvo na Googlo Cloud.
 
-O corpo para envio dessa requisição se da através de um Multipart From na seguinte estrutura:
-| key | value | | | |
-|------------------|------------|---|---|---|
-| file | boleto.pdf | | | |
-| manifestation_id | 3 | | | |
-| | | | | |
+O corpo para envio dessa requisição se da através de um **multipart form-data** na seguinte estrutura:
+| key               | value         |
+|-------------------|---------------|
+| file              | documento.pdf |
+| manifestation_id  | 3             |
 
 Para que o envio ocorra com sucesso, o token de autenticação deve ser do **AUTOR** da manifestação, ou de algum usuário com role **ADMIN** ou **MASTER**
 
-## _**ATENÇÃO, devido as limitações da solução gratis de host FTP que estamos usando (000webhost), existe um numero limitado de conexões simultaneas, por favor evitar multiplos uploads em um intervalo de tempo muito curto, ex: 5 uploads em 20 segundos**_
-
-exemplo de retorno:
+_retorna_:
 
 ```json
 {
-  "message": "ok",
-  "uploaded_file": {
-    "id": 3,
-    "file_name": "boleto.pdf",
-    "file_name_in_server": "file-1580349056443.pdf",
-    "extension": "pdf",
-    "updated_at": "2020-01-30T01:50:59.355Z",
-    "created_at": "2020-01-30T01:50:59.322Z",
-    "UserId": 2,
-    "ManifestationId": 3
-  }
+  "id": 3,
+  "file_name": "documento.pdf",
+  "file_name_in_server": "file-1586717080767.pdf",
+  "extension": ".pdf",
+  "updated_at": "2020-04-12T18:44:41.639Z",
+  "created_at": "2020-04-12T18:44:41.580Z",
+  "user_id": 2,
+  "manifestation_id": 1
 }
 ```
 
 - **GET** `/files/:file_id`: Realiza o download do arquivo escolhido.
 
-É necessário apenas informar o **ID** do arquivo no endereço e estar com o **TOKEN** de autenticação da pessoa que realizou o upload ou de algum usuário com role **ADMIN** ou **MASTER**.
+Necessário ter o **token** do dono do arquivo ou então ser um **admin** ou **master**.
 
-O retorno é o arquivo para download...
+_retorna_:
 
-- **DELETE** `/files/:file_id`: Realiza a exclusão do arquivo do servidor FTP e das ligações que o mesmo possua com manifestações.
+_**`O arquivo`**_
 
-É necessário apenas informar o **ID** do arquivo no endereço e estar com o **TOKEN** de autenticação da pessoa que realizou o upload ou de algum usuário com role **ADMIN** ou **MASTER**.
 
-exemplo de retorno:
+- **DELETE** `/files/:file_id`: Exclui o arquivo no Google Cloud e remove o arquivo da manifestação.
+
+Necessário ter o **token** do dono do arquivo ou então ser um **admin** ou **master**.
+
+
+_retorna_:
 
 ```json
 {
-  "message": "arquivo apagado com sucesso",
-  "file": {
-    "id": 3,
-    "file_name": "boleto.pdf",
-    "file_name_in_server": "file-1580349056443.pdf",
-    "extension": "pdf",
-    "created_at": "2020-01-30T01:50:59.000Z",
-    "updated_at": "2020-01-30T01:50:59.000Z",
-    "ManifestationId": 3,
-    "UserId": 2
-  }
+  "id": 2,
+  "file_name": "documento.pdf",
+  "file_name_in_server": "file-1586716623542.pdf",
+  "extension": ".pdf",
+  "created_at": "2020-04-12T18:37:04.000Z",
+  "updated_at": "2020-04-12T18:37:04.000Z",
+  "manifestation_id": 1,
+  "user_id": 2
 }
 ```
 
 ---
 
-### category
+### Category
 
 - **GET** `category/`: retorna todos os registros na tabela de _categories_.
 
@@ -555,7 +507,7 @@ _retorna_:
 
 ---
 
-### role
+### Role
 
 - **GET** `role/`: retorna todos os registros na tabela _roles_.
 
@@ -563,18 +515,15 @@ _retorna_:
 [
   {
     "id": 1,
-    "title": "master",
-    "level": 1
+    "title": "citizen"
   },
   {
     "id": 2,
-    "title": "admin",
-    "level": 2
+    "title": "admin"
   },
   {
     "id": 3,
-    "title": "citizen",
-    "level": 3
+    "title": "master"
   }
 ]
 ```
@@ -584,68 +533,13 @@ _retorna_:
 ```json
 {
   "id": 1,
-  "title": "master"
-}
-```
-
-- **POST** `role/`: cria um novo registro na tabela de _roles_.
-
-_requisição_:
-
-```json
-{
-  "title": "Ajudante",
-  "level": 2
-}
-```
-
-_retorna_:
-
-```json
-{
-  "id": 4,
-  "title": "Ajudante",
-  "level": 2
-}
-```
-
-- **PUT** `role/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _roles_.
-
-_requisição_:
-
-```json
-{
-  "title": "Cidadão"
-}
-```
-
-_retorna_:
-
-```json
-{
-  "id": 3,
-  "title": "Cidadão",
-  "level": 3
-}
-```
-
-- **DELETE** `role/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _roles_.
-
-_retorna_:
-
-```json
-{
-  "id": 4,
-  "title": "Ajudante",
-  "level": 2,
-  "created_at": "2019-11-01T17:02:27.000Z",
-  "updated_at": "2019-11-01T17:02:27.000Z"
+  "title": "citizen"
 }
 ```
 
 ---
 
-### type
+### Type
 
 - **GET** `type/`: retorna todos os registros na tabela de _types_.
 
@@ -720,7 +614,7 @@ _retorna_:
 
 ---
 
-### status
+### Status
 
 - **GET** `status/`: retorna todos os registros na tabela de _status_.
 
@@ -795,7 +689,7 @@ _retorna_:
 
 ---
 
-### manifestation status history
+### Manifestation Status History
 
 - **GET** `manifestation/:idOrProtocol/status`: retorna todos os status de uma manifestação.
 
@@ -892,7 +786,7 @@ _retorna_:
 
 ---
 
-### secretary
+### Secretary
 
 - **GET** `secretary/`: retorna todos os registros na tabela de _secretariats_.
 
@@ -974,7 +868,7 @@ _retorna_:
 
 ---
 
-### email
+### Email
 
 - **POST** `email/`: envia um email.
 
