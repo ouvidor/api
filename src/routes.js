@@ -32,9 +32,9 @@ import UserValidator from './app/middlewares/validators/User';
 import ManifestationValidator from './app/middlewares/validators/Manifestation';
 import UserLoginValidator from './app/middlewares/validators/UserLogin';
 import GenericValidator from './app/middlewares/validators/Generic';
-import RoleValidation from './app/middlewares/validators/Role';
 import SecretaryValidator from './app/middlewares/validators/Secretary';
 import MailValidator from './app/middlewares/validators/Mail';
+import RoleValidator from './app/middlewares/validators/Role';
 import FTPValidator from './app/middlewares/validators/FTP';
 
 import ManifestationStatusHistoryValidator from './app/middlewares/validators/ManifestationStatusHistory';
@@ -67,7 +67,7 @@ router.post('/auth', UserLoginValidator, AuthController.login);
  *
  * Apartir desse ponto é necessário estar autenticado
  * Para ser autenticado deve ser enviado um token na Header da requisição
- * A partir desse ponto se pode ter acesso ao `req.user_id` e `req.user_roles` pois foi passado como payload no token.
+ * A partir desse ponto se pode ter acesso ao `req.user_id` e `req.user_role` pois foi passado como payload no token.
  */
 router.use(AuthMiddleware);
 
@@ -120,7 +120,7 @@ router.get('/manifestation/:manifestation_id/files', FileController.fetch);
 router.use(RolesMiddleware.admin);
 
 router.get('/role', RoleController.fetch);
-router.get('/role/:id', RoleController.show);
+router.get('/role/:id', RoleValidator.show, RoleController.show);
 
 router.get('/status', StatusController.fetch);
 router.get('/status/:id', StatusController.show);
@@ -172,10 +172,6 @@ router.put(
 router.post('/category', GenericValidator.save, CategoryController.save);
 router.put('/category/:id', GenericValidator.update, CategoryController.update);
 router.delete('/category/:id', CategoryController.delete);
-
-router.post('/role', RoleValidation.save, RoleController.save);
-router.put('/role/:id', RoleValidation.update, RoleController.update);
-router.delete('/role/:id', RoleController.delete);
 
 router.post('/type', GenericValidator.save, TypeController.save);
 router.put('/type/:id', GenericValidator.update, TypeController.update);

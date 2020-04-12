@@ -9,6 +9,12 @@ class User extends Model {
         last_name: Sequelize.STRING,
         email: Sequelize.STRING,
         password: Sequelize.STRING,
+        role_id: {
+          type: Sequelize.INTEGER,
+          defaultValue: 1,
+          values: [1, 2, 3],
+          allowNull: false,
+        },
       },
       // configs da tabela
       {
@@ -27,15 +33,6 @@ class User extends Model {
     });
 
     return this;
-  }
-
-  static associate(models) {
-    this.belongsToMany(models.Role, {
-      through: 'user_role',
-      as: 'role',
-      foreignKey: 'user_id',
-      constraints: false,
-    });
   }
 
   // retorna true caso a senha bata

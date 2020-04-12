@@ -76,7 +76,7 @@ class FileController {
 
     // Checa se quem fez a requisição é o dono da manifestação ou um administrador
     const isOwner = user.dataValues.id === manifestation.dataValues.user_id;
-    const user_role = req.user_roles[0];
+    const { user_role } = req;
 
     if (
       isOwner ||
@@ -141,7 +141,7 @@ class FileController {
     }
 
     const isOwner = user.dataValues.id === file.dataValues.UserId;
-    const user_role = req.user_roles[0];
+    const { user_role } = req;
 
     // checa se Usuário existe
     if (!user) {
@@ -205,7 +205,7 @@ class FileController {
 
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
     const onwer = user.dataValues.id === file.dataValues.UserId;
-    const user_role = req.user_roles[0];
+    const { user_role } = req;
 
     // checa se Usuário existe
     if (!user) {
@@ -251,7 +251,7 @@ class FileController {
   async fetch(req, res) {
     const { manifestation_id } = req.params;
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
-    const user_role = req.user_roles[0];
+    const { user_role } = req;
 
     try {
       const manifestation = await Manifestation.findOne({
