@@ -114,9 +114,7 @@ class FileController {
 
         deleteTempFile(file);
 
-        return res
-          .status(200)
-          .json({ message: 'Arquivo enviado com sucesso', uploaded_file });
+        return res.status(200).json(uploaded_file);
       } catch (error) {
         console.log(error);
         deleteTempFile(file);
@@ -130,6 +128,7 @@ class FileController {
   // Usa a api como proxy e encaminha a stream do arquivo no servidor de arquivos para o requisitante
   async show(req, res) {
     const { file_id } = req.params;
+    const { user_role } = req;
     const file = await File.findByPk(file_id);
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
 
@@ -140,21 +139,19 @@ class FileController {
       });
     }
 
-    const isOwner = user.dataValues.id === file.dataValues.UserId;
-    const { user_role } = req;
-
     // checa se Usuário existe
     if (!user) {
       return res.status(404).json({ message: 'usuario não existe' });
     }
-    // checa se é dono do arquivo ou um admin
-    if (user_role.title !== 'master' || user_role.title !== 'admin') {
-      if (!isOwner) {
-        return res.status(401).json({
-          message:
-            'Não autorizado, apenas administradores e donos do arquivo podem acessa-lo',
-        });
-      }
+
+    const isOwner = user.dataValues.id === file.dataValues.user_id;
+    const isCitizen = user_role.id < 2;
+
+    if (!isOwner && isCitizen) {
+      return res.status(401).json({
+        message:
+          'Não autorizado, apenas administradores e donos do arquivo podem acessa-lo',
+      });
     }
 
     // Caso passe nas checagens, segue fluxo normal
@@ -173,12 +170,6 @@ class FileController {
         `attachment; filename=${file.file_name}`
       );
 
-      // O header abaixo o encaminha como INLINE, ou seja, o aparelho pega os dados para exibir, ex: um pdf mandado como inline é exibido no navegador
-      // res.header(
-      //   'Content-Disposition',
-      //   'attachment; filename=' + file.file_name
-      // );
-
       return remote_file
         .createReadStream()
         .on('error', err => {
@@ -194,6 +185,7 @@ class FileController {
   // Remove o arquivo do servidor FTP e remove as associações com a manifestação.
   async delete(req, res) {
     const { file_id } = req.params;
+    const { user_role } = req;
     const file = await File.findByPk(file_id);
 
     // checa se File existe
@@ -204,22 +196,20 @@ class FileController {
     }
 
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
-    const onwer = user.dataValues.id === file.dataValues.UserId;
-    const { user_role } = req;
 
     // checa se Usuário existe
     if (!user) {
       return res.status(404).json({ message: 'usuario não existe' });
     }
 
-    // checa se é dono do arquivo ou um admin
-    if (user_role.title !== 'master' || user_role.title !== 'admin') {
-      if (!onwer) {
-        return res.status(401).json({
-          message:
-            'Não autorizado, apenas administradores e donos do arquivo podem acessa-lo',
-        });
-      }
+    const isOwner = user.dataValues.id === file.dataValues.user_id;
+    const isCitizen = user_role.id < 2;
+
+    if (!isOwner && isCitizen) {
+      return res.status(401).json({
+        message:
+          'Não autorizado, apenas administradores e donos do arquivo podem acessa-lo',
+      });
     }
 
     // Caso passe nas checagens, segue fluxo normal
@@ -237,13 +227,10 @@ class FileController {
       // Deleta arquivo do DB
       file.destroy();
 
-      return res.status(200).json({
-        message: 'Arquivo excluido com sucesso',
-        file,
-      });
+      return res.status(200).json(file);
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ message: 'Algo deu errado' }, error);
+      return res.status(500).json({ message: 'Erro interno no servidor' });
     }
   }
 
@@ -263,23 +250,20 @@ class FileController {
         return res.status(404).json({ message: 'Manifestação não existe' });
       }
 
-      const onwer = user.dataValues.id === manifestation.dataValues.user_id;
+      const isOwner = user.dataValues.id === manifestation.dataValues.user_id;
+      const isCitizen = user_role.id < 2;
 
-      // checa se é dono do arquivo ou um admin
-      if (user_role.title !== 'master' || user_role.title !== 'admin') {
-        if (!onwer) {
-          return res.status(401).json({
-            message:
-              'Não autorizado, apenas administradores e donos do arquivo podem acessa-lo',
-          });
-        }
+      if (!isOwner && isCitizen) {
+        return res.status(401).json({
+          message:
+            'Não autorizado, apenas administradores e donos do arquivo podem acessa-lo',
+        });
       }
 
       const files = await File.findAll({
         where: {
-          ManifestationId: manifestation_id,
+          manifestation_id,
         },
-        raw: true,
       });
       return res.status(200).json({ files });
     } catch (error) {

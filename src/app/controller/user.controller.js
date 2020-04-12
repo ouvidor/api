@@ -91,7 +91,8 @@ class UserController {
     const userToSave = { ...req.body };
 
     if (isAdminMaster && role) {
-      userToSave.role_id = role.id;
+      const { id } = roles.find(r => r.title === role);
+      userToSave.role_id = id;
     } else if (role) {
       return res.status(403).json({ message: 'Você não é um admin MASTER' });
     }

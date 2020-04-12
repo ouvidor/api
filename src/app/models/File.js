@@ -28,8 +28,16 @@ class File extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Manifestation);
-    this.belongsTo(models.User);
+    this.belongsTo(models.Manifestation, {
+      foreignKey: 'manifestation_id',
+      as: 'manifestation',
+      targetKey: 'id',
+    });
+    this.belongsTo(models.User, {
+      foreignKey: 'user_id',
+      as: 'user',
+      targetKey: 'id',
+    });
   }
 }
 
