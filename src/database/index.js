@@ -14,7 +14,6 @@ import Secretary from '../app/models/Secretary';
 import File from '../app/models/File';
 import Ombudsman from '../app/models/Ombudsman';
 import Prefecture from '../app/models/Prefecture';
-import setupDbInitialData from '../app/utils/setupDbInitialData';
 
 require('dotenv');
 
@@ -53,15 +52,6 @@ class Database {
         model.associate(this.connection.models);
       }
     });
-  }
-
-  // essa função cria entries iniciais necessárias para o uso
-  async checkDefaultEntries() {
-    try {
-      await setupDbInitialData();
-    } catch (error) {
-      console.log(error);
-    }
   }
 
   /*

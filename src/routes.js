@@ -20,9 +20,6 @@ import FileController from './app/controller/file.controller';
 import OmbudsmanController from './app/controller/ombudsman.controller';
 import PrefectureController from './app/controller/prefecture.controller';
 
-// middleware usado apenas em Tests
-import setupDbInitialData from './app/middlewares/initialDbSetupForTests';
-
 // middlewares de autenticação
 import AuthMiddleware from './app/middlewares/auth';
 import RolesMiddleware from './app/middlewares/roles';
@@ -48,12 +45,6 @@ const router = new Router();
 
 // multer é usado como middleware nas rotas de Upload relacionadas ao módulo FTP
 const upload = multer(multerConfig);
-
-// middleware para tests
-// esse middleware garante o setup inicial em todo test
-if (process.env.NODE_ENV === 'test') {
-  router.use(setupDbInitialData);
-}
 
 /**
  *  Rotas publicas
