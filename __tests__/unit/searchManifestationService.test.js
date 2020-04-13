@@ -2,9 +2,9 @@ import truncate from '../util/truncate';
 
 import Manifestation from '../../src/app/models/Manifestation';
 import Type from '../../src/app/models/Type';
-import Category from '../../src/app/models/Category';
 import searchManifestationService from '../../src/app/services/SearchManifestationService';
 import User from '../../src/app/models/User';
+import seedDatabase from '../util/seedDatabase';
 
 let type;
 let category;
@@ -13,14 +13,12 @@ describe('Search Manifestation Service', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeEach(async () => {
     await truncate();
+    const { category: categorySeed } = await seedDatabase();
+    category = categorySeed;
 
     type = await Type.create({ title: 'Reclamação' });
     expect(type).toBeDefined();
     expect(type).toHaveProperty('id');
-
-    category = await Category.create({ title: 'Saneamento' });
-    expect(category).toBeDefined();
-    expect(category).toHaveProperty('id');
   });
 
   it('should search for manifestations', async () => {

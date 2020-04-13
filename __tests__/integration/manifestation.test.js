@@ -3,6 +3,7 @@ import request from 'supertest';
 import app from '../../src/App';
 import truncate from '../util/truncate';
 import sign from '../util/sign';
+import seedDatabase from '../util/seedDatabase';
 
 const adminMaster = {
   email: 'root@gmail.com',
@@ -17,17 +18,13 @@ describe('Manifestation', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeEach(async () => {
     await truncate();
+    const { category: categorySeed } = await seedDatabase();
+
+    category = categorySeed;
 
     // necessário login em todos os tests
     const loginRes = await sign.in(adminMaster);
     token = loginRes.body.token;
-
-    // necessário criação de categoria
-    const categoryRes = await request(app)
-      .post('/category')
-      .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'category' });
-    category = categoryRes.body;
 
     // necessário criação de tipo
     const typeRes = await request(app)
@@ -161,7 +158,7 @@ describe('Manifestation', () => {
     // listar
     const response = await request(app)
       .get('/manifestation')
-      .query({ options: 'category' })
+      .query({ options: 'Saneamento' })
       .set('Authorization', `Bearer ${token}`)
       .send();
 
@@ -175,7 +172,7 @@ describe('Manifestation', () => {
           description: 'description',
           categories: expect.arrayContaining([
             expect.objectContaining({
-              title: 'category',
+              title: 'Saneamento',
             }),
           ]),
         }),

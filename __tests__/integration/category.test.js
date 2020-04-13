@@ -3,6 +3,7 @@ import request from 'supertest';
 import app from '../../src/App';
 import truncate from '../util/truncate';
 import sign from '../util/sign';
+import seedDatabase from '../util/seedDatabase';
 
 const adminMaster = {
   email: 'root@gmail.com',
@@ -15,16 +16,11 @@ describe('Category', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeEach(async () => {
     await truncate();
+    const { category: categorySeed } = await seedDatabase();
+    category = categorySeed;
 
     const loginRes = await sign.in(adminMaster);
     token = loginRes.body.token;
-
-    const categoryRes = await request(app)
-      .post('/category')
-      .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'category' });
-
-    category = categoryRes.body;
   });
 
   it("shouldn't create a category, duplicated title", async () => {
@@ -32,7 +28,7 @@ describe('Category', () => {
     const response = await request(app)
       .post('/category')
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'category' });
+      .send({ title: 'Saneamento' });
 
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty('error');
@@ -48,7 +44,7 @@ describe('Category', () => {
 
     expect(response.status).toBe(200);
     expect(response.body[0]).toEqual(
-      expect.objectContaining({ title: 'category' })
+      expect.objectContaining({ title: 'Saneamento' })
     );
   });
 
@@ -61,7 +57,7 @@ describe('Category', () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual(
-      expect.objectContaining({ title: 'category', id: category.id })
+      expect.objectContaining({ title: 'Saneamento', id: category.id })
     );
   });
 
@@ -87,7 +83,7 @@ describe('Category', () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual(
-      expect.objectContaining({ title: 'category' })
+      expect.objectContaining({ title: 'Saneamento' })
     );
   });
 });

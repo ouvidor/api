@@ -3,6 +3,7 @@ import request from 'supertest';
 import app from '../../src/App';
 import truncate from '../util/truncate';
 import sign from '../util/sign';
+import seedDatabase from '../util/seedDatabase';
 
 const adminMaster = {
   email: 'root@gmail.com',
@@ -15,6 +16,7 @@ describe('Type', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeEach(async () => {
     await truncate();
+    await seedDatabase();
 
     const loginRes = await sign.in(adminMaster);
     token = loginRes.body.token;

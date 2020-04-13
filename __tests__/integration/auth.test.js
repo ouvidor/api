@@ -5,11 +5,13 @@ import app from '../../src/App';
 import factory from '../factories';
 import truncate from '../util/truncate';
 import sign from '../util/sign';
+import seedDatabase from '../util/seedDatabase';
 
 describe('Auth', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeEach(async () => {
     await truncate();
+    await seedDatabase();
   });
 
   it('should be able to login', async () => {

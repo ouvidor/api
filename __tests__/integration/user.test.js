@@ -5,6 +5,7 @@ import app from '../../src/App';
 import factory from '../factories';
 import truncate from '../util/truncate';
 import sign from '../util/sign';
+import seedDatabase from '../util/seedDatabase';
 
 const adminMaster = {
   email: 'root@gmail.com',
@@ -15,6 +16,7 @@ describe('User', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeEach(async () => {
     await truncate();
+    await seedDatabase();
   });
 
   it('should encrypt the user password when a new user is created', async () => {
