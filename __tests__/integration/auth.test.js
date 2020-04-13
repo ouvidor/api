@@ -27,7 +27,7 @@ describe('Auth', () => {
     const decodedToken = decode(response.body.token);
 
     expect(decodedToken).toHaveProperty('exp', 'iat', 'id', 'role');
-    expect(decodedToken.role[0]).toHaveProperty('id', 'title', 'level');
+    expect(decodedToken.role).toHaveProperty('id', 'title', 'level');
 
     expect(response.body).toHaveProperty('user');
     expect(response.body.user).toHaveProperty(

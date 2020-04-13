@@ -2,26 +2,10 @@
  * Esse middleware checa a maior Role do usuário e
  * previne que o usuário acesse camadas que não em acesso
  */
-
-function getMostImportantLevel(roles) {
-  if (!roles) {
-    throw new Error('Necessário um token');
-  }
-
-  const levels = roles.map(role => role.level);
-
-  if (!levels) {
-    throw new Error('Token invalido');
-  }
-
-  return Math.min(levels);
-}
-
 class Roles {
   admin(req, res, next) {
     try {
-      const highestLevel = getMostImportantLevel(req.user_roles);
-      if (highestLevel > 2) {
+      if (req.user_role.id < 2) {
         return res.status(403).json({ error: 'Acesso exclusivo para Admins' });
       }
 
@@ -33,9 +17,7 @@ class Roles {
 
   adminMaster(req, res, next) {
     try {
-      const highestLevel = getMostImportantLevel(req.user_roles);
-
-      if (highestLevel > 1) {
+      if (req.user_role.id < 3) {
         return res
           .status(403)
           .json({ error: 'Acesso exclusivo para Admins Master' });

@@ -3,7 +3,7 @@ import { promisify } from 'util';
 import authConfig from '../../config/auth';
 
 import User from '../models/User';
-import Role from '../models/Role';
+import roles from '../data/roles';
 
 // Checka se a requisição foi feita por um admin e retorna um bool
 async function checkAdmin(header) {
@@ -29,11 +29,9 @@ async function checkAdmin(header) {
   // const userId = decoded.id;
   const userRole = decoded.role;
 
-  userRole.forEach(role => {
-    if (role.title === 'master') {
-      isAdmin = true;
-    }
-  });
+  if (userRole.title === 'master') {
+    isAdmin = true;
+  }
 
   return isAdmin;
 }
@@ -42,36 +40,32 @@ class UserController {
   // Retorna todas entries de Users no DB, temporário, !somente para teste!
   async fetch(req, res) {
     const users = await User.findAll({
-      attributes: ['id', 'first_name', 'last_name', 'email'],
-      include: [
-        {
-          model: Role,
-          as: 'role',
-          attributes: ['id', 'title', 'level'],
-          through: { attributes: [] },
-        },
-      ],
+      attributes: ['id', 'first_name', 'last_name', 'email', 'role_id'],
     });
 
-    return res.status(200).json(users);
+    const formattedUsers = users.map(user => ({
+      id: user.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      role: roles.find(role => role.id === user.role_id),
+    }));
+
+    return res.status(200).json(formattedUsers);
   }
 
   async show(req, res) {
     const user = await User.findByPk(req.params.id, {
-      attributes: ['id', 'first_name', 'last_name', 'email'],
-      include: [
-        {
-          model: Role,
-          as: 'role',
-          attributes: ['id', 'title', 'level'],
-          through: { attributes: [] },
-        },
-      ],
+      attributes: ['id', 'first_name', 'last_name', 'email', 'role_id'],
     });
 
     if (!user) {
       return res.status(400).json({ error: 'esse usuário não existe' });
     }
+
+    user.dataValues.role = roles.find(role => role.id === user.role_id);
+    delete user.dataValues.role_id;
+
     return res.status(200).json(user);
   }
 
@@ -89,37 +83,22 @@ class UserController {
       return res.status(400).json({ error: 'Email já cadastrado' });
     }
 
-    // criar usuário
-    const user = await User.create(req.body);
-
     // checka se possui um header e se é um adminMaster
     const isAdminMaster = await checkAdmin(req.headers.authorization);
-
     const { role } = req.body;
-    try {
-      // Se for admin master e contiver role na req seta a role
-      if (isAdminMaster && role) {
-        await user.setRole(await Role.findOne({ where: { title: role } }));
-      } else {
-        // se o if não passar, checa se role existe mesmo não sendo admin, caso sim, apaga
-        // o user gravado e retorna uma mensagem
-        if (role) {
-          user.destroy();
-          return res.json({ message: 'Você não é um admin MASTER' });
-        }
-        // Caso não tenha sido enviado uma role cria com a role padrão de citzen
-        const roleToSet = await Role.findOne({ where: { title: 'citizen' } });
-        if (roleToSet) {
-          await user.setRole(roleToSet);
-        } else {
-          user.destroy();
-          return res.json({ message: 'role invalida' });
-        }
-      }
-    } catch (error) {
-      user.destroy();
-      return res.json({ error });
+    delete req.body.role;
+
+    const userToSave = { ...req.body };
+
+    if (isAdminMaster && role) {
+      const { id } = roles.find(r => r.title === role);
+      userToSave.role_id = id;
+    } else if (role) {
+      return res.status(403).json({ message: 'Você não é um admin MASTER' });
     }
+
+    // criar usuário
+    const user = await User.create(userToSave);
 
     return res.status(200).json({
       id: user.id,
@@ -138,6 +117,19 @@ class UserController {
       return res
         .status(401)
         .json({ error: 'essa role não pode ser encontrado' });
+    }
+
+    // checka se possui um header e se é um adminMaster
+    const isAdminMaster = await checkAdmin(req.headers.authorization);
+    const { role } = req.body;
+    delete req.body.role;
+
+    const updateToUser = { ...req.body };
+
+    if (isAdminMaster && role) {
+      updateToUser.role_id = role.id;
+    } else if (role) {
+      return res.status(403).json({ message: 'Você não é um admin MASTER' });
     }
 
     if (req.body.email && req.body.email !== user.email) {
