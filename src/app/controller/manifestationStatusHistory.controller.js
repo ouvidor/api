@@ -1,5 +1,5 @@
 import Manifestation from '../models/Manifestation';
-import Status from '../models/Status';
+import arrayOfStatus from '../data/status';
 import ManifestationStatusHistory from '../models/ManifestationStatusHistory';
 
 class ManifestationStatusHistoryController {
@@ -54,17 +54,18 @@ class ManifestationStatusHistoryController {
       } else {
         manifestationStatusHistory = await ManifestationStatusHistory.findAll({
           where: { manifestation_id: idOrProtocol },
-          include: [
-            {
-              model: Status,
-              as: 'status',
-              attributes: ['id', 'title'],
-            },
-          ],
         });
       }
 
-      return res.status(200).json(manifestationStatusHistory);
+      const formattedManifestationStatusHistory = manifestationStatusHistory.map(
+        mSH => ({
+          description: mSH.description,
+          status: arrayOfStatus.find(s => s.id === mSH.status_id),
+          manifestation: mSH.manifestation,
+        })
+      );
+
+      return res.status(200).json(formattedManifestationStatusHistory);
     } catch (error) {
       return res.status(500).json({ error: 'Erro interno no servidor' });
     }
