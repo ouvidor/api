@@ -31,9 +31,6 @@ module.exports = {
         },
         status_id: {
           type: Sequelize.INTEGER,
-          references: { model: 'status', key: 'id' },
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE',
           allowNull: false,
         },
         created_at: {
