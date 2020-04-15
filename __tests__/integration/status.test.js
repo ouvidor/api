@@ -40,7 +40,7 @@ describe('Status', () => {
         }),
         expect.objectContaining({
           id: 8,
-          title: 'encaminhada para orgão externo - encerrada',
+          title: 'encaminhada para orgão externo',
         }),
       ])
     );
@@ -54,9 +54,21 @@ describe('Status', () => {
       .set('Authorization', `Bearer ${body.token}`)
       .send();
 
-    // expect(response.status).toBe(200);
+    expect(response.status).toBe(200);
     expect(response.body).toEqual(
       expect.objectContaining({ title: 'cadastrada', id: 2 })
     );
+  });
+
+  it('should not list a inexistent status', async () => {
+    const { body } = await sign.in(adminMaster);
+
+    const response = await request(app)
+      .get(`/status/120`)
+      .set('Authorization', `Bearer ${body.token}`)
+      .send();
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('message', 'esse status não existe');
   });
 });
