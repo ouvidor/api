@@ -9,7 +9,6 @@ import Manifestation from '../app/models/Manifestation';
 import ManifestationStatusHistory from '../app/models/ManifestationStatusHistory';
 import Category from '../app/models/Category';
 import Type from '../app/models/Type';
-import Status from '../app/models/Status';
 import Secretary from '../app/models/Secretary';
 import File from '../app/models/File';
 import Ombudsman from '../app/models/Ombudsman';
@@ -22,7 +21,6 @@ const models = [
   File,
   User,
   Type,
-  Status,
   Secretary,
   Category,
   Manifestation,
@@ -36,10 +34,6 @@ class Database {
     this.connection = new Sequelize(databaseConfig);
     this.init();
     this.associate();
-    // this.sync();
-    if (process.env.NODE_ENV !== 'test') {
-      this.checkDefaultEntries();
-    }
   }
 
   init() {
@@ -51,18 +45,6 @@ class Database {
       if (model.associate) {
         model.associate(this.connection.models);
       }
-    });
-  }
-
-  /*
-   * A função sync sincroniza todos os models com a database em uso.
-   * ps: somente use {force: true} em ambiente de desenvolvimento sem dados no banco.
-   */
-  async sync() {
-    models.forEach(model => {
-      model
-        .sync()
-        .then(console.log(`Table: ${model.name} Sincronizada ao banco`));
     });
   }
 }

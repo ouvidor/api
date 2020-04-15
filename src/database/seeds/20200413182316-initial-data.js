@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 module.exports = {
   up: async queryInterface => {
     await queryInterface.bulkInsert(
@@ -7,7 +9,7 @@ module.exports = {
           first_name: 'master',
           last_name: 'root',
           email: 'root@gmail.com',
-          password: '123456',
+          password: await bcrypt.hash('123456', 8),
           role_id: 3,
           created_at: new Date(),
           updated_at: new Date(),
