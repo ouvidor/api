@@ -6,7 +6,7 @@
  * COMPLEMENTADA: Após a resposta intermediária, o cidadão ofereceu uma informação adicional, complementando a manifestação.
  * ENCERRADA: Manifestação finalizada no sistema, com resposta conclusiva encaminhada ao cidadão.
  * ENCAMINHADA POR OUTRA OUVIDORIA: Manifestação encaminhada por outro órgão ou entidade que utiliza o Sistema de Ouvidorias do Poder Executivo federal.
- * ENCAMINHADA PARA ÓRGÃO EXTERNO - ENCERRADA: Manifestação encaminhada para outro órgão ou entidade que não utiliza o Sistema de Ouvidorias do Poder Executivo federal.
+ * ENCAMINHADA PARA ÓRGÃO EXTERNO: Manifestação encaminhada para outro órgão ou entidade que não utiliza o Sistema de Ouvidorias do Poder Executivo federal.
  */
 
 export const ARQUIVADA = 'arquivada';
@@ -17,8 +17,7 @@ export const COMPLEMENTADA = 'complementada';
 export const ENCERRADA = 'encerrada';
 export const ENCAMINHADA_PARA_OUTRA_OUVIDORIA =
   'encaminhada para outra ouvidoria';
-export const ENCAMINHADA_PARA_ORGAO_EXTERNO_ENCERRADA =
-  'encaminhada para orgão externo - encerrada';
+export const ENCAMINHADA_PARA_ORGAO_EXTERNO = 'encaminhada para orgão externo';
 
 export default [
   {
@@ -51,6 +50,6 @@ export default [
   },
   {
     id: 8,
-    title: ENCAMINHADA_PARA_ORGAO_EXTERNO_ENCERRADA,
+    title: ENCAMINHADA_PARA_ORGAO_EXTERNO,
   },
 ];
