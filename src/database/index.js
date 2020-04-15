@@ -34,10 +34,6 @@ class Database {
     this.connection = new Sequelize(databaseConfig);
     this.init();
     this.associate();
-    // this.sync();
-    if (process.env.NODE_ENV !== 'test') {
-      this.checkDefaultEntries();
-    }
   }
 
   init() {
@@ -49,18 +45,6 @@ class Database {
       if (model.associate) {
         model.associate(this.connection.models);
       }
-    });
-  }
-
-  /*
-   * A função sync sincroniza todos os models com a database em uso.
-   * ps: somente use {force: true} em ambiente de desenvolvimento sem dados no banco.
-   */
-  async sync() {
-    models.forEach(model => {
-      model
-        .sync()
-        .then(console.log(`Table: ${model.name} Sincronizada ao banco`));
     });
   }
 }
