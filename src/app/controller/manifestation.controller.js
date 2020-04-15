@@ -2,8 +2,9 @@ import Manifestation from '../models/Manifestation';
 import User from '../models/User';
 import SearchManifestationService from '../services/SearchManifestationService';
 import GeolocationService from '../services/GeolocationService';
-
+import SetStatusToManifestation from '../services/SetStatusToManifestation';
 import manifestationIncludes from '../utils/manifestationIncludes';
+import { CADASTRADA } from '../data/status';
 
 class ManifestationController {
   async fetch(req, res) {
@@ -66,7 +67,7 @@ class ManifestationController {
     });
 
     if (!manifestation) {
-      return res.status(400).json({ error: 'essa manifestação não existe' });
+      return res.status(400).json({ message: 'essa manifestação não existe' });
     }
 
     return res.status(200).json(manifestation);
@@ -79,7 +80,7 @@ class ManifestationController {
     // caso o token informado seja de um usuário que não existe
     const user = await User.findByPk(req.user_id);
     if (!user) {
-      return res.status(401).json({ error: 'Esse usuário não existe' });
+      return res.status(401).json({ message: 'Esse usuário não existe' });
     }
 
     let manifestation;
@@ -91,20 +92,22 @@ class ManifestationController {
         ...formattedData,
         user_id: req.user_id,
       });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: 'Erro interno no servidor' });
-    }
 
-    // adicionar as categorias e arquivos
-    try {
       if (categories_id && categories_id.length) {
         await manifestation.setCategories(categories_id);
       }
+
+      await SetStatusToManifestation.run(
+        manifestation,
+        CADASTRADA,
+        `A manifestação foi cadastrada`
+      );
     } catch (error) {
-      manifestation.destroy();
-      console.log(error);
-      return res.status(500).json({ error: 'Erro interno no servidor' });
+      if (manifestation) {
+        manifestation.destroy();
+      }
+      console.error(error);
+      return res.status(500).json({ message: 'Erro interno no servidor' });
     }
 
     return res.status(200).json(manifestation);
@@ -118,7 +121,7 @@ class ManifestationController {
     if (!manifestation) {
       return res
         .status(401)
-        .json({ error: 'essa manifestação não pôde ser encontrada' });
+        .json({ message: 'essa manifestação não pôde ser encontrada' });
     }
 
     // atualiza a instancia

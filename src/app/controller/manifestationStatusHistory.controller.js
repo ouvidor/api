@@ -1,31 +1,30 @@
 import Manifestation from '../models/Manifestation';
 import arrayOfStatus from '../data/status';
 import ManifestationStatusHistory from '../models/ManifestationStatusHistory';
+import SetStatusToManifestation from '../services/SetStatusToManifestation';
 
 class ManifestationStatusHistoryController {
   async save(req, res) {
-    const { description, status_id, secretary_id } = req.body;
+    const { description, status_id } = req.body;
     const { manifestationId } = req.params;
 
     const manifestation = await Manifestation.findByPk(manifestationId, {
       attributes: ['id'],
     });
     if (!manifestation) {
-      return res.status(400).json({ errro: 'Essa manifestação não existe' });
+      return res.status(400).json({ message: 'Essa manifestação não existe' });
     }
 
     try {
-      const manifestationStatus = await ManifestationStatusHistory.create({
-        description,
-        manifestation_id: manifestation.id,
+      const manifestationStatus = await SetStatusToManifestation.run(
+        manifestation,
         status_id,
-        secretary_id,
-      });
+        description
+      );
 
       return res.status(200).json(manifestationStatus);
     } catch (error) {
-      console.log(error);
-      return res.status(500).json({ error: 'Erro interno no servidor' });
+      return res.status(500).json({ message: 'Erro interno no servidor' });
     }
   }
 
