@@ -79,6 +79,29 @@ _retorna_:
 }
 ```
 
+- **PUT** `user/:id`: edita o seu próprio usuário.
+
+_requisição_:
+```json
+{
+  "email": "novoemail@gmail.com",
+}
+```
+
+_retorna_:
+```json
+{
+  "id": 2,
+  "first_name": "primeiro nome",
+  "last_name": "ultimo nome",
+  "email": "novoemail@gmail.com",
+  "role": {
+    "id": 3,
+    "title": "master"
+  }
+}
+```
+
 ---
 
 ### Auth
