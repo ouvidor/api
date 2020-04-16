@@ -14,7 +14,7 @@ class GenericValidator {
           .required('O id é necessário'),
       });
 
-      await schema.validate(request.body, { abortEarly: false });
+      await schema.validate(request.params, { abortEarly: false });
       return next();
     } catch (error) {
       return response.status(400).json({
