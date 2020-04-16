@@ -564,7 +564,7 @@ _retorna_:
 
 ### Type
 
-- **GET** `type/`: retorna todos os registros na tabela de _types_.
+- **GET** `type/`: retorna todos os tipos possíveis de manifestações.
 
 ```json
 [

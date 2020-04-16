@@ -12,7 +12,6 @@ const adminMaster = {
 
 let token;
 let category;
-let type;
 let manifestation;
 
 describe('Manifestation', () => {
@@ -27,13 +26,6 @@ describe('Manifestation', () => {
     const loginRes = await sign.in(adminMaster);
     token = loginRes.body.token;
 
-    // necessário criação de tipo
-    const typeRes = await request(app)
-      .post('/type')
-      .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'type' });
-    type = typeRes.body;
-
     // criar manifestação
     const manifestationResult = await request(app)
       .post('/manifestation')
@@ -41,7 +33,7 @@ describe('Manifestation', () => {
       .send({
         title: 'title',
         description: 'description',
-        type_id: type.id,
+        type_id: 1,
         categories_id: [category.id],
       });
     manifestation = manifestationResult.body;
@@ -53,30 +45,40 @@ describe('Manifestation', () => {
       const response = await request(app)
         .get('/manifestation')
         .set('Authorization', `Bearer ${token}`)
+        .expect(200)
         .send();
 
-      expect(response.status).toBe(200);
       expect(response.body).toEqual(
-        expect.objectContaining({ count: 1, last_page: 1 })
-      );
-      expect(response.body.rows).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            title: 'title',
-            description: 'description',
-          }),
-        ])
-      );
-      expect(response.body.rows[0]).toHaveProperty(
-        'id',
-        'title',
-        'description',
-        'type',
-        'categories',
-        'location',
-        'latitude',
-        'longitude',
-        'read'
+        expect.objectContaining({
+          last_page: 1,
+          count: 1,
+          rows: expect.arrayContaining([
+            expect.objectContaining({
+              id: expect.any(Number),
+              protocol: expect.any(String),
+              title: 'title',
+              description: 'description',
+              read: 0,
+              location: null,
+              latitude: null,
+              longitude: null,
+              created_at: expect.any(String),
+              updated_at: expect.any(String),
+              secretary_id: null,
+              user_id: expect.any(Number),
+              categories: [
+                {
+                  id: expect.any(Number),
+                  title: 'Saneamento',
+                },
+              ],
+              type: {
+                id: 1,
+                title: 'sugestão',
+              },
+            }),
+          ]),
+        })
       );
     });
 
@@ -86,30 +88,40 @@ describe('Manifestation', () => {
         .get('/manifestation')
         .query({ text: 'title' })
         .set('Authorization', `Bearer ${token}`)
+        .expect(200)
         .send();
 
-      expect(response.status).toBe(200);
       expect(response.body).toEqual(
-        expect.objectContaining({ count: 1, last_page: 1 })
-      );
-      expect(response.body.rows).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            title: 'title',
-            description: 'description',
-          }),
-        ])
-      );
-      expect(response.body.rows[0]).toHaveProperty(
-        'id',
-        'title',
-        'description',
-        'type',
-        'categories',
-        'location',
-        'latitude',
-        'longitude',
-        'read'
+        expect.objectContaining({
+          last_page: 1,
+          count: 1,
+          rows: expect.arrayContaining([
+            expect.objectContaining({
+              id: expect.any(Number),
+              protocol: expect.any(String),
+              title: 'title',
+              description: 'description',
+              read: 0,
+              location: null,
+              latitude: null,
+              longitude: null,
+              created_at: expect.any(String),
+              updated_at: expect.any(String),
+              secretary_id: null,
+              user_id: expect.any(Number),
+              categories: [
+                {
+                  id: expect.any(Number),
+                  title: 'Saneamento',
+                },
+              ],
+              type: {
+                id: 1,
+                title: 'sugestão',
+              },
+            }),
+          ]),
+        })
       );
     });
 
@@ -118,14 +130,33 @@ describe('Manifestation', () => {
       const response = await request(app)
         .get(`/manifestation/${manifestation.protocol}`)
         .set('Authorization', `Bearer ${token}`)
+        .expect(200)
         .send();
 
-      // expect(response.status).toBe(200);
       expect(response.body).toEqual(
         expect.objectContaining({
+          id: expect.any(Number),
+          protocol: manifestation.protocol,
           title: 'title',
           description: 'description',
-          protocol: manifestation.protocol,
+          read: 0,
+          location: null,
+          latitude: null,
+          longitude: null,
+          created_at: expect.any(String),
+          updated_at: expect.any(String),
+          secretary_id: null,
+          user_id: expect.any(Number),
+          categories: [
+            {
+              id: expect.any(Number),
+              title: 'Saneamento',
+            },
+          ],
+          type: {
+            id: 1,
+            title: 'sugestão',
+          },
         })
       );
     });
@@ -136,49 +167,66 @@ describe('Manifestation', () => {
         .get('/manifestation')
         .query({ options: 'Saneamento' })
         .set('Authorization', `Bearer ${token}`)
-        .send();
-
-      expect(response.body).toEqual(
-        expect.objectContaining({ count: 1, last_page: 1 })
-      );
-      expect(response.body.rows).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            title: 'title',
-            description: 'description',
-            categories: expect.arrayContaining([
-              expect.objectContaining({
-                title: 'Saneamento',
-              }),
-            ]),
-          }),
-        ])
-      );
-    });
-
-    it('should list a specific manifestation', async () => {
-      // listar
-      const response = await request(app)
-        .get(`/manifestation/${manifestation.id}`)
-        .set('Authorization', `Bearer ${token}`)
+        .expect(200)
         .send();
 
       expect(response.body).toEqual(
         expect.objectContaining({
-          title: 'title',
-          description: 'description',
+          last_page: 1,
+          count: 1,
+          rows: expect.arrayContaining([
+            expect.objectContaining({
+              id: expect.any(Number),
+              protocol: expect.any(String),
+              title: 'title',
+              description: 'description',
+              read: 0,
+              location: null,
+              latitude: null,
+              longitude: null,
+              created_at: expect.any(String),
+              updated_at: expect.any(String),
+              secretary_id: null,
+              user_id: expect.any(Number),
+              categories: [
+                {
+                  id: expect.any(Number),
+                  title: 'Saneamento',
+                },
+              ],
+              type: {
+                id: 1,
+                title: 'sugestão',
+              },
+            }),
+          ]),
         })
       );
     });
+
+    // it('should list a specific manifestation', async () => {
+    //   // listar
+    //   const response = await request(app)
+    //     .get(`/manifestation/${manifestation.id}`)
+    //     .set('Authorization', `Bearer ${token}`)
+    //     .send();
+
+    //   expect(response.body).toEqual(
+    //     expect.objectContaining({
+    //       title: 'title',
+    //       description: 'description',
+    //     })
+    //   );
+    // });
 
     it('should not list a inexistent manifestation', async () => {
       // listar
       const response = await request(app)
         .get(`/manifestation/${manifestation.id + 20}`)
         .set('Authorization', `Bearer ${token}`)
+        .expect(400)
         .send();
 
-      expect(response.status).toBe(400);
       expect(response.body).toHaveProperty(
         'message',
         'essa manifestação não existe'
