@@ -11,6 +11,11 @@ class Manifestation extends Model {
         location: Sequelize.STRING,
         latitude: Sequelize.STRING,
         longitude: Sequelize.STRING,
+        type_id: {
+          type: Sequelize.INTEGER,
+          values: [1, 2, 3, 4, 5],
+          allowNull: false,
+        },
       },
       // configs da tabela
       {
@@ -39,11 +44,6 @@ class Manifestation extends Model {
     this.belongsTo(models.User, {
       foreignKey: 'user_id',
       as: 'user',
-      targetKey: 'id',
-    });
-    this.belongsTo(models.Type, {
-      foreignKey: 'type_id',
-      as: 'type',
       targetKey: 'id',
     });
     this.belongsToMany(models.Category, {

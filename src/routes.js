@@ -33,6 +33,7 @@ import SecretaryValidator from './app/middlewares/validators/Secretary';
 import MailValidator from './app/middlewares/validators/Mail';
 import RoleValidator from './app/middlewares/validators/Role';
 import StatusValidator from './app/middlewares/validators/Status';
+import TypeValidator from './app/middlewares/validators/Type';
 import FTPValidator from './app/middlewares/validators/FTP';
 
 import ManifestationStatusHistoryValidator from './app/middlewares/validators/ManifestationStatusHistory';
@@ -87,7 +88,7 @@ router.get('/category', CategoryController.fetch);
 router.get('/category/:id', CategoryController.show);
 
 router.get('/type', TypeController.fetch);
-router.get('/type/:id', TypeController.show);
+router.get('/type/:id', TypeValidator.show, TypeController.show);
 
 router.get(
   '/manifestation',
@@ -164,10 +165,6 @@ router.put(
 router.post('/category', GenericValidator.save, CategoryController.save);
 router.put('/category/:id', GenericValidator.update, CategoryController.update);
 router.delete('/category/:id', CategoryController.delete);
-
-router.post('/type', GenericValidator.save, TypeController.save);
-router.put('/type/:id', GenericValidator.update, TypeController.update);
-router.delete('/type/:id', TypeController.delete);
 
 router.post('/secretary', SecretaryValidator.save, SecretaryController.save);
 router.put(
