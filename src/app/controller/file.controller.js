@@ -14,7 +14,7 @@
 
 import { Storage } from '@google-cloud/storage';
 import fileSystem from 'fs';
-import { extname } from 'path';
+import { extname, resolve } from 'path';
 import File from '../models/File';
 import Manifestation from '../models/Manifestation';
 import User from '../models/User';
@@ -31,13 +31,15 @@ const bucketName = 'ouvidor';
 
 // Deleta o arquivo criado temporariamente na pasta temp, é importante que essa função seja
 // chamada sempre que um upload terminar pois limpa o cache local do folder da apliucação.
-function deleteTempFile(file) {
-  if (file) {
-    fileSystem.unlink(`${process.cwd()}/temp/${file.filename}`, error => {
-      if (error) throw error;
-      console.log(`Arquivo ${file.filename} deletado!`);
-    });
-  }
+function deleteTempFiles(files) {
+  files.forEach(file => {
+    if (file) {
+      fileSystem.unlink(`${process.cwd()}/temp/${file.filename}`, error => {
+        if (error) throw error;
+        console.log(`Arquivo ${file.filename} deletado!`);
+      });
+    }
+  });
 }
 
 class FileController {
@@ -45,84 +47,92 @@ class FileController {
    *  Funções usadas em rotas
    */
 
-  // Realiza o upload de um arquivo para o servidor FTP
   async save(req, res) {
-    console.log('upload');
     const { manifestation_id } = req.body;
-    const { file } = req; // Pega o arquivo que o multer(middleware) tratou e colocou na req
+    const { files } = req; // Pega o arquivo que o multer(middleware) tratou e colocou na req
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
     const manifestation = await Manifestation.findByPk(manifestation_id); // manifestação que irá receber o arquivo
 
-    const storage = new Storage();
-
-    // checa se essa manifestação existe.
-    if (!manifestation) {
-      deleteTempFile(req.file);
-      return res.status(404).json({ message: 'manifestação não existe' });
-    }
-
-    // checa se Usuário existe
-    if (!user) {
-      deleteTempFile(req.file);
-      return res.status(500).json({ message: 'usuario não existe' });
-    }
-
-    // checa se um arquivo foi enviado
-    if (!req.file) {
+    /**
+     * Precisa ser enviado um arquivo no mínimo
+     * O usuário deve existir
+     * A manifestação deve existir
+     */
+    if (!files) {
       return res
         .status(400)
         .json({ message: 'Não consta um arquivo na requisição' });
     }
 
-    // Checa se quem fez a requisição é o dono da manifestação ou um administrador
-    const isOwner = user.dataValues.id === manifestation.dataValues.user_id;
-    const { user_role } = req;
-
-    if (
-      isOwner ||
-      user_role.title === 'master' ||
-      user_role.title === 'admin'
-    ) {
-      // INICIO DO UPLOAD -----------------
-      await storage
-        .bucket(bucketName)
-        .upload(`${process.cwd()}/temp/${req.file.filename}`, {
-          gzip: true,
-
-          metadata: {
-            cacheControl: 'no-cache',
-          },
-        })
-        .catch(err => {
-          console.log(err);
-          return res.status(401).json({
-            message: { msg: 'erro', err },
-          });
-        });
-
-      // Se chegar até aqui quer dizer que o upload do arquivo foi um sucesso, agora salvaremos a referencia no banco com o model File
-      try {
-        const extension = extname(file.originalname);
-        const data = {
-          file_name: file.originalname,
-          file_name_in_server: file.filename,
-          extension,
-        };
-        const uploaded_file = await File.create(data);
-        await uploaded_file.setUser(user);
-        await uploaded_file.setManifestation(manifestation);
-
-        deleteTempFile(file);
-
-        return res.status(200).json(uploaded_file);
-      } catch (error) {
-        console.log(error);
-        deleteTempFile(file);
-
-        return res.status(500).json({ message: 'Erro', error });
+    if (!manifestation || !user) {
+      deleteTempFiles(files);
+      if (!manifestation) {
+        return res.status(404).json({ message: 'Manifestação não existe' });
       }
+      return res.status(500).json({ message: 'Usuario não existe' });
     }
-    return res.status(500).json({ message: 'Erro' });
+
+    const isOwner = user.id === manifestation.user_id;
+    const isUserAnAdmin = req.user_role > 1;
+
+    /**
+     * O usuário deve ser dono da manifestação
+     * OU
+     * O usuário deve ser um administrador
+     */
+    if (!isOwner || !isUserAnAdmin) {
+      return res.status(401).json({
+        message:
+          'Não tem permissão para enviar um arquivo para essa manifestação',
+      });
+    }
+
+    // Inicio do upload dos arquivos
+    const storage = new Storage();
+    const ouvidorBucket = await storage.bucket(bucketName);
+
+    const uploadPromises = files.map(file =>
+      ouvidorBucket.upload(`${process.cwd()}/temp/${file.filename}`, {
+        gzip: true,
+        resumable: false,
+        metadata: {
+          cacheControl: 'no-cache',
+        },
+      })
+    );
+
+    await Promise.all(uploadPromises).catch(error => {
+      console.error(error);
+      return res.status(401).json({
+        message: { message: 'Erro no envio de arquivos', error },
+      });
+    });
+
+    /**
+     * Já que o upload dos arquivos foi um sucesso ele salva os dados no banco
+     */
+    try {
+      const formattedFiles = files.map(file => ({
+        extension: extname(file.originalname),
+        file_name: file.originalname,
+        file_name_in_server: file.filename,
+      }));
+
+      const savedFiles = await File.bulkCreate(formattedFiles);
+      savedFiles.forEach(async file => {
+        await file.setUser(user);
+        await file.setManifestation(manifestation);
+      });
+
+      deleteTempFiles(files);
+
+      return res.status(200).json(savedFiles);
+    } catch (error) {
+      console.error(error);
+      deleteTempFiles(files);
+
+      return res.status(500).json({ message: 'Erro interno no servidor' });
+    }
   }
 
   // Usa a api como proxy e encaminha a stream do arquivo no servidor de arquivos para o requisitante
