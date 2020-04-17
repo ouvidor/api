@@ -1,12 +1,12 @@
 import { Op } from 'sequelize';
 
 import Manifestation from '../models/Manifestation';
-import Type from '../models/Type';
+import arrayOfTypes from '../data/types';
 import Category from '../models/Category';
 
 class SearchManifestationService {
   async fetchOptionsIds(options) {
-    let types = [];
+    const types = [];
     let categories = [];
 
     // se não for um array, vira um array
@@ -17,7 +17,7 @@ class SearchManifestationService {
 
     // coloca promises nos arrays
     for (const option of options) {
-      const type = Type.findOne({ where: { title: option } });
+      const type = arrayOfTypes.find(t => t.title === option);
       if (type) {
         types.push(type);
       }
@@ -31,13 +31,11 @@ class SearchManifestationService {
     }
 
     // resolve todas as promises depois de acabar
-    types = await Promise.all(types);
     categories = await Promise.all(categories);
 
-    const filteredTypes = types.filter(type => type !== null);
     const filteredCategories = categories.filter(category => category !== null);
 
-    return [filteredTypes, filteredCategories];
+    return [types, filteredCategories];
   }
 
   makeWhereQuery(text, types, categories, page, isRead) {
@@ -61,11 +59,6 @@ class SearchManifestationService {
                 : undefined,
             ],
           },
-        },
-        {
-          model: Type,
-          as: 'type',
-          attributes: ['id', 'title'],
         },
       ],
       where: {

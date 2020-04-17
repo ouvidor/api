@@ -10,7 +10,6 @@ const adminMaster = {
   password: '123456',
 };
 let token;
-let type;
 
 describe('Type', () => {
   // entre todos os testes é feito o truncate da tabela
@@ -20,75 +19,38 @@ describe('Type', () => {
 
     const loginRes = await sign.in(adminMaster);
     token = loginRes.body.token;
-
-    const typeRes = await request(app)
-      .post('/type')
-      .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'type' });
-    type = typeRes.body;
   });
 
-  it("shouldn't create a type, duplicated title", async () => {
-    // criar
-    const response = await request(app)
-      .post('/type')
-      .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'type' });
+  describe('FETCH', () => {
+    it('fetch types', async () => {
+      const response = await request(app)
+        .get('/type')
+        .set('Authorization', `Bearer ${token}`)
+        .send();
 
-    expect(response.status).toBe(400);
-    expect(response.body).toHaveProperty('error');
-    expect(response.body.error).toStrictEqual(
-      'um tipo com esse título ja existe'
-    );
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ id: 1, title: 'sugestão' }),
+          expect.objectContaining({ id: 2, title: 'elogio' }),
+          expect.objectContaining({ id: 3, title: 'solicitação' }),
+          expect.objectContaining({ id: 4, title: 'reclamação' }),
+          expect.objectContaining({ id: 5, title: 'denúncia' }),
+        ])
+      );
+    });
   });
 
-  it('should list all types', async () => {
-    // listar
-    const response = await request(app)
-      .get('/type')
-      .set('Authorization', `Bearer ${token}`)
-      .send();
+  describe('SHOW', () => {
+    it('show type', async () => {
+      const response = await request(app)
+        .get('/type/1')
+        .set('Authorization', `Bearer ${token}`)
+        .send();
 
-    expect(response.status).toBe(200);
-    expect(response.body[0]).toEqual(
-      expect.objectContaining({ title: 'type' })
-    );
-  });
-
-  it('should list a specific type', async () => {
-    // listar type
-    const response = await request(app)
-      .get(`/type/${type.id}`)
-      .set('Authorization', `Bearer ${token}`)
-      .send();
-
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual(
-      expect.objectContaining({ title: 'type', id: type.id })
-    );
-  });
-
-  it('should update a type', async () => {
-    // update
-    const response = await request(app)
-      .put(`/type/${type.id}`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'updated' });
-
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual(
-      expect.objectContaining({ title: 'updated' })
-    );
-  });
-
-  it('should delete a type', async () => {
-    // delete
-    const response = await request(app)
-      .delete(`/type/${type.id}`)
-      .set('Authorization', `Bearer ${token}`)
-      .send();
-
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual(expect.objectContaining({ title: 'type' }));
+      expect(response.body).toEqual(
+        expect.objectContaining({ id: 1, title: 'sugestão' })
+      );
+    });
   });
 });

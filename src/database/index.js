@@ -8,7 +8,6 @@ import User from '../app/models/User';
 import Manifestation from '../app/models/Manifestation';
 import ManifestationStatusHistory from '../app/models/ManifestationStatusHistory';
 import Category from '../app/models/Category';
-import Type from '../app/models/Type';
 import Secretary from '../app/models/Secretary';
 import File from '../app/models/File';
 import Ombudsman from '../app/models/Ombudsman';
@@ -20,7 +19,6 @@ require('dotenv');
 const models = [
   File,
   User,
-  Type,
   Secretary,
   Category,
   Manifestation,

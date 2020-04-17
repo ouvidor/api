@@ -564,13 +564,13 @@ _retorna_:
 
 ### Type
 
-- **GET** `type/`: retorna todos os registros na tabela de _types_.
+- **GET** `type/`: retorna todos os tipos possíveis de manifestações.
 
 ```json
 [
   {
     "id": 1,
-    "title": "Reclamação"
+    "title": "sugestão",
   }
 ]
 ```
@@ -580,58 +580,7 @@ _retorna_:
 ```json
 {
   "id": 1,
-  "title": "Reclamação"
-}
-```
-
-- **POST** `type/`: cria um novo registro na tabela de _types_.
-
-_requisição_:
-
-```json
-{
-  "title": "Reclamação"
-}
-```
-
-_retorna_:
-
-```json
-{
-  "id": 1,
-  "title": "Reclamação"
-}
-```
-
-- **PUT** `type/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _types_.
-
-_requisição_:
-
-```json
-{
-  "title": "Elogio"
-}
-```
-
-_retorna_:
-
-```json
-{
-  "id": 1,
-  "title": "Elogio"
-}
-```
-
-- **DELETE** `type/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _types_.
-
-_retorna_:
-
-```json
-{
-  "id": 1,
-  "title": "Reclamação",
-  "created_at": "2019-10-31T17:01:36.000Z",
-  "updated_at": "2019-10-31T17:01:36.000Z"
+  "title": "sugestão"
 }
 ```
 

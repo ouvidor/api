@@ -5,6 +5,7 @@ import GeolocationService from '../services/GeolocationService';
 import SetStatusToManifestation from '../services/SetStatusToManifestation';
 import manifestationIncludes from '../utils/manifestationIncludes';
 import { CADASTRADA } from '../data/status';
+import arrayOfTypes from '../data/types';
 
 class ManifestationController {
   async fetch(req, res) {
@@ -19,11 +20,11 @@ class ManifestationController {
     page = Number(page);
     isRead = Number(isRead);
 
-    let manifestations;
+    let manifestationQueryResult;
 
     // pesquisa com filtro
     if (text || options) {
-      manifestations = await SearchManifestationService.run(
+      manifestationQueryResult = await SearchManifestationService.run(
         text,
         options,
         page,
@@ -31,7 +32,7 @@ class ManifestationController {
       );
     } else {
       // pesquisa por todas as manifestações
-      manifestations = await Manifestation.findAndCountAll({
+      manifestationQueryResult = await Manifestation.findAndCountAll({
         include: manifestationIncludes,
         // caso receba isRead, pesquisa apenas por manifestações lidas
         ...(!isRead && { where: { read: 0 } }),
@@ -41,12 +42,19 @@ class ManifestationController {
     }
 
     // retorna qual a ultima página
-    manifestations.last_page = Math.ceil(manifestations.count / 10);
+    const last_page = Math.ceil(manifestationQueryResult.count / 10);
 
-    // gambiarra, ele ta contando um a mais
-    // manifestations.count -= 1;
+    const formattedQueryResult = {
+      count: manifestationQueryResult.count,
+      rows: manifestationQueryResult.rows.map(manifestation => ({
+        ...manifestation.dataValues,
+        type_id: undefined, // remove type_id
+        type: arrayOfTypes.find(type => type.id === manifestation.type_id),
+      })),
+      last_page,
+    };
 
-    return res.status(200).json(manifestations);
+    return res.status(200).json(formattedQueryResult);
   }
 
   async show(req, res) {
@@ -70,7 +78,13 @@ class ManifestationController {
       return res.status(400).json({ message: 'essa manifestação não existe' });
     }
 
-    return res.status(200).json(manifestation);
+    const formattedManifestation = {
+      ...manifestation.dataValues,
+      type_id: undefined,
+      type: arrayOfTypes.find(type => type.id === manifestation.type_id),
+    };
+
+    return res.status(200).json(formattedManifestation);
   }
 
   async save(req, res) {
