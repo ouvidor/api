@@ -14,10 +14,12 @@
 
 import { Storage } from '@google-cloud/storage';
 import fileSystem from 'fs';
-import { extname, resolve } from 'path';
+import { extname } from 'path';
+
 import File from '../models/File';
 import Manifestation from '../models/Manifestation';
 import User from '../models/User';
+import setResponseHeaders from '../utils/setResponseHeaders';
 
 /**
  * Constantes da classe
@@ -73,7 +75,7 @@ class FileController {
     }
 
     const isOwner = user.id === manifestation.user_id;
-    const isUserAnAdmin = req.user_role > 1;
+    const isUserAnAdmin = req.user_role.id > 1;
 
     /**
      * O usuário deve ser dono da manifestação
@@ -142,16 +144,14 @@ class FileController {
     const file = await File.findByPk(file_id);
     const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
 
-    // checa se File existe
     if (!file) {
       return res.status(404).json({
         message: 'Arquivo não existe',
       });
     }
 
-    // checa se Usuário existe
     if (!user) {
-      return res.status(404).json({ message: 'usuario não existe' });
+      return res.status(404).json({ message: 'Usuário não existe' });
     }
 
     const isOwner = user.dataValues.id === file.dataValues.user_id;
@@ -164,26 +164,24 @@ class FileController {
       });
     }
 
-    // Caso passe nas checagens, segue fluxo normal
     try {
-      console.log('conectando no servidor de arquivos...');
       const storage = new Storage();
+      const ouvidorBucket = storage.bucket(bucketName);
+      const remote_file = ouvidorBucket.file(file.file_name_in_server);
 
-      // Downloads the file
-      const remote_file = storage
-        .bucket(bucketName)
-        .file(file.file_name_in_server);
-
-      // O reader abaixo faz com que o arquivo seja encaminhado para download
-      res.header(
-        'Content-Disposition',
-        `attachment; filename=${file.file_name}`
-      );
+      res = setResponseHeaders(res, file);
 
       return remote_file
         .createReadStream()
-        .on('error', err => {
-          console.log(err);
+        .on('error', async error => {
+          // se o arquivo não for achado
+          if (error.code === 404) {
+            file.destroy();
+            return res
+              .status(404)
+              .json({ message: 'Esse arquivo não pôde ser achado' });
+          }
+          return res.status(500).json({ message: 'Erro ao buscar o arquivo' });
         })
         .pipe(res);
     } catch (error) {
@@ -192,20 +190,18 @@ class FileController {
     }
   }
 
-  // Remove o arquivo do servidor FTP e remove as associações com a manifestação.
   async delete(req, res) {
     const { file_id } = req.params;
     const { user_role } = req;
     const file = await File.findByPk(file_id);
 
-    // checa se File existe
     if (!file) {
       return res.status(404).json({
         message: 'Arquivo não existe',
       });
     }
 
-    const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
+    const user = await User.findByPk(req.user_id);
 
     // checa se Usuário existe
     if (!user) {
@@ -222,13 +218,10 @@ class FileController {
       });
     }
 
-    // Caso passe nas checagens, segue fluxo normal
-
     try {
-      console.log('conectando no servidor de arquivos...');
       const storage = new Storage();
 
-      // Deletes the file from the bucket
+      // Deleta arquivo do google cloud storage
       await storage
         .bucket(bucketName)
         .file(file.file_name_in_server)
