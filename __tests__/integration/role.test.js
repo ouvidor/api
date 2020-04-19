@@ -19,9 +19,7 @@ describe('Role', () => {
   });
 
   it('should list all roles', async () => {
-    const {
-      body: { token },
-    } = await sign.in(adminMaster);
+    const { token } = await sign.in(adminMaster);
 
     const response = await request(app)
       .get('/role')
@@ -41,9 +39,7 @@ describe('Role', () => {
   });
 
   it('should list a specific role', async () => {
-    const {
-      body: { token },
-    } = await sign.in(adminMaster);
+    const { token } = await sign.in(adminMaster);
 
     const response = await request(app)
       .get(`/role/1`)
@@ -60,9 +56,7 @@ describe('Role', () => {
 
     await sign.up(citizen);
 
-    const {
-      body: { token },
-    } = await sign.in(citizen);
+    const { token } = await sign.in(citizen);
 
     const response = await request(app)
       .get('/role')

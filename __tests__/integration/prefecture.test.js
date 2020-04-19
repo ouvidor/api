@@ -18,8 +18,8 @@ describe('Prefecture', () => {
     await seedDatabase();
 
     // necessário login em todos os tests
-    const loginRes = await sign.in(adminMaster);
-    token = loginRes.body.token;
+    const { token: signedToken } = await sign.in(adminMaster);
+    token = signedToken;
   });
 
   describe('GET', () => {

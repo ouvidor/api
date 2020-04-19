@@ -18,11 +18,11 @@ describe('Status', () => {
   });
 
   it('should list all status', async () => {
-    const { body } = await sign.in(adminMaster);
+    const { token } = await sign.in(adminMaster);
 
     const response = await request(app)
       .get('/status')
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send();
 
     expect(response.status).toBe(200);
@@ -47,11 +47,11 @@ describe('Status', () => {
   });
 
   it('should list a specific status', async () => {
-    const { body } = await sign.in(adminMaster);
+    const { token } = await sign.in(adminMaster);
 
     const response = await request(app)
       .get(`/status/2`)
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send();
 
     expect(response.status).toBe(200);
@@ -61,11 +61,11 @@ describe('Status', () => {
   });
 
   it('should not list a inexistent status', async () => {
-    const { body } = await sign.in(adminMaster);
+    const { token } = await sign.in(adminMaster);
 
     const response = await request(app)
       .get(`/status/120`)
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send();
 
     expect(response.status).toBe(400);

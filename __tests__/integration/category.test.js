@@ -19,8 +19,8 @@ describe('Category', () => {
     const { category: categorySeed } = await seedDatabase();
     category = categorySeed;
 
-    const loginRes = await sign.in(adminMaster);
-    token = loginRes.body.token;
+    const { token: signedToken } = await sign.in(adminMaster);
+    token = signedToken;
   });
 
   it("shouldn't create a category, duplicated title", async () => {

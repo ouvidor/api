@@ -17,8 +17,8 @@ describe('Type', () => {
     await truncate();
     await seedDatabase();
 
-    const loginRes = await sign.in(adminMaster);
-    token = loginRes.body.token;
+    const { token: signedToken } = await sign.in(adminMaster);
+    token = signedToken;
   });
 
   describe('FETCH', () => {
