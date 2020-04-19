@@ -1,18 +1,13 @@
-// A regra do eslint abaixo é importante
 /**
- * Arquivo responsavel por salvar temproariamente a imagem no folder 'temp', e envia-la para um servidor de arquivos remoto através de FTP.
- *
- * Documentação do modulo FTP -> https://www.npmjs.com/package/ftp
+ * Arquivo responsavel por salvar temproariamente a imagem no folder 'temp', e envia-la para a Google Cloud Storage.
  */
 
 /**
  * TODO:
  *  - Limitar a quantidade de arquivos que uma manifestação pode ter.
  *  - Filtrar os arquivos por extensão (escolher quais tipos de arquivos podem ser enviados).
- *  - Verificar o Remove dos arquivos, tratar algumas exceções, upload e download estão prontos praticamente
  */
 
-import { Storage } from '@google-cloud/storage';
 import fileSystem from 'fs';
 import { extname } from 'path';
 
@@ -20,19 +15,9 @@ import File from '../models/File';
 import Manifestation from '../models/Manifestation';
 import User from '../models/User';
 import setResponseHeaders from '../utils/setResponseHeaders';
+import GoogleCloudStorage from '../../lib/GoogleCloudStorage';
 
-/**
- * Constantes da classe
- */
-
-const bucketName = 'ouvidor';
-
-/**
- * Funções usadas dentro da classe
- */
-
-// Deleta o arquivo criado temporariamente na pasta temp, é importante que essa função seja
-// chamada sempre que um upload terminar pois limpa o cache local do folder da apliucação.
+// Função responsável por limpar o cache
 function deleteTempFiles(files) {
   files.forEach(file => {
     if (file) {
@@ -45,10 +30,6 @@ function deleteTempFiles(files) {
 }
 
 class FileController {
-  /**
-   *  Funções usadas em rotas
-   */
-
   async save(req, res) {
     const { manifestation_id } = req.body;
     const { files } = req; // Pega o arquivo que o multer(middleware) tratou e colocou na req
@@ -89,18 +70,8 @@ class FileController {
       });
     }
 
-    // Inicio do upload dos arquivos
-    const storage = new Storage();
-    const ouvidorBucket = await storage.bucket(bucketName);
-
     const uploadPromises = files.map(file =>
-      ouvidorBucket.upload(`${process.cwd()}/temp/${file.filename}`, {
-        gzip: true,
-        resumable: false,
-        metadata: {
-          cacheControl: 'no-cache',
-        },
-      })
+      GoogleCloudStorage.upload(file.filename)
     );
 
     await Promise.all(uploadPromises).catch(error => {
@@ -132,6 +103,7 @@ class FileController {
     } catch (error) {
       console.error(error);
       deleteTempFiles(files);
+      files.forEach(file => GoogleCloudStorage.delete(file.filename));
 
       return res.status(500).json({ message: 'Erro interno no servidor' });
     }
@@ -142,7 +114,7 @@ class FileController {
     const { file_id } = req.params;
     const { user_role } = req;
     const file = await File.findByPk(file_id);
-    const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
+    const user = await User.findByPk(req.user_id);
 
     if (!file) {
       return res.status(404).json({
@@ -165,9 +137,9 @@ class FileController {
     }
 
     try {
-      const storage = new Storage();
-      const ouvidorBucket = storage.bucket(bucketName);
-      const remote_file = ouvidorBucket.file(file.file_name_in_server);
+      const remote_file = GoogleCloudStorage.getRemoteFile(
+        file.file_name_in_server
+      );
 
       res = setResponseHeaders(res, file);
 
@@ -203,7 +175,6 @@ class FileController {
 
     const user = await User.findByPk(req.user_id);
 
-    // checa se Usuário existe
     if (!user) {
       return res.status(404).json({ message: 'usuario não existe' });
     }
@@ -219,13 +190,7 @@ class FileController {
     }
 
     try {
-      const storage = new Storage();
-
-      // Deleta arquivo do google cloud storage
-      await storage
-        .bucket(bucketName)
-        .file(file.file_name_in_server)
-        .delete();
+      GoogleCloudStorage.delete(file.file_name_in_server);
 
       // Deleta arquivo do DB
       file.destroy();
@@ -240,7 +205,7 @@ class FileController {
   // Lista todos os arquivos vinculados a manifestação escolhida para consulta
   async fetch(req, res) {
     const { manifestation_id } = req.params;
-    const user = await User.findByPk(req.user_id); // usuario que fez a requisição de upload
+    const user = await User.findByPk(req.user_id);
     const { user_role } = req;
 
     try {
@@ -248,7 +213,6 @@ class FileController {
         where: { id: manifestation_id },
       });
 
-      // checa se a manifestação existe mesmo
       if (!manifestation) {
         return res.status(404).json({ message: 'Manifestação não existe' });
       }
