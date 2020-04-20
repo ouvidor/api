@@ -22,7 +22,13 @@ class ManifestationStatusHistoryController {
         description
       );
 
-      return res.status(200).json(manifestationStatus);
+      const formattedManifestationStatus = {
+        ...manifestationStatus.dataValues,
+        status_id: undefined,
+        status: arrayOfStatus.find(s => s.id === manifestationStatus.status_id),
+      };
+
+      return res.status(200).json(formattedManifestationStatus);
     } catch (error) {
       return res.status(500).json({ message: 'Erro interno no servidor' });
     }
@@ -58,9 +64,8 @@ class ManifestationStatusHistoryController {
 
       const formattedManifestationStatusHistory = manifestationStatusHistory.map(
         mSH => ({
-          description: mSH.description,
+          ...mSH.dataValues,
           status: arrayOfStatus.find(s => s.id === mSH.status_id),
-          manifestation: mSH.manifestation,
         })
       );
 
@@ -82,7 +87,13 @@ class ManifestationStatusHistoryController {
           .json({ error: 'Esse status de manifestação não existe' });
       }
 
-      return res.status(200).json(manifestationStatus);
+      const formattedManifestation = {
+        ...manifestationStatus.dataValues,
+        status_id: undefined,
+        status: arrayOfStatus.find(s => s.id === manifestationStatus.status_id),
+      };
+
+      return res.status(200).json(formattedManifestation);
     } catch (error) {
       return res.status(500).json({ error: 'Erro interno no servidor' });
     }
@@ -103,7 +114,15 @@ class ManifestationStatusHistoryController {
 
       const updatedManifestationStatus = await manifestationStatus.update(data);
 
-      return res.status(200).json(updatedManifestationStatus);
+      const formattedManifestationStatus = {
+        ...updatedManifestationStatus.dataValues,
+        status_id: undefined,
+        status: arrayOfStatus.find(
+          s => s.id === updatedManifestationStatus.status_id
+        ),
+      };
+
+      return res.status(200).json(formattedManifestationStatus);
     } catch (error) {
       return res.status(500).json({ error: 'Erro interno no servidor' });
     }

@@ -672,9 +672,11 @@ _retorna_:
     "description": "descrição, motivo para a mudança do status",
     "created_at": "2019-12-16T17:24:58.000Z",
     "updated_at": "2019-12-16T17:24:58.000Z",
-    "status_id": 1,
+    "status": {
+      "id": 2,
+      "title": "cadastrada"
+    },
     "manifestation_id": 4,
-    "secretary_id": 1
   }
 ]
 ```
@@ -685,11 +687,14 @@ _retorna_:
 {
   "id": 1,
   "description": "descrição, motivo para a mudança do status",
-  "created_at": "2019-12-16T17:24:58.000Z",
-  "updated_at": "2019-12-16T17:24:58.000Z",
-  "status_id": 1,
+  "status": {
+    "id": 1,
+    "title": "arquivada"
+  },
   "manifestation_id": 4,
-  "secretary_id": 1
+  "secretary_id": 1,
+  "created_at": "2019-12-16T17:24:58.000Z",
+  "updated_at": "2019-12-16T17:24:58.000Z"
 }
 ```
 
@@ -701,7 +706,6 @@ _requisição_:
 {
   "description": "descrição, motivo para a mudança do status",
   "status_id": 1,
-  "secretary_id": 1
 }
 ```
 
@@ -712,10 +716,13 @@ _retorna_:
   "id": 1,
   "description": "descrição, motivo para a mudança do status",
   "manifestation_id": "4",
-  "status_id": 1,
   "secretary_id": 1,
   "updated_at": "2019-12-16T17:24:58.115Z",
-  "created_at": "2019-12-16T17:24:58.115Z"
+  "created_at": "2019-12-16T17:24:58.115Z",
+  "status": {
+    "id": 3,
+    "title": "prorrogada"
+  }
 }
 ```
 
@@ -737,7 +744,10 @@ _retorna_:
   "description": "descrição atualizada",
   "created_at": "2019-12-16T17:24:58.000Z",
   "updated_at": "2019-12-16T17:40:57.859Z",
-  "status_id": 1,
+  "status": {
+    "id": 2,
+    "title": "cadastrada"
+  },
   "manifestation_id": 4,
   "secretary_id": 1
 }
