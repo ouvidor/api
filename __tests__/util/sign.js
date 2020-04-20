@@ -14,11 +14,11 @@ class Sign {
 
   // login
   async in(user) {
-    const response = await request(app)
+    const { body } = await request(app)
       .post('/auth')
       .send(user);
 
-    return response;
+    return { user: body.user, token: body.token };
   }
 }
 

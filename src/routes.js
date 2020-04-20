@@ -34,7 +34,7 @@ import MailValidator from './app/middlewares/validators/Mail';
 import RoleValidator from './app/middlewares/validators/Role';
 import StatusValidator from './app/middlewares/validators/Status';
 import TypeValidator from './app/middlewares/validators/Type';
-import FTPValidator from './app/middlewares/validators/FTP';
+import FileValidator from './app/middlewares/validators/File';
 
 import ManifestationStatusHistoryValidator from './app/middlewares/validators/ManifestationStatusHistory';
 import PrefectureAndOmbudsmanValidator from './app/middlewares/validators/PrefectureAndOmbudsman';
@@ -99,11 +99,16 @@ router.get(
 router.get('/manifestation/:idOrProtocol', ManifestationController.show);
 
 /**
- * Rotas de File/FTP/Upload
+ * Rotas de File
  */
 
-router.post('/files/', upload.single('file'), FileController.save);
-router.get('/files/:file_id', FileController.show);
+router.post(
+  '/files/',
+  upload.array('file'),
+  FileValidator.save,
+  FileController.save
+);
+router.get('/files/:file_id', FileValidator.show, FileController.show);
 router.delete('/files/:file_id', FileController.delete);
 router.get('/manifestation/:manifestation_id/files', FileController.fetch);
 

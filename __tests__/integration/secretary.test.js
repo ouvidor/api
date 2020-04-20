@@ -18,18 +18,18 @@ describe('Secretary', () => {
   });
 
   it('should list all secretariats', async () => {
-    const { body } = await sign.in(adminMaster);
+    const { token } = await sign.in(adminMaster);
 
     // criar
     await request(app)
       .post('/secretary')
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ title: 'secretary', email: 'secretary@gmail.com' });
 
     // listar
     const response = await request(app)
       .get('/secretary')
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send();
 
     expect(response.status).toBe(200);
@@ -42,20 +42,20 @@ describe('Secretary', () => {
   });
 
   it('should list a specific secretary', async () => {
-    const { body } = await sign.in(adminMaster);
+    const { token } = await sign.in(adminMaster);
 
     // criar
     const {
       body: { id },
     } = await request(app)
       .post('/secretary')
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ title: 'secretary', email: 'secretary@gmail.com' });
 
     // listar
     const response = await request(app)
       .get(`/secretary/${id}`)
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send();
 
     expect(response.status).toBe(200);
@@ -69,12 +69,12 @@ describe('Secretary', () => {
   });
 
   it('should create a secretary', async () => {
-    const { body } = await sign.in(adminMaster);
+    const { token } = await sign.in(adminMaster);
 
     // criar
     const response = await request(app)
       .post('/secretary')
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ title: 'secretary', email: 'secretary@gmail.com' });
 
     expect(response.status).toBe(200);
@@ -87,20 +87,20 @@ describe('Secretary', () => {
   });
 
   it('should update a secretary', async () => {
-    const { body } = await sign.in(adminMaster);
+    const { token } = await sign.in(adminMaster);
 
     // criar
     const {
       body: { id },
     } = await request(app)
       .post('/secretary')
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ title: 'secretary', email: 'secretary@gmail.com' });
 
     // update
     const response = await request(app)
       .put(`/secretary/${id}`)
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ title: 'secretary', email: 'secretary@gmail.com' });
 
     expect(response.status).toBe(200);
@@ -113,12 +113,12 @@ describe('Secretary', () => {
   });
 
   it("shouldn't update secretary, because email duplicated", async () => {
-    const { body } = await sign.in(adminMaster);
+    const { token } = await sign.in(adminMaster);
 
     // criar
     await request(app)
       .post('/secretary')
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ title: 'first', email: 'first@gmail.com' });
 
     // criar
@@ -126,13 +126,13 @@ describe('Secretary', () => {
       body: { id },
     } = await request(app)
       .post('/secretary')
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ title: 'second', email: 'second@gmail.com' });
 
     // update
     const response = await request(app)
       .put(`/secretary/${id}`)
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ title: 'second', email: 'first@gmail.com' });
 
     expect(response.status).toBe(400);
@@ -143,12 +143,12 @@ describe('Secretary', () => {
   });
 
   it("shouldn't update secretary, because title duplicated", async () => {
-    const { body } = await sign.in(adminMaster);
+    const { token } = await sign.in(adminMaster);
 
     // criar
     await request(app)
       .post('/secretary')
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ title: 'first', email: 'first@gmail.com' });
 
     // criar
@@ -156,13 +156,13 @@ describe('Secretary', () => {
       body: { id },
     } = await request(app)
       .post('/secretary')
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ title: 'second', email: 'second@gmail.com' });
 
     // update
     const response = await request(app)
       .put(`/secretary/${id}`)
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ title: 'first', email: 'second@gmail.com' });
 
     expect(response.status).toBe(400);
@@ -173,20 +173,20 @@ describe('Secretary', () => {
   });
 
   it('should delete a secretary', async () => {
-    const { body } = await sign.in(adminMaster);
+    const { token } = await sign.in(adminMaster);
 
     // criar
     const {
       body: { id },
     } = await request(app)
       .post('/secretary')
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({ title: 'secretary', email: 'secretary@gmail.com' });
 
     // delete
     const response = await request(app)
       .delete(`/secretary/${id}`)
-      .set('Authorization', `Bearer ${body.token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send();
 
     expect(response.status).toBe(200);
