@@ -692,7 +692,6 @@ _retorna_:
     "title": "arquivada"
   },
   "manifestation_id": 4,
-  "secretary_id": 1,
   "created_at": "2019-12-16T17:24:58.000Z",
   "updated_at": "2019-12-16T17:24:58.000Z"
 }
@@ -716,7 +715,6 @@ _retorna_:
   "id": 1,
   "description": "descrição, motivo para a mudança do status",
   "manifestation_id": "4",
-  "secretary_id": 1,
   "updated_at": "2019-12-16T17:24:58.115Z",
   "created_at": "2019-12-16T17:24:58.115Z",
   "status": {
@@ -749,7 +747,6 @@ _retorna_:
     "title": "cadastrada"
   },
   "manifestation_id": 4,
-  "secretary_id": 1
 }
 ```
 
