@@ -66,6 +66,11 @@ describe('Manifestation', () => {
               updated_at: expect.any(String),
               secretary_id: null,
               user_id: expect.any(Number),
+              user: {
+                first_name: expect.any(String),
+                last_name: expect.any(String),
+                email: expect.any(String),
+              },
               categories: [
                 {
                   id: expect.any(Number),
