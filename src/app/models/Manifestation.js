@@ -52,6 +52,10 @@ class Manifestation extends Model {
       foreignKey: 'manifestation_id',
       constraints: false,
     });
+    this.hasMany(models.File, {
+      as: 'files',
+      foreignKey: 'manifestation_id',
+    });
   }
 }
 
