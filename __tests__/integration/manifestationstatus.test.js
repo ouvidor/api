@@ -4,7 +4,6 @@ import app from '../../src/App';
 import truncate from '../util/truncate';
 import sign from '../util/sign';
 import seedDatabase from '../util/seedDatabase';
-import Manifestation from '../../src/app/models/Manifestation';
 
 const adminMaster = {
   email: 'root@gmail.com',
@@ -85,6 +84,46 @@ describe('Manifestation Status History', () => {
           description: 'description',
           status: {
             id: 1,
+            title: expect.any(String),
+          },
+          manifestation_id: manifestation.id,
+          created_at: expect.any(String),
+          updated_at: expect.any(String),
+        })
+      );
+    });
+  });
+
+  describe('PUT', () => {
+    it('updates', async () => {
+      expect(manifestation.id).toBeTruthy();
+
+      const saveStatusResponse = await request(app)
+        .post(`/manifestation/${manifestation.id}/status`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200)
+        .send({
+          description: 'description',
+          status_id: 1,
+        });
+
+      expect(saveStatusResponse.body).toHaveProperty('id');
+
+      const updateStatusResponse = await request(app)
+        .put(`/manifestation/status/${saveStatusResponse.body.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200)
+        .send({
+          description: 'updated',
+          status_id: 4,
+        });
+
+      expect(updateStatusResponse.body).toEqual(
+        expect.objectContaining({
+          id: saveStatusResponse.body.id,
+          description: 'updated',
+          status: {
+            id: 4,
             title: expect.any(String),
           },
           manifestation_id: manifestation.id,
