@@ -868,3 +868,26 @@ _retorna_:
   "message": "Email: Título teste. enviado com sucesso"
 }
 ```
+
+---
+
+### Admins
+
+- **GET** `admins/`: retorna todos os adminstradores.
+
+_retorna_:
+
+```json
+[
+  {
+    "id": 1,
+    "first_name": "master",
+    "last_name": "root",
+    "email": "root@gmail.com",
+    "role": {
+      "id": 3,
+      "title": "master"
+    }
+  }
+]
+```

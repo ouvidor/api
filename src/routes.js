@@ -7,6 +7,7 @@ import multer from 'multer';
 
 // controllers
 import UserController from './app/controller/user.controller';
+import AdminController from './app/controller/admin.controller';
 import AuthController from './app/controller/auth.controller';
 import ManifestationController from './app/controller/manifestation.controller';
 import CategoryController from './app/controller/category.controller';
@@ -178,5 +179,7 @@ router.put(
   SecretaryController.update
 );
 router.delete('/secretary/:id', SecretaryController.delete);
+
+router.get('/admins', AdminController.fetch);
 
 export default router;
