@@ -37,7 +37,6 @@ class UserValidator {
         first_name: string(),
         last_name: string(),
         email: string().email('Email invalido'),
-        oldPassword: string(),
         // senha só é requerida se a oldPassword for mandada
         password: string()
           .min(6, 'Senha abaixo de 6 caracteres')
@@ -46,7 +45,11 @@ class UserValidator {
           ),
         // exige que a confirmação da senha seja igual a senha
         confirmPassword: string().when('password', (password, field) =>
-          password ? field.required().oneOf([ref('password')]) : field
+          password
+            ? field
+                .required('Necessário confirmar a senha')
+                .oneOf([ref('password')])
+            : field
         ),
       });
 
