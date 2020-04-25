@@ -27,7 +27,7 @@ class User extends Model {
 
     this.addHook('beforeSave', async user => {
       // caso uma senha seja informada
-      if (user.password) {
+      if (user.changed('password')) {
         user.password = await bcrypt.hash(user.password, 8);
       }
     });
