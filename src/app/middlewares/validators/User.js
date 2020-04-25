@@ -4,7 +4,7 @@
  * Docs do yup:
  * https://github.com/jquense/yup
  */
-import { object, string, ref } from 'yup';
+import { object, string } from 'yup';
 
 class UserValidator {
   async save(request, response, next) {
@@ -43,14 +43,6 @@ class UserValidator {
           .when('oldPassword', (oldPassword, field) =>
             oldPassword ? field.required('A nova senha é necessária') : field
           ),
-        // exige que a confirmação da senha seja igual a senha
-        confirmPassword: string().when('password', (password, field) =>
-          password
-            ? field
-                .required('Necessário confirmar a senha')
-                .oneOf([ref('password')])
-            : field
-        ),
       });
 
       await schema.validate(request.body, { abortEarly: false });
