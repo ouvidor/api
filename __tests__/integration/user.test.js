@@ -151,7 +151,7 @@ describe('User', () => {
     expect(response.body).toHaveProperty('error', 'esse usuário não existe');
   });
 
-  it('should be able to update', async () => {
+  it('should update and then login', async () => {
     const user = await factory.attrs('User');
     // cadastro
     await sign.up(user);
@@ -169,5 +169,9 @@ describe('User', () => {
       'first_name',
       'last_name'
     );
+
+    const result = await sign.in(user);
+    expect(result).toHaveProperty('token');
+    expect(result).toHaveProperty('user');
   });
 });

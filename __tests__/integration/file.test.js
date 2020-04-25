@@ -2,6 +2,7 @@ import request from 'supertest';
 
 import app from '../../src/App';
 import truncate from '../util/truncate';
+import factory from '../factories';
 import sign from '../util/sign';
 import seedDatabase from '../util/seedDatabase';
 import File from '../../src/app/models/File';
@@ -72,17 +73,10 @@ describe('File', () => {
     });
 
     it('cannot fetch files, not owner and not admin', async () => {
-      await sign.up({
-        first_name: 'user',
-        last_name: 'user',
-        email: 'user@gmail.com',
-        password: '123456',
-      });
+      const user = await factory.attrs('User');
+      await sign.up(user);
 
-      const { token: citizenToken } = await sign.in({
-        email: 'user@gmail.com',
-        password: '123456',
-      });
+      const { token: citizenToken } = await sign.in(user);
 
       const response = await request(app)
         .get(`/manifestation/${manifestation.id}/files`)
