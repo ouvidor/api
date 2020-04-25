@@ -124,7 +124,7 @@ class UserController {
     const { role } = req.body;
     delete req.body.role;
 
-    const updateToUser = { ...req.body };
+    const updateToUser = req.body;
 
     if (isAdminMaster && role) {
       updateToUser.role_id = role.id;
@@ -147,7 +147,13 @@ class UserController {
     // atualiza a instancia
     await user.update(req.body);
 
-    return res.status(200).json(user);
+    const formattedUser = {
+      ...user.dataValues,
+      password: undefined,
+      role: roles.find(r => r.id === user.id),
+    };
+
+    return res.status(200).json(formattedUser);
   }
 } // fim da classe
 

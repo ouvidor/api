@@ -1,7 +1,7 @@
 /**
  * Middleware de validação generico
  */
-import { object, string, number } from 'yup';
+import { object, string } from 'yup';
 
 class GenericValidator {
   async save(request, response, next) {
