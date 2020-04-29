@@ -378,7 +378,7 @@ _retorna_:
 
 ### File
 
-- **GET** `/manifestation/:manifestation_id/files`: retorna todos os arquivos associados à _manifestação_ buscada.
+- **GET** `/files/manifestation/:manifestation_id`: retorna todos os arquivos associados à _manifestação_ buscada.
 
 _retorna_:
 
