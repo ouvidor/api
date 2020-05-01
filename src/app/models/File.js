@@ -5,10 +5,10 @@ class File extends Model {
     super.init(
       {
         // Nome real do arquivo ex: boleto.pdf
-        file_name: Sequelize.STRING,
+        name: Sequelize.STRING,
 
         // Nome do arquivo gerado pelo multer e salvo no server ftp ex: file12324651.pdf
-        file_name_in_server: Sequelize.STRING,
+        name_in_server: Sequelize.STRING,
 
         // Mimetype do arquivo ex: pdf, png, jpeg e etc
         extension: Sequelize.STRING,

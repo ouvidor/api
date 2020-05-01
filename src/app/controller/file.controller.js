@@ -87,8 +87,8 @@ class FileController {
     try {
       const formattedFiles = files.map(file => ({
         extension: extname(file.originalname),
-        file_name: file.originalname,
-        file_name_in_server: file.filename,
+        name: file.originalname,
+        name_in_server: file.filename,
       }));
 
       const savedFiles = await File.bulkCreate(formattedFiles);
@@ -137,9 +137,7 @@ class FileController {
     }
 
     try {
-      const remote_file = GoogleCloudStorage.getRemoteFile(
-        file.file_name_in_server
-      );
+      const remote_file = GoogleCloudStorage.getRemoteFile(file.name_in_server);
 
       res = setResponseHeaders(res, file);
 
@@ -190,7 +188,7 @@ class FileController {
     }
 
     try {
-      GoogleCloudStorage.delete(file.file_name_in_server);
+      GoogleCloudStorage.delete(file.name_in_server);
 
       // Deleta arquivo do DB
       file.destroy();

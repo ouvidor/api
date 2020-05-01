@@ -18,11 +18,11 @@ module.exports = {
           autoIncrement: true,
           primaryKey: true,
         },
-        file_name: {
+        name: {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        file_name_in_server: {
+        name_in_server: {
           type: Sequelize.STRING,
           allowNull: false,
         },

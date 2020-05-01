@@ -38,8 +38,8 @@ describe('File', () => {
     manifestation.setCategories(category.id);
 
     await File.create({
-      file_name: 'sample.txt',
-      file_name_in_server: 'sample-123456789.txt',
+      name: 'sample.txt',
+      name_in_server: 'sample-123456789.txt',
       extension: '.txt',
       manifestation_id: manifestation.id,
       user_id: user.id,
@@ -59,8 +59,8 @@ describe('File', () => {
           files: expect.arrayContaining([
             expect.objectContaining({
               id: expect.any(Number),
-              file_name: 'sample.txt',
-              file_name_in_server: 'sample-123456789.txt',
+              name: 'sample.txt',
+              name_in_server: 'sample-123456789.txt',
               extension: '.txt',
               created_at: expect.any(String),
               updated_at: expect.any(String),
