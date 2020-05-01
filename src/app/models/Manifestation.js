@@ -29,7 +29,9 @@ class Manifestation extends Model {
     // criação do protocolo. exemplo: k6f2uhi9
     this.addHook('beforeSave', async manifestation => {
       // converte o tempo UNIX em Base36
-      manifestation.protocol = Date.now().toString(36);
+      if (manifestation.changed('protocol')) {
+        manifestation.protocol = Date.now().toString(36);
+      }
     });
 
     return this;
