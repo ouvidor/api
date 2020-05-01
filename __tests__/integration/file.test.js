@@ -49,7 +49,7 @@ describe('File', () => {
   describe('FETCH', () => {
     it('fetch files successful', async () => {
       const response = await request(app)
-        .get(`/manifestation/${manifestation.id}/files`)
+        .get(`/files/manifestation/${manifestation.id}`)
         .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .send();
@@ -79,7 +79,7 @@ describe('File', () => {
       const { token: citizenToken } = await sign.in(user);
 
       const response = await request(app)
-        .get(`/manifestation/${manifestation.id}/files`)
+        .get(`/files/manifestation/${manifestation.id}`)
         .set('Authorization', `Bearer ${citizenToken}`)
         .send();
 
