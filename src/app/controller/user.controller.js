@@ -144,6 +144,13 @@ class UserController {
       }
     }
 
+    // Checa se a senha está correta
+    if(req.body.oldPassword){
+      if (!(await user.checkPassword(req.body.oldPassword))) {
+        return res.status(401).json({ error: 'senha atual incorreta' });
+      }
+    }
+
     // atualiza a instancia
     await user.update(req.body);
 
