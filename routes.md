@@ -18,10 +18,7 @@ Contêm protocolo _HTTP_, endereço da rota, explicação do que é feito, o que
     "first_name": "master",
     "last_name": "root",
     "email": "root@gmail.com",
-    "role": {
-      "id": 3,
-      "title": "master"
-    }
+    "role": "master"
   }
 ]
 ```
@@ -34,10 +31,7 @@ Contêm protocolo _HTTP_, endereço da rota, explicação do que é feito, o que
   "first_name": "master",
   "last_name": "root",
   "email": "root@gmail.com",
-  "role": {
-    "id": 3,
-    "title": "master"
-  }
+  "role": "master"
 }
 ```
 
@@ -95,10 +89,7 @@ _retorna_:
   "first_name": "primeiro nome",
   "last_name": "ultimo nome",
   "email": "novoemail@gmail.com",
-  "role": {
-    "id": 3,
-    "title": "master"
-  }
+  "role": "master",
 }
 ```
 
@@ -113,7 +104,8 @@ _requisição_:
 ```json
 {
   "email": "aa@aa.com",
-  "password": "123456"
+  "password": "123456",
+  "city": "Cabo Frio"
 }
 ```
 
@@ -126,12 +118,10 @@ _retorna_:
     "first_name": "a",
     "last_name": "last_name",
     "email": "aa@aa.com",
-    "role": {
-      "id": 1,
-      "title": "citizen"
-    }
+    "role": "citizen"
   },
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MSwidGl0bGUiOiJjaXRpemVuIn0sImlhdCI6MTU4NjcxMTcwOCwiZXhwIjoxNTg5MzAzNzA4fQ.b_TjuCk2hGtbqUq6O7HgqaX9d1cWp_Ffj2vpN9iKW8U"
+  "city": "Cabo Frio",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6ImNpdGl6ZW4iLCJjaXR5IjoiQ2FibyBGcmlvIiwiaWF0IjoxNTg4NjIzMTQyLCJleHAiOjE1OTEyMTUxNDJ9.71BpTNmY3YYSaV94h09MbywNPGXbqDy2eAQXV4GvrzE"
 }
 ```
 
@@ -141,33 +131,73 @@ _retorna_:
 
 ### Prefecture
 
-- **GET** `prefecture`: retorna os dados da prefeitura que estão na tabela `prefecture`.
+- **GET** `prefecture/`: retorna os dados das prefeituras registradas.
+
+```json
+[
+  {
+    "id": 1,
+    "location": "Centro",
+    "name": "Cabo Frio",
+    "telephone": "(22)1010-1010",
+    "email": "prefeitura@prefeitura.com",
+    "site": "www.google.com",
+    "attendance": "24 horas por dia, todos os dias",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T19:55:51.000Z",
+    "ombudsmen_id": 1,
+    "ombudsman": {
+      "id": 1,
+      "location": "Centro",
+      "telephone": "(22)1010-1010",
+      "email": "prefeitura@prefeitura.com",
+      "site": "www.google.com",
+      "attendance": "24 horas por dia, todos os dias",
+      "created_at": "2020-05-04T16:55:37.000Z",
+      "updated_at": "2020-05-04T19:55:38.000Z"
+    }
+  }
+]
+```
+
+- **GET** `prefecture/:id`: retorna os dados de uma prefeitura em específico.
 
 ```json
 {
   "id": 1,
   "location": "Centro",
+  "name": "Cabo Frio",
   "telephone": "(22)1010-1010",
   "email": "prefeitura@prefeitura.com",
   "site": "www.google.com",
   "attendance": "24 horas por dia, todos os dias",
-  "created_at": "2020-04-04T18:12:16.000Z",
-  "updated_at": "2020-04-04T18:14:47.118Z"
+  "created_at": "2020-05-04T16:55:37.000Z",
+  "updated_at": "2020-05-04T19:55:51.000Z",
+  "ombudsmen_id": 1,
+  "ombudsman": {
+    "id": 1,
+    "location": "Centro",
+    "telephone": "(22)1010-1010",
+    "email": "prefeitura@prefeitura.com",
+    "site": "www.google.com",
+    "attendance": "24 horas por dia, todos os dias",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T19:55:38.000Z"
+  }
 }
 ```
 
-- **PUT** `prefecture`: atualiza os dados na tabela `prefecture`.
+- **PUT** `prefecture/:id`: atualiza os dados de uma prefeitura em específico.
 
 _requisição_
 
 ```json
 {
-  "id": 1,
-  "location": "Centro",
-  "telephone": "(22)1010-1010",
-  "email": "prefeitura@prefeitura.com",
-  "site": "www.google.com",
-  "attendance": "24 horas por dia, todos os dias"
+	"site": "www.google.com",
+	"email": "prefeitura@prefeitura.com",
+	"attendance": "24 horas por dia, todos os dias",
+	"location": "Centro",
+	"telephone": "(22)1010-1010"
 }
 ```
 
@@ -177,12 +207,14 @@ _retorna_
 {
   "id": 1,
   "location": "Centro",
+  "name": "Cabo Frio",
   "telephone": "(22)1010-1010",
   "email": "prefeitura@prefeitura.com",
   "site": "www.google.com",
   "attendance": "24 horas por dia, todos os dias",
-  "created_at": "2020-04-04T18:12:16.000Z",
-  "updated_at": "2020-04-04T18:14:47.118Z"
+  "created_at": "2020-05-04T16:55:37.000Z",
+  "updated_at": "2020-05-04T19:55:51.525Z",
+  "ombudsmen_id": 1
 }
 ```
 
@@ -190,7 +222,24 @@ _retorna_
 
 ### Ombudsman
 
-- **GET** `ombudsman`: retorna os dados da prefeitura que estão na tabela `ombudsman`.
+- **GET** `ombudsman/`: retorna os dados das ouvidorias registradas.
+
+```json
+[
+  {
+    "id": 1,
+    "location": "Centro",
+    "telephone": "(22) 1111-1111",
+    "email": "prefeitura@ouvidoria.com",
+    "site": "www.google.com",
+    "attendance": "24 horas por dia, todos os dias",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
+  }
+]
+```
+
+- **GET** `ombudsman/:id`: retorna os dados de uma ouvidoria em específico.
 
 ```json
 {
@@ -200,23 +249,22 @@ _retorna_
   "email": "prefeitura@prefeitura.com",
   "site": "www.google.com",
   "attendance": "24 horas por dia, todos os dias",
-  "created_at": "2020-04-04T18:12:16.000Z",
-  "updated_at": "2020-04-04T18:14:47.118Z"
+  "created_at": "2020-05-04T16:55:37.000Z",
+  "updated_at": "2020-05-04T19:55:38.000Z"
 }
 ```
 
-- **PUT** `ombudsman`: atualiza os dados na tabela `ombudsman`.
+- **PUT** `ombudsman/:id`: atualiza os dados de uma ouvidoria em específico.
 
 _requisição_
 
 ```json
 {
-  "id": 1,
-  "location": "Centro",
-  "telephone": "(22)1010-1010",
-  "email": "prefeitura@prefeitura.com",
-  "site": "www.google.com",
-  "attendance": "24 horas por dia, todos os dias"
+	"site": "www.google.com",
+	"email": "prefeitura@prefeitura.com",
+	"attendance": "24 horas por dia, todos os dias",
+	"location": "Centro",
+	"telephone": "(22)1010-1010"
 }
 ```
 
@@ -230,8 +278,8 @@ _retorna_
   "email": "prefeitura@prefeitura.com",
   "site": "www.google.com",
   "attendance": "24 horas por dia, todos os dias",
-  "created_at": "2020-04-04T18:12:16.000Z",
-  "updated_at": "2020-04-04T18:14:47.118Z"
+  "created_at": "2020-05-04T16:55:37.000Z",
+  "updated_at": "2020-05-04T19:55:38.624Z"
 }
 ```
 
@@ -256,27 +304,29 @@ _retorna_:
   "count": 1,
   "rows": [
     {
-      "id": 18,
-      "title": "Na rua da restinga tem um problema",
-      "description": "desc",
-      "read": 1,
-      "location": "Rua da Restinga, Bairro Foguete",
-      "latitude": "-22.9242297",
-      "longitude": "-42.0406372",
-      "created_at": "2019-11-12T15:23:24.000Z",
-      "updated_at": "2019-11-21T22:26:00.000Z",
-      "secretary_id": null,
-      "user_id": 1,
-      "type_id": 1,
+      "id": 3,
+      "protocol": "k9sur2dt",
+      "title": "MASTER PROBLEM",
+      "description": "Um cachorro mordeu uma idosa aqui na rua de trás",
+      "read": 0,
+      "location": "Rua da Restinga, Foguete",
+      "latitude": "-22.9242299",
+      "longitude": "-42.0406379",
+      "created_at": "2020-05-04T19:03:47.000Z",
+      "updated_at": "2020-05-04T19:03:47.000Z",
+      "secretariats_id": null,
+      "users_id": 1,
+      "types_id": 1,
+      "ombudsmen_id": null,
       "categories": [
         {
-          "id": 3,
-          "title": "Saúde"
+          "id": 1,
+          "title": "Saneamento"
         }
       ],
       "type": {
         "id": 1,
-        "title": "Reclamação"
+        "title": "sugestão"
       }
     }
   ],
@@ -290,43 +340,53 @@ _retorna_:
 
 ```json
 {
-  "id": 2,
-  "title": "Problema na rua",
-  "description": "texto texto texto texto",
+  "id": 3,
+  "protocol": "k9sur2dt",
+  "title": "MASTER PROBLEM",
+  "description": "Um cachorro mordeu uma idosa aqui na rua de trás",
   "read": 0,
-  "location": "Rua da restinga, Cabo Frio",
-  "latitude": null,
-  "longitude": null,
-  "created_at": "2019-11-07T00:47:49.000Z",
-  "updated_at": "2019-11-07T00:47:49.000Z",
-  "secretary_id": null,
-  "user_id": 1,
-  "type_id": 1,
+  "location": "Rua da Restinga, Foguete",
+  "latitude": "-22.9242299",
+  "longitude": "-42.0406379",
+  "created_at": "2020-05-04T19:03:47.000Z",
+  "updated_at": "2020-05-04T19:03:47.000Z",
+  "secretariats_id": null,
+  "users_id": 1,
+  "types_id": 1,
+  "ombudsmen_id": null,
+  "files": [],
+  "type": {
+    "id": 1,
+    "title": "sugestão"
+  },
+  "user": {
+    "first_name": "master",
+    "last_name": "root",
+    "email": "root@gmail.com"
+  },
   "categories": [
     {
       "id": 1,
       "title": "Saneamento"
     }
-  ],
-  "type": {
-    "id": 1,
-    "title": "Reclamação"
-  }
+  ]
 }
 ```
 
-- **POST** `manifestation`: cria um novo registro na tabela de _manifestations_.
+- **POST** `manifestation/`: cria um novo registro na tabela de _manifestations_.
 
 _requisição_:
 
 ```json
 {
-  "title": "Local",
-  "description": "Essa manifestação tem um local",
-  "categories_id": [1],
-  "type_id": 1,
-  "latitude": -22.9230097,
-  "longitude": -42.9230097
+	"title": "MASTER PROBLEM",
+	"description": "Um cachorro mordeu uma idosa aqui na rua de trás",
+	"categories_id": [
+		1
+	],
+	"type_id": 1,
+	"latitude": -22.9242299,
+	"longitude": -42.0406379
 }
 ```
 
@@ -354,7 +414,9 @@ _requisição_:
 
 ```json
 {
-  "title": "Na rua da restinga tem um problema"
+  "title": "Na rua da restinga tem um problema",
+	"location": "Rua da Restinga, Bairro Foguete",
+	"type_id": 2
 }
 ```
 
@@ -362,15 +424,20 @@ _retorna_:
 
 ```json
 {
-  "id": 7,
+  "id": 3,
+  "protocol": "k9sur2dt",
   "title": "Na rua da restinga tem um problema",
-  "description": "texto texto texto texto",
+  "description": "Um cachorro mordeu uma idosa aqui na rua de trás",
   "read": 0,
-  "created_at": "2019-11-06T16:11:41.000Z",
-  "updated_at": "2019-11-06T17:03:58.963Z",
-  "secretary_id": null,
-  "user_id": 1,
-  "type_id": 1
+  "location": "Rua da Restinga, Bairro Foguete",
+  "latitude": -22.9246355,
+  "longitude": -42.0406559,
+  "created_at": "2020-05-04T19:03:47.000Z",
+  "updated_at": "2020-05-04T19:07:52.199Z",
+  "secretariats_id": null,
+  "users_id": 1,
+  "types_id": 2,
+  "ombudsmen_id": null
 }
 ```
 
@@ -386,14 +453,14 @@ _retorna_:
 {
   "files": [
     {
-      "id": 1,
-      "file_name": "imagem.jpg",
-      "file_name_in_server": "file-1586716408853.jpg",
-      "extension": ".jpg",
-      "created_at": "2020-04-12T18:33:31.000Z",
-      "updated_at": "2020-04-12T18:33:31.000Z",
-      "manifestation_id": 1,
-      "user_id": 2
+      "id": 2,
+      "name": "imagem.png",
+      "name_in_server": "file-1588623519621.png",
+      "extension": ".png",
+      "created_at": "2020-05-04T20:18:40.000Z",
+      "updated_at": "2020-05-04T20:18:40.000Z",
+      "manifestations_id": 3,
+      "users_id": 1
     }
   ]
 }
@@ -412,19 +479,20 @@ Para que o envio ocorra com sucesso, o token de autenticação deve ser do **AUT
 _retorna_:
 
 ```json
-{
-  "id": 3,
-  "file_name": "documento.pdf",
-  "file_name_in_server": "file-1586717080767.pdf",
-  "extension": ".pdf",
-  "updated_at": "2020-04-12T18:44:41.639Z",
-  "created_at": "2020-04-12T18:44:41.580Z",
-  "user_id": 2,
-  "manifestation_id": 1
-}
+[
+  {
+    "id": 2,
+    "extension": ".png",
+    "name": "imagem.png",
+    "name_in_server": "file-1588623519621.png",
+    "created_at": "2020-05-04T20:18:40.515Z",
+    "updated_at": "2020-05-04T20:18:40.542Z",
+    "users_id": 1
+  }
+]
 ```
 
-- **GET** `/files/:file_id`: Realiza o download do arquivo escolhido.
+- **GET** `/files/:file_id`: Mostra o arquivo em específico.
 
 Necessário ter o **token** do dono do arquivo ou então ser um **admin** ou **master**.
 
@@ -437,19 +505,18 @@ _**`O arquivo`**_
 
 Necessário ter o **token** do dono do arquivo ou então ser um **admin** ou **master**.
 
-
 _retorna_:
 
 ```json
 {
-  "id": 2,
-  "file_name": "documento.pdf",
-  "file_name_in_server": "file-1586716623542.pdf",
-  "extension": ".pdf",
-  "created_at": "2020-04-12T18:37:04.000Z",
-  "updated_at": "2020-04-12T18:37:04.000Z",
-  "manifestation_id": 1,
-  "user_id": 2
+  "id": 1,
+  "name": "imagem.png",
+  "name_in_server": "file-1588622029185.png",
+  "extension": ".png",
+  "created_at": "2020-05-04T19:53:50.000Z",
+  "updated_at": "2020-05-04T19:53:50.000Z",
+  "manifestations_id": 3,
+  "users_id": 1
 }
 ```
 
@@ -457,13 +524,15 @@ _retorna_:
 
 ### Category
 
-- **GET** `category/`: retorna todos os registros na tabela de _categories_.
+- **GET** `category/`: retorna todas as categorias.
 
 ```json
 [
   {
     "id": 1,
-    "title": "Saneamento"
+    "title": "Segurança",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T19:31:14.000Z"
   }
 ]
 ```
@@ -473,7 +542,9 @@ _retorna_:
 ```json
 {
   "id": 1,
-  "title": "Saneamento"
+  "title": "Saneamento",
+  "created_at": "2020-05-04T16:55:37.000Z",
+  "updated_at": "2020-05-04T16:55:37.000Z"
 }
 ```
 
@@ -532,7 +603,7 @@ _retorna_:
 
 ### Role
 
-- **GET** `role/`: retorna todos os registros na tabela _roles_.
+- **GET** `role/`: retorna todas as Roles.
 
 ```json
 [
@@ -571,6 +642,32 @@ _retorna_:
   {
     "id": 1,
     "title": "sugestão",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
+  },
+  {
+    "id": 2,
+    "title": "elogio",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
+  },
+  {
+    "id": 3,
+    "title": "solicitação",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
+  },
+  {
+    "id": 4,
+    "title": "reclamação",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
+  },
+  {
+    "id": 5,
+    "title": "denúncia",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
   }
 ]
 ```
@@ -580,7 +677,9 @@ _retorna_:
 ```json
 {
   "id": 1,
-  "title": "sugestão"
+  "title": "sugestão",
+  "created_at": "2020-05-04T16:55:37.000Z",
+  "updated_at": "2020-05-04T16:55:37.000Z"
 }
 ```
 
@@ -593,8 +692,52 @@ _retorna_:
 ```json
 [
   {
+    "id": 1,
+    "title": "arquivada",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
+  },
+  {
     "id": 2,
-    "title": "Em andamento"
+    "title": "cadastrada",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
+  },
+  {
+    "id": 3,
+    "title": "prorrogada",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
+  },
+  {
+    "id": 4,
+    "title": "resposta intermediária",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
+  },
+  {
+    "id": 5,
+    "title": "complementada",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
+  },
+  {
+    "id": 6,
+    "title": "encerrada",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
+  },
+  {
+    "id": 7,
+    "title": "encaminhada para outra ouvidoria",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
+  },
+  {
+    "id": 8,
+    "title": "encaminhada para orgão externo",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
   }
 ]
 ```
@@ -604,58 +747,9 @@ _retorna_:
 ```json
 {
   "id": 2,
-  "title": "Em andamento"
-}
-```
-
-- **POST** `status/`: cria um novo registro na tabela de _status_.
-
-_requisição_:
-
-```json
-{
-  "title": "Em andamento"
-}
-```
-
-_retorna_:
-
-```json
-{
-  "id": 1,
-  "title": "Em andamento"
-}
-```
-
-- **PUT** `status/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _status_.
-
-_requisição_:
-
-```json
-{
-  "title": "Fechado"
-}
-```
-
-_retorna_:
-
-```json
-{
-  "id": 1,
-  "title": "Fechado"
-}
-```
-
-- **DELETE** `status/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _status_.
-
-_retorna_:
-
-```json
-{
-  "id": 1,
-  "title": "Em andamento",
-  "created_at": "2019-10-31T17:01:37.000Z",
-  "updated_at": "2019-10-31T17:01:37.000Z"
+  "title": "cadastrada",
+  "created_at": "2020-05-04T16:55:37.000Z",
+  "updated_at": "2020-05-04T16:55:37.000Z"
 }
 ```
 
@@ -669,14 +763,17 @@ _retorna_:
 [
   {
     "id": 1,
-    "description": "descrição, motivo para a mudança do status",
-    "created_at": "2019-12-16T17:24:58.000Z",
-    "updated_at": "2019-12-16T17:24:58.000Z",
+    "description": "descrição atualizada",
+    "created_at": "2020-05-04T19:03:47.000Z",
+    "updated_at": "2020-05-04T19:08:18.000Z",
+    "manifestations_id": 3,
+    "status_id": 2,
     "status": {
       "id": 2,
-      "title": "cadastrada"
-    },
-    "manifestation_id": 4,
+      "title": "cadastrada",
+      "created_at": "2020-05-04T16:55:37.000Z",
+      "updated_at": "2020-05-04T16:55:37.000Z"
+    }
   }
 ]
 ```
@@ -686,14 +783,17 @@ _retorna_:
 ```json
 {
   "id": 1,
-  "description": "descrição, motivo para a mudança do status",
+  "description": "descrição atualizada",
+  "created_at": "2020-05-04T19:03:47.000Z",
+  "updated_at": "2020-05-04T19:08:18.000Z",
+  "manifestations_id": 3,
+  "status_id": 2,
   "status": {
-    "id": 1,
-    "title": "arquivada"
-  },
-  "manifestation_id": 4,
-  "created_at": "2019-12-16T17:24:58.000Z",
-  "updated_at": "2019-12-16T17:24:58.000Z"
+    "id": 2,
+    "title": "cadastrada",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
+  }
 }
 ```
 
@@ -712,15 +812,12 @@ _retorna_:
 
 ```json
 {
-  "id": 1,
+  "id": 5,
   "description": "descrição, motivo para a mudança do status",
-  "manifestation_id": "4",
-  "updated_at": "2019-12-16T17:24:58.115Z",
-  "created_at": "2019-12-16T17:24:58.115Z",
-  "status": {
-    "id": 3,
-    "title": "prorrogada"
-  }
+  "manifestations_id": 3,
+  "status_id": 3,
+  "updated_at": "2020-05-04T20:31:26.972Z",
+  "created_at": "2020-05-04T20:31:26.972Z"
 }
 ```
 
@@ -740,26 +837,16 @@ _retorna_:
 {
   "id": 1,
   "description": "descrição atualizada",
-  "created_at": "2019-12-16T17:24:58.000Z",
-  "updated_at": "2019-12-16T17:40:57.859Z",
+  "created_at": "2020-05-04T19:03:47.000Z",
+  "updated_at": "2020-05-04T19:08:18.000Z",
+  "manifestations_id": 3,
+  "status_id": 2,
   "status": {
     "id": 2,
-    "title": "cadastrada"
-  },
-  "manifestation_id": 4,
-}
-```
-
-- **DELETE** `status/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _status_.
-
-_retorna_:
-
-```json
-{
-  "id": 1,
-  "title": "Em andamento",
-  "created_at": "2019-10-31T17:01:37.000Z",
-  "updated_at": "2019-10-31T17:01:37.000Z"
+    "title": "cadastrada",
+    "created_at": "2020-05-04T16:55:37.000Z",
+    "updated_at": "2020-05-04T16:55:37.000Z"
+  }
 }
 ```
 
@@ -767,14 +854,15 @@ _retorna_:
 
 ### Secretary
 
-- **GET** `secretary/`: retorna todos os registros na tabela de _secretariats_.
+- **GET** `secretary/`: retorna todos as secretarias.
 
 ```json
 [
   {
-    "id": 1,
-    "title": "Secretaria da Saúde",
-    "email": "saude.gov@gov.com"
+    "id": 2,
+    "title": "Secretaria de Testes",
+    "email": "saude.gov@gov.com",
+    "accountable": "José"
   }
 ]
 ```
@@ -783,20 +871,22 @@ _retorna_:
 
 ```json
 {
-  "id": 1,
-  "title": "Secretaria da Saúde",
-  "email": "saude.gov@gov.com"
+  "id": 2,
+  "title": "Secretaria de Testes",
+  "email": "saude.gov@gov.com",
+  "accountable": "José"
 }
 ```
 
-- **POST** `secretary/`: cria um novo registro na tabela de _secretariats_.
+- **POST** `secretary/`: cria uma nova secretaria.
 
 _requisição_:
 
 ```json
 {
-  "title": "Secretaria da Saúde",
-  "email": "saude.gov@gov.com"
+	"title": "Secretaria de Testes",
+	"email": "saude.gov@gov.com",
+	"accountable": "José"
 }
 ```
 
@@ -804,20 +894,23 @@ _retorna_:
 
 ```json
 {
-  "id": 1,
-  "title": "Secretaria da Saúde",
-  "email": "saude.gov@gov.com"
+  "id": 3,
+  "title": "Secretaria de Testes",
+  "email": "saude.gov@gov.com",
+  "accountable": "José",
+  "updated_at": "2020-05-04T20:35:12.568Z",
+  "created_at": "2020-05-04T20:35:12.568Z"
 }
 ```
 
-- **PUT** `status/:id`: atualiza um registro de acordo com o id passado no parametro da rota na tabela de _status_.
+- **PUT** `secretary/:id`: atualiza uma secreataria.
 
 _requisição_:
 
 ```json
 {
-  "title": "Secretaria da Fazenda",
-  "email": "fazenda.gov@gov.com"
+	"title": "Secretaria da Fazenda",
+	"email": "fazenda.gov@gov.com"
 }
 ```
 
@@ -825,13 +918,16 @@ _retorna_:
 
 ```json
 {
-  "id": 1,
+  "id": 2,
   "title": "Secretaria da Fazenda",
-  "email": "fazenda.gov@gov.com"
+  "email": "fazenda.gov@gov.com",
+  "accountable": "José",
+  "created_at": "2020-05-04T19:27:46.000Z",
+  "updated_at": "2020-05-04T20:33:36.000Z"
 }
 ```
 
-- **DELETE** `status/:id`: deleta um registro de acordo com o id passado no parametro da rota na tabela de _status_.
+- **DELETE** `secretary/:id`: deleta uma secretaria.
 
 _retorna_:
 
@@ -884,10 +980,7 @@ _retorna_:
     "first_name": "master",
     "last_name": "root",
     "email": "root@gmail.com",
-    "role": {
-      "id": 3,
-      "title": "master"
-    }
+    "role": "master"
   }
 ]
 ```
