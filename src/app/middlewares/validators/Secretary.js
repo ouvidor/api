@@ -11,6 +11,9 @@ class SecretaryValidator {
         email: string()
           .email('Email inválido')
           .required('O email é necessário'),
+        accountable: string().required(
+          'É necessário informar o responsável pela secretaria'
+        ),
       });
 
       await schema.validate(request.body, { abortEarly: false });
@@ -29,6 +32,7 @@ class SecretaryValidator {
       const schema = object().shape({
         title: string(),
         email: string().email('Email inválido'),
+        accountable: string(),
       });
       await schema.validate(request.body, { abortEarly: false });
       return next();
