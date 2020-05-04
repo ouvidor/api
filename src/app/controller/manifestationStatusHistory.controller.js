@@ -1,6 +1,7 @@
 import Manifestation from '../models/Manifestation';
 import ManifestationStatusHistory from '../models/ManifestationStatusHistory';
 import SetStatusToManifestation from '../services/SetStatusToManifestation';
+import Status from '../models/Status';
 
 class ManifestationStatusHistoryController {
   async save(req, res) {
@@ -60,6 +61,7 @@ class ManifestationStatusHistoryController {
 
       manifestationStatusHistory = await ManifestationStatusHistory.findAll({
         where: { manifestations_id: manifestation.id },
+        include: [{ model: Status, as: 'status' }],
       });
 
       return res.status(200).json(manifestationStatusHistory);
@@ -73,7 +75,10 @@ class ManifestationStatusHistoryController {
     const { id } = req.params;
 
     try {
-      const manifestationStatus = await ManifestationStatusHistory.findByPk(id);
+      const manifestationStatus = await ManifestationStatusHistory.findByPk(
+        id,
+        { include: [{ model: Status, as: 'status' }] }
+      );
 
       if (!manifestationStatus) {
         return res
@@ -92,7 +97,10 @@ class ManifestationStatusHistoryController {
     const { body: data } = req;
 
     try {
-      const manifestationStatus = await ManifestationStatusHistory.findByPk(id);
+      const manifestationStatus = await ManifestationStatusHistory.findByPk(
+        id,
+        { include: [{ model: Status, as: 'status' }] }
+      );
 
       if (!manifestationStatus) {
         return res

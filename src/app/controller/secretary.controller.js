@@ -46,14 +46,9 @@ class SecretaryController {
     }
 
     // criar Secretary
-    const { id, title, email, accountable } = await Secretary.create(req.body);
+    const secretary = await Secretary.create(req.body);
 
-    return res.json({
-      id,
-      title,
-      email,
-      accountable,
-    });
+    return res.json(secretary);
   }
 
   async update(req, res) {
@@ -93,9 +88,9 @@ class SecretaryController {
     }
 
     // atualiza a instancia
-    const { id, title, email } = await secretary.update(req.body);
+    const updatedSecretary = await secretary.update(req.body);
 
-    return res.status(200).json({ id, title, email });
+    return res.status(200).json(updatedSecretary);
   }
 
   async delete(req, res) {
