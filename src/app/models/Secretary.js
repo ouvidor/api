@@ -16,6 +16,9 @@ class Secretary extends Model {
           type: Sequelize.STRING,
           unique: true,
         },
+        accountable: {
+          type: Sequelize.STRING,
+        },
       },
       // configs da tabela
       {

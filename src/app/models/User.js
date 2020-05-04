@@ -9,10 +9,10 @@ class User extends Model {
         last_name: Sequelize.STRING,
         email: Sequelize.STRING,
         password: Sequelize.STRING,
-        role_id: {
-          type: Sequelize.INTEGER,
-          defaultValue: 1,
-          values: [1, 2, 3],
+        role: {
+          type: Sequelize.STRING,
+          defaultValue: 'citizen',
+          values: ['citizen', 'admin', 'master'],
           allowNull: false,
         },
       },
@@ -20,6 +20,7 @@ class User extends Model {
       {
         sequelize,
         underscored: true,
+        tableName: 'users',
         createdAt: 'created_at', // <====== this line and the following one
         updatedAt: 'updated_at',
       }

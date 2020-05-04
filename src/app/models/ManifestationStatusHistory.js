@@ -23,7 +23,7 @@ class ManifestationStatusHistory extends Model {
       {
         sequelize,
         modelName: 'ManifestationStatusHistory',
-        tableName: 'manifestation_status_history',
+        tableName: 'manifestations_status_history',
         underscored: true,
         createdAt: 'created_at', // <====== this line and the following one
         updatedAt: 'updated_at',
@@ -35,7 +35,7 @@ class ManifestationStatusHistory extends Model {
 
   static associate(models) {
     this.belongsTo(models.Manifestation, {
-      foreignKey: 'manifestation_id',
+      foreignKey: 'manifestations_id',
       as: 'manifestation',
       targetKey: 'id',
     });

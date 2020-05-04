@@ -19,8 +19,8 @@ class File extends Model {
         underscored: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at',
-        userId: 'user_id',
-        manifestationId: 'manifestation_id',
+        userId: 'users_id',
+        manifestationId: 'manifestations_id',
       }
     );
 
@@ -29,12 +29,12 @@ class File extends Model {
 
   static associate(models) {
     this.belongsTo(models.Manifestation, {
-      foreignKey: 'manifestation_id',
+      foreignKey: 'manifestations_id',
       as: 'manifestation',
       targetKey: 'id',
     });
     this.belongsTo(models.User, {
-      foreignKey: 'user_id',
+      foreignKey: 'users_id',
       as: 'user',
       targetKey: 'id',
     });

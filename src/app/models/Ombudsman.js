@@ -31,7 +31,7 @@ class Ombudsman extends Model {
         underscored: true,
         createdAt: 'created_at', // <====== this line and the following one
         updatedAt: 'updated_at',
-        tableName: 'ombudsman',
+        tableName: 'ombudsmen',
       }
     );
 
