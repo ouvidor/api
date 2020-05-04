@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
 
+import roles from '../data/roles';
 import authConfig from '../../config/auth';
 
 export default async (req, res, next) => {
@@ -24,9 +25,12 @@ export default async (req, res, next) => {
     // dessa forma a função vira assincrona, evitando gargalo
     const decoded = await promisify(jwt.verify)(token, authConfig.secret);
 
+    // pega todo o objeto da role apartir do titulo da role recebido
+    const role = roles.find(r => r.title === decoded.role);
+
     // permite o acesso ao id do usuário apartir daqui
     req.user_id = decoded.id;
-    req.user_role = decoded.role;
+    req.user_role = role;
 
     // segue para o próximo middleware
     return next();
