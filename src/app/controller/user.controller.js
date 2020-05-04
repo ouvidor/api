@@ -40,31 +40,20 @@ class UserController {
   // Retorna todas entries de Users no DB, temporário, !somente para teste!
   async fetch(req, res) {
     const users = await User.findAll({
-      attributes: ['id', 'first_name', 'last_name', 'email', 'role_id'],
+      attributes: ['id', 'first_name', 'last_name', 'email', 'role'],
     });
 
-    const formattedUsers = users.map(user => ({
-      id: user.id,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      email: user.email,
-      role: roles.find(role => role.id === user.role_id),
-    }));
-
-    return res.status(200).json(formattedUsers);
+    return res.status(200).json(users);
   }
 
   async show(req, res) {
     const user = await User.findByPk(req.params.id, {
-      attributes: ['id', 'first_name', 'last_name', 'email', 'role_id'],
+      attributes: ['id', 'first_name', 'last_name', 'email', 'role'],
     });
 
     if (!user) {
       return res.status(400).json({ error: 'esse usuário não existe' });
     }
-
-    user.dataValues.role = roles.find(role => role.id === user.role_id);
-    delete user.dataValues.role_id;
 
     return res.status(200).json(user);
   }
@@ -90,9 +79,12 @@ class UserController {
 
     const userToSave = { ...req.body };
 
+    if (role && !(role in roles.map(r => r.title))) {
+      return res.status(400).json({ message: 'Esse cargo não existe.' });
+    }
+
     if (isAdminMaster && role) {
-      const { id } = roles.find(r => r.title === role);
-      userToSave.role_id = id;
+      userToSave.role = role;
     } else if (role) {
       return res.status(403).json({ message: 'Você não é um admin MASTER' });
     }
@@ -124,10 +116,14 @@ class UserController {
     const { role } = req.body;
     delete req.body.role;
 
+    if (role && !(role in roles.map(r => r.title))) {
+      return res.status(400).json({ message: 'Esse cargo não existe.' });
+    }
+
     const updateToUser = req.body;
 
     if (isAdminMaster && role) {
-      updateToUser.role_id = role.id;
+      updateToUser.role = role;
     } else if (role) {
       return res.status(403).json({ message: 'Você não é um admin MASTER' });
     }
@@ -150,7 +146,6 @@ class UserController {
     const formattedUser = {
       ...user.dataValues,
       password: undefined,
-      role: roles.find(r => r.id === user.id),
     };
 
     return res.status(200).json(formattedUser);

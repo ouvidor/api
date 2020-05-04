@@ -1,19 +1,19 @@
 import ManifestationStatusHistory from '../models/ManifestationStatusHistory';
-import arrayOfStatus from '../data/status';
+import Status from '../models/Status';
 
 class SetStatusToManifestation {
   async run(manifestation, statusToSave, description) {
     let status;
 
     if (typeof statusToSave === 'number') {
-      status = arrayOfStatus.find(s => s.id === statusToSave);
+      status = await Status.findOne({ where: { id: statusToSave } });
     } else {
-      status = arrayOfStatus.find(s => s.title === statusToSave);
+      status = await Status.findOne({ where: { title: statusToSave } });
     }
 
     const manifestationStatus = await ManifestationStatusHistory.create({
       description,
-      manifestation_id: manifestation.id,
+      manifestations_id: manifestation.id,
       status_id: status.id,
     });
 

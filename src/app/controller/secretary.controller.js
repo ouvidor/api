@@ -4,7 +4,7 @@ class SecretaryController {
   // retorna todos os Secretary registrados
   async fetch(req, res) {
     const secretary = await Secretary.findAll({
-      attributes: ['id', 'title', 'email'],
+      attributes: ['id', 'title', 'email', 'accountable'],
     });
 
     return res.status(200).json(secretary);
@@ -13,11 +13,11 @@ class SecretaryController {
   // retorna apenas uma Secretary
   async show(req, res) {
     const secretary = await Secretary.findByPk(req.params.id, {
-      attributes: ['id', 'title', 'email'],
+      attributes: ['id', 'title', 'email', 'accountable'],
     });
 
     if (!secretary) {
-      return res.status(400).json({ error: 'essa secretaria não existe' });
+      return res.status(400).json({ message: 'Essa secretaria não existe.' });
     }
 
     return res.status(200).json(secretary);
@@ -31,7 +31,9 @@ class SecretaryController {
 
     // caso o email já esteja em uso
     if (doesEmailExist) {
-      res.status(400).json({ error: 'uma outra secretaria já usa esse email' });
+      res
+        .status(400)
+        .json({ error: 'Uma outra secretaria já usa esse email.' });
     }
 
     const doesSecretaryExist = await Secretary.findOne({
@@ -40,16 +42,17 @@ class SecretaryController {
 
     // caso o titulo já esteja em uso
     if (doesSecretaryExist) {
-      return res.status(400).json({ error: 'essa secretaria ja existe' });
+      return res.status(400).json({ message: 'Essa secretaria ja existe.' });
     }
 
     // criar Secretary
-    const { id, title, email } = await Secretary.create(req.body);
+    const { id, title, email, accountable } = await Secretary.create(req.body);
 
     return res.json({
       id,
       title,
       email,
+      accountable,
     });
   }
 
@@ -60,7 +63,7 @@ class SecretaryController {
     if (!secretary) {
       return res
         .status(401)
-        .json({ error: 'essa secretaria não pode ser encontrada' });
+        .json({ message: 'Essa secretaria não pode ser encontrada.' });
     }
 
     // se receber um email checa se ele está em uso
@@ -72,7 +75,7 @@ class SecretaryController {
       if (checkIfEmailExists) {
         return res
           .status(400)
-          .json({ error: 'uma secretaria já usa esse email' });
+          .json({ message: 'Uma secretaria já usa esse email.' });
       }
     }
 
@@ -85,7 +88,7 @@ class SecretaryController {
       if (checkIfTitleExists) {
         return res
           .status(400)
-          .json({ error: 'uma secretaria já existe com esse titulo' });
+          .json({ message: 'Uma secretaria já existe com esse titulo.' });
       }
     }
 
@@ -102,7 +105,7 @@ class SecretaryController {
     if (!secretary) {
       return res
         .status(401)
-        .json({ error: 'essa secretaria não pode ser encontrada' });
+        .json({ error: 'Essa secretaria não pode ser encontrada.' });
     }
 
     await secretary.destroy();

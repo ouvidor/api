@@ -1,5 +1,4 @@
 import Manifestation from '../models/Manifestation';
-import arrayOfStatus from '../data/status';
 import ManifestationStatusHistory from '../models/ManifestationStatusHistory';
 import SetStatusToManifestation from '../services/SetStatusToManifestation';
 
@@ -22,13 +21,7 @@ class ManifestationStatusHistoryController {
         description
       );
 
-      const formattedManifestationStatus = {
-        ...manifestationStatus.dataValues,
-        status_id: undefined,
-        status: arrayOfStatus.find(s => s.id === manifestationStatus.status_id),
-      };
-
-      return res.status(200).json(formattedManifestationStatus);
+      return res.status(200).json(manifestationStatus);
     } catch (error) {
       return res.status(500).json({ message: 'Erro interno no servidor' });
     }
@@ -45,32 +38,33 @@ class ManifestationStatusHistoryController {
     }
 
     try {
+      let manifestation = null;
+
       if (isProtocol) {
-        // procura por manifestação com esse protocolo
-        const manifestation = await Manifestation.findOne({
+        manifestation = await Manifestation.findOne({
           where: { protocol: idOrProtocol },
           attributes: ['id'],
         });
-
-        // agora que tem o protocolo busca pelo id
-        manifestationStatusHistory = await ManifestationStatusHistory.findAll({
-          where: { manifestation_id: manifestation.id },
-        });
       } else {
-        manifestationStatusHistory = await ManifestationStatusHistory.findAll({
-          where: { manifestation_id: idOrProtocol },
+        manifestation = await Manifestation.findOne({
+          where: { id: idOrProtocol },
+          attributes: ['id'],
         });
       }
 
-      const formattedManifestationStatusHistory = manifestationStatusHistory.map(
-        mSH => ({
-          ...mSH.dataValues,
-          status: arrayOfStatus.find(s => s.id === mSH.status_id),
-        })
-      );
+      if (!manifestation) {
+        return res
+          .status(400)
+          .json({ message: 'Essa manfestação não existe.' });
+      }
 
-      return res.status(200).json(formattedManifestationStatusHistory);
+      manifestationStatusHistory = await ManifestationStatusHistory.findAll({
+        where: { manifestations_id: manifestation.id },
+      });
+
+      return res.status(200).json(manifestationStatusHistory);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ error: 'Erro interno no servidor' });
     }
   }
@@ -87,13 +81,7 @@ class ManifestationStatusHistoryController {
           .json({ error: 'Esse status de manifestação não existe' });
       }
 
-      const formattedManifestation = {
-        ...manifestationStatus.dataValues,
-        status_id: undefined,
-        status: arrayOfStatus.find(s => s.id === manifestationStatus.status_id),
-      };
-
-      return res.status(200).json(formattedManifestation);
+      return res.status(200).json(manifestationStatus);
     } catch (error) {
       return res.status(500).json({ error: 'Erro interno no servidor' });
     }
@@ -114,15 +102,7 @@ class ManifestationStatusHistoryController {
 
       const updatedManifestationStatus = await manifestationStatus.update(data);
 
-      const formattedManifestationStatus = {
-        ...updatedManifestationStatus.dataValues,
-        status_id: undefined,
-        status: arrayOfStatus.find(
-          s => s.id === updatedManifestationStatus.status_id
-        ),
-      };
-
-      return res.status(200).json(formattedManifestationStatus);
+      return res.status(200).json(updatedManifestationStatus);
     } catch (error) {
       return res.status(500).json({ error: 'Erro interno no servidor' });
     }

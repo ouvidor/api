@@ -1,8 +1,26 @@
 import Prefecture from '../models/Prefecture';
+import Ombudsman from '../models/Ombudsman';
 
-class OmbudsmanController {
+class PrefectureController {
   async fetch(req, res) {
-    const [prefecture] = await Prefecture.findAll();
+    const prefectures = await Prefecture.findAll({
+      include: [{ model: Ombudsman, as: 'ombudsman' }],
+    });
+
+    if (!prefectures) {
+      return res.status(204).send();
+    }
+
+    return res.status(200).json(prefectures);
+  }
+
+  async show(req, res) {
+    const { id } = req.params;
+
+    const prefecture = await Prefecture.findOne({
+      where: { id },
+      include: [{ model: Ombudsman, as: 'ombudsman' }],
+    });
 
     if (!prefecture) {
       return res.status(204).send();
@@ -12,7 +30,11 @@ class OmbudsmanController {
   }
 
   async update(req, res) {
-    const [prefecture] = await Prefecture.findAll();
+    const { id } = req.params;
+
+    const prefecture = await Prefecture.findOne({
+      where: { id },
+    });
 
     if (!prefecture) {
       return res.status(500).json({
@@ -26,4 +48,4 @@ class OmbudsmanController {
   }
 }
 
-export default new OmbudsmanController();
+export default new PrefectureController();

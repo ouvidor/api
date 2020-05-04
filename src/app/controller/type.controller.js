@@ -1,8 +1,10 @@
-import types from '../data/types';
+import Type from '../models/Type';
 
 class TypeController {
   // retorna todos os Type
   async fetch(req, res) {
+    const types = await Type.findAll();
+
     return res.status(200).json(types);
   }
 
@@ -11,10 +13,14 @@ class TypeController {
     let { id } = req.params;
     id = Number(id);
 
-    const type = types.find(t => t.id === id);
+    const type = await Type.findOne({
+      where: {
+        id,
+      },
+    });
 
     if (!type) {
-      return res.status(400).json({ error: 'esse tipo não existe' });
+      return res.status(400).json({ error: 'Esse tipo não existe.' });
     }
 
     return res.status(200).json(type);

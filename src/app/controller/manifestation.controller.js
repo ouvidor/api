@@ -1,11 +1,10 @@
 import Manifestation from '../models/Manifestation';
 import User from '../models/User';
+import Type from '../models/Type';
 import SearchManifestationService from '../services/SearchManifestationService';
 import GeolocationService from '../services/GeolocationService';
 import SetStatusToManifestation from '../services/SetStatusToManifestation';
 import manifestationIncludes from '../utils/manifestationIncludes';
-import { CADASTRADA } from '../data/status';
-import arrayOfTypes from '../data/types';
 
 class ManifestationController {
   async fetch(req, res) {
@@ -44,17 +43,7 @@ class ManifestationController {
     // retorna qual a ultima página
     const last_page = Math.ceil(manifestationQueryResult.count / 10);
 
-    const formattedQueryResult = {
-      count: manifestationQueryResult.count,
-      rows: manifestationQueryResult.rows.map(manifestation => ({
-        ...manifestation.dataValues,
-        type_id: undefined, // remove type_id
-        type: arrayOfTypes.find(type => type.id === manifestation.type_id),
-      })),
-      last_page,
-    };
-
-    return res.status(200).json(formattedQueryResult);
+    return res.status(200).json({ ...manifestationQueryResult, last_page });
   }
 
   async show(req, res) {
@@ -78,18 +67,12 @@ class ManifestationController {
       return res.status(400).json({ message: 'essa manifestação não existe' });
     }
 
-    const formattedManifestation = {
-      ...manifestation.dataValues,
-      type_id: undefined,
-      type: arrayOfTypes.find(type => type.id === manifestation.type_id),
-    };
-
-    return res.status(200).json(formattedManifestation);
+    return res.status(200).json(manifestation);
   }
 
   async save(req, res) {
     // Cria a manifestação e salva no banco
-    const { categories_id, ...data } = req.body;
+    const { categories_id, type_id, ...data } = req.body;
 
     // caso o token informado seja de um usuário que não existe
     const user = await User.findByPk(req.user_id);
@@ -102,9 +85,18 @@ class ManifestationController {
     const geolocationData = await GeolocationService.run(data);
     const formattedData = { ...data, ...geolocationData };
     try {
+      const typeExists = await Type.findOne({ where: { id: type_id } });
+
+      if (!typeExists) {
+        return res
+          .status(400)
+          .json({ message: 'Esse tipo de manifestação não existe' });
+      }
+
       manifestation = await Manifestation.create({
         ...formattedData,
-        user_id: req.user_id,
+        types_id: type_id,
+        users_id: req.user_id,
       });
 
       if (categories_id && categories_id.length) {
@@ -113,7 +105,7 @@ class ManifestationController {
 
       await SetStatusToManifestation.run(
         manifestation,
-        CADASTRADA,
+        'cadastrada',
         `A manifestação foi cadastrada`
       );
     } catch (error) {
@@ -128,14 +120,16 @@ class ManifestationController {
   }
 
   async update(req, res) {
+    const { type_id, ...data } = req.body;
+
     let manifestation = await Manifestation.findByPk(req.params.id);
-    const geolocationData = await GeolocationService.run(req.body);
-    const formattedData = { ...req.body, ...geolocationData };
+    const geolocationData = await GeolocationService.run(data);
+    const formattedData = { ...data, types_id: type_id, ...geolocationData };
 
     if (!manifestation) {
       return res
         .status(401)
-        .json({ message: 'essa manifestação não pôde ser encontrada' });
+        .json({ message: 'Essa manifestação não pôde ser encontrada.' });
     }
 
     // atualiza a instancia
