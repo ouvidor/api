@@ -1,7 +1,7 @@
 /**
- * Migration da tabela de categoria
+ * Migration da tabela relacional de categorias e manifestations
  * Para gerar uma migration similar basta executar o comando:
- * yarn sequelize migration:create --name=manifestation_status_history
+ * yarn sequelize migration:create --name=create-user
  *
  * para rodar a migration para o banco de dados
  * yarn sequelize db:migrate
@@ -10,7 +10,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'manifestation_status_history',
+      'manifestations_categories',
       {
         id: {
           type: Sequelize.INTEGER,
@@ -18,20 +18,15 @@ module.exports = {
           autoIncrement: true,
           primaryKey: true,
         },
-        description: {
-          type: Sequelize.TEXT,
-          allowNull: false,
-        },
-        manifestation_id: {
+        manifestations_id: {
           type: Sequelize.INTEGER,
           references: { model: 'manifestations', key: 'id' },
-          onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
-          allowNull: false,
         },
-        status_id: {
+        categories_id: {
           type: Sequelize.INTEGER,
-          allowNull: false,
+          references: { model: 'categories', key: 'id' },
+          onDelete: 'CASCADE',
         },
         created_at: {
           type: Sequelize.DATE,
@@ -45,8 +40,7 @@ module.exports = {
       { underscored: true }
     );
   },
-
   down: queryInterface => {
-    return queryInterface.dropTable('manifestation_status_history');
+    return queryInterface.dropTable('manifestations_categories');
   },
 };
