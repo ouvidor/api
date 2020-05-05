@@ -24,7 +24,11 @@ describe('Secretary', () => {
     await request(app)
       .post('/secretary')
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'secretary', email: 'secretary@gmail.com' });
+      .send({
+        title: 'secretary',
+        email: 'secretary@gmail.com',
+        accountable: 'José',
+      });
 
     // listar
     const response = await request(app)
@@ -37,6 +41,7 @@ describe('Secretary', () => {
       expect.objectContaining({
         title: 'secretary',
         email: 'secretary@gmail.com',
+        accountable: 'José',
       })
     );
   });
@@ -50,7 +55,11 @@ describe('Secretary', () => {
     } = await request(app)
       .post('/secretary')
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'secretary', email: 'secretary@gmail.com' });
+      .send({
+        title: 'secretary',
+        email: 'secretary@gmail.com',
+        accountable: 'José',
+      });
 
     // listar
     const response = await request(app)
@@ -63,6 +72,7 @@ describe('Secretary', () => {
       expect.objectContaining({
         title: 'secretary',
         email: 'secretary@gmail.com',
+        accountable: 'José',
         id,
       })
     );
@@ -75,13 +85,18 @@ describe('Secretary', () => {
     const response = await request(app)
       .post('/secretary')
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'secretary', email: 'secretary@gmail.com' });
+      .send({
+        title: 'secretary',
+        email: 'secretary@gmail.com',
+        accountable: 'José',
+      });
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual(
       expect.objectContaining({
         title: 'secretary',
         email: 'secretary@gmail.com',
+        accountable: 'José',
       })
     );
   });
@@ -95,7 +110,11 @@ describe('Secretary', () => {
     } = await request(app)
       .post('/secretary')
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'secretary', email: 'secretary@gmail.com' });
+      .send({
+        title: 'secretary',
+        email: 'secretary@gmail.com',
+        accountable: 'José',
+      });
 
     // update
     const response = await request(app)
@@ -108,6 +127,7 @@ describe('Secretary', () => {
       expect.objectContaining({
         title: 'secretary',
         email: 'secretary@gmail.com',
+        accountable: 'José',
       })
     );
   });
@@ -119,7 +139,7 @@ describe('Secretary', () => {
     await request(app)
       .post('/secretary')
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'first', email: 'first@gmail.com' });
+      .send({ title: 'first', email: 'first@gmail.com', accountable: 'José' });
 
     // criar
     const {
@@ -127,18 +147,22 @@ describe('Secretary', () => {
     } = await request(app)
       .post('/secretary')
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'second', email: 'second@gmail.com' });
+      .send({
+        title: 'second',
+        email: 'second@gmail.com',
+        accountable: 'Maria',
+      });
 
     // update
     const response = await request(app)
       .put(`/secretary/${id}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'second', email: 'first@gmail.com' });
+      .send({ title: 'second', email: 'first@gmail.com', accountable: 'José' });
 
     expect(response.status).toBe(400);
-    expect(response.body).toHaveProperty('error');
-    expect(response.body.error).toStrictEqual(
-      'uma secretaria já usa esse email'
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toStrictEqual(
+      'Uma secretaria já usa esse email.'
     );
   });
 
@@ -149,7 +173,7 @@ describe('Secretary', () => {
     await request(app)
       .post('/secretary')
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'first', email: 'first@gmail.com' });
+      .send({ title: 'first', email: 'first@gmail.com', accountable: 'José' });
 
     // criar
     const {
@@ -157,18 +181,22 @@ describe('Secretary', () => {
     } = await request(app)
       .post('/secretary')
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'second', email: 'second@gmail.com' });
+      .send({
+        title: 'second',
+        email: 'second@gmail.com',
+        accountable: 'Maria',
+      });
 
     // update
     const response = await request(app)
       .put(`/secretary/${id}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'first', email: 'second@gmail.com' });
+      .send({ title: 'first', email: 'second@gmail.com', accountable: 'José' });
 
     expect(response.status).toBe(400);
-    expect(response.body).toHaveProperty('error');
-    expect(response.body.error).toStrictEqual(
-      'uma secretaria já existe com esse titulo'
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toStrictEqual(
+      'Uma secretaria já existe com esse titulo.'
     );
   });
 
@@ -181,7 +209,11 @@ describe('Secretary', () => {
     } = await request(app)
       .post('/secretary')
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'secretary', email: 'secretary@gmail.com' });
+      .send({
+        title: 'secretary',
+        email: 'secretary@gmail.com',
+        accountable: 'José',
+      });
 
     // delete
     const response = await request(app)
@@ -194,6 +226,7 @@ describe('Secretary', () => {
       expect.objectContaining({
         title: 'secretary',
         email: 'secretary@gmail.com',
+        accountable: 'José',
       })
     );
   });

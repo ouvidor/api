@@ -18,7 +18,7 @@ describe('Manifestation', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeEach(async () => {
     await truncate();
-    const { category: categorySeed } = await seedDatabase();
+    const { category: categorySeed, types } = await seedDatabase();
 
     category = categorySeed;
 
@@ -33,9 +33,10 @@ describe('Manifestation', () => {
       .send({
         title: 'title',
         description: 'description',
-        type_id: 1,
+        type_id: types[0].id,
         categories_id: [category.id],
-      });
+      })
+      .expect(200);
     manifestation = manifestationResult.body;
   });
 
@@ -64,8 +65,11 @@ describe('Manifestation', () => {
               longitude: null,
               created_at: expect.any(String),
               updated_at: expect.any(String),
-              secretary_id: null,
-              user_id: expect.any(Number),
+              secretariats_id: null,
+              ombudsmen_id: expect.any(Number),
+              types_id: expect.any(Number),
+              users_id: expect.any(Number),
+              files: [],
               user: {
                 first_name: expect.any(String),
                 last_name: expect.any(String),
@@ -78,8 +82,8 @@ describe('Manifestation', () => {
                 },
               ],
               type: {
-                id: 1,
-                title: 'sugestão',
+                id: expect.any(Number),
+                title: expect.any(String),
               },
             }),
           ]),
@@ -112,8 +116,10 @@ describe('Manifestation', () => {
               longitude: null,
               created_at: expect.any(String),
               updated_at: expect.any(String),
-              secretary_id: null,
-              user_id: expect.any(Number),
+              secretariats_id: null,
+              ombudsmen_id: expect.any(Number),
+              types_id: expect.any(Number),
+              users_id: expect.any(Number),
               categories: [
                 {
                   id: expect.any(Number),
@@ -121,8 +127,8 @@ describe('Manifestation', () => {
                 },
               ],
               type: {
-                id: 1,
-                title: 'sugestão',
+                id: expect.any(Number),
+                title: expect.any(String),
               },
             }),
           ]),
@@ -141,7 +147,7 @@ describe('Manifestation', () => {
       expect(response.body).toEqual(
         expect.objectContaining({
           id: expect.any(Number),
-          protocol: manifestation.protocol,
+          protocol: expect.any(String),
           title: 'title',
           description: 'description',
           read: 0,
@@ -150,18 +156,26 @@ describe('Manifestation', () => {
           longitude: null,
           created_at: expect.any(String),
           updated_at: expect.any(String),
-          secretary_id: null,
-          user_id: expect.any(Number),
+          secretariats_id: null,
+          users_id: expect.any(Number),
+          types_id: expect.any(Number),
+          ombudsmen_id: expect.any(Number),
+          files: [],
+          type: {
+            id: expect.any(Number),
+            title: expect.any(String),
+          },
+          user: {
+            first_name: expect.any(String),
+            last_name: expect.any(String),
+            email: expect.any(String),
+          },
           categories: [
             {
               id: expect.any(Number),
               title: 'Saneamento',
             },
           ],
-          type: {
-            id: 1,
-            title: 'sugestão',
-          },
         })
       );
     });
@@ -191,8 +205,10 @@ describe('Manifestation', () => {
               longitude: null,
               created_at: expect.any(String),
               updated_at: expect.any(String),
-              secretary_id: null,
-              user_id: expect.any(Number),
+              secretariats_id: null,
+              ombudsmen_id: expect.any(Number),
+              types_id: expect.any(Number),
+              users_id: expect.any(Number),
               categories: [
                 {
                   id: expect.any(Number),
@@ -200,29 +216,14 @@ describe('Manifestation', () => {
                 },
               ],
               type: {
-                id: 1,
-                title: 'sugestão',
+                id: expect.any(Number),
+                title: expect.any(String),
               },
             }),
           ]),
         })
       );
     });
-
-    // it('should list a specific manifestation', async () => {
-    //   // listar
-    //   const response = await request(app)
-    //     .get(`/manifestation/${manifestation.id}`)
-    //     .set('Authorization', `Bearer ${token}`)
-    //     .send();
-
-    //   expect(response.body).toEqual(
-    //     expect.objectContaining({
-    //       title: 'title',
-    //       description: 'description',
-    //     })
-    //   );
-    // });
 
     it('should not list a inexistent manifestation', async () => {
       // listar

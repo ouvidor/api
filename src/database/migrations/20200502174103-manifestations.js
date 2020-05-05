@@ -71,7 +71,7 @@ module.exports = {
           references: { model: 'ombudsmen', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
-          allowNull: true,
+          allowNull: false,
         },
         created_at: {
           type: Sequelize.DATE,

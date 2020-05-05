@@ -6,13 +6,21 @@ import User from '../../src/app/models/User';
 import seedDatabase from '../util/seedDatabase';
 
 let category;
+let ombudsman;
+let types;
 
 describe('Search Manifestation Service', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeEach(async () => {
     await truncate();
-    const { category: categorySeed } = await seedDatabase();
+    const {
+      category: categorySeed,
+      ombudsman: seedOmbudsman,
+      types: seedTypes,
+    } = await seedDatabase();
     category = categorySeed;
+    ombudsman = seedOmbudsman;
+    types = seedTypes;
   });
 
   it('should search for manifestations', async () => {
@@ -27,8 +35,9 @@ describe('Search Manifestation Service', () => {
       const manifestation = await Manifestation.create({
         title: 'rua',
         description: 'descrição',
-        type_id: 1,
-        user_id: user.id,
+        types_id: types[0].id,
+        users_id: user.id,
+        ombudsmen_id: ombudsman.id,
       });
 
       await manifestation.setCategories([category.id]);
@@ -46,7 +55,7 @@ describe('Search Manifestation Service', () => {
         title: 'rua',
         description: 'descrição',
         latitude: null,
-        type_id: 1,
+        types_id: types[0].id,
       })
     );
     expect(manifestations.rows[0].categories[0]).toEqual(

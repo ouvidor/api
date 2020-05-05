@@ -1,6 +1,8 @@
 import Manifestation from '../models/Manifestation';
 import User from '../models/User';
 import Type from '../models/Type';
+import Prefecture from '../models/Prefecture';
+import Ombudsman from '../models/Ombudsman';
 import SearchManifestationService from '../services/SearchManifestationService';
 import GeolocationService from '../services/GeolocationService';
 import SetStatusToManifestation from '../services/SetStatusToManifestation';
@@ -73,11 +75,23 @@ class ManifestationController {
   async save(req, res) {
     // Cria a manifestação e salva no banco
     const { categories_id, type_id, ...data } = req.body;
+    const city = req.user_city;
 
     // caso o token informado seja de um usuário que não existe
     const user = await User.findByPk(req.user_id);
     if (!user) {
       return res.status(401).json({ message: 'Esse usuário não existe' });
+    }
+
+    const prefecture = await Prefecture.findOne({
+      where: { name: city },
+      include: [{ model: Ombudsman, as: 'ombudsman' }],
+    });
+
+    if (!prefecture) {
+      return res
+        .status(400)
+        .json({ message: 'Nome da cidade inválido. Refaça o login.' });
     }
 
     let manifestation;
@@ -97,6 +111,7 @@ class ManifestationController {
         ...formattedData,
         types_id: type_id,
         users_id: req.user_id,
+        ombudsmen_id: prefecture.ombudsman.id,
       });
 
       if (categories_id && categories_id.length) {

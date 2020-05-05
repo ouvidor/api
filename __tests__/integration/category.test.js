@@ -31,8 +31,8 @@ describe('Category', () => {
       .send({ title: 'Saneamento' });
 
     expect(response.status).toBe(400);
-    expect(response.body).toHaveProperty('error');
-    expect(response.body.error).toStrictEqual('categoria ja existe');
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toStrictEqual('Categoria ja existe.');
   });
 
   it('should list all categories', async () => {
