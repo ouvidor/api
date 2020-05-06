@@ -28,6 +28,7 @@ describe('Secretary', () => {
         title: 'secretary',
         email: 'secretary@gmail.com',
         accountable: 'José',
+        city: 'Cabo Frio',
       });
 
     // listar
@@ -59,6 +60,7 @@ describe('Secretary', () => {
         title: 'secretary',
         email: 'secretary@gmail.com',
         accountable: 'José',
+        city: 'Cabo Frio',
       });
 
     // listar
@@ -89,6 +91,7 @@ describe('Secretary', () => {
         title: 'secretary',
         email: 'secretary@gmail.com',
         accountable: 'José',
+        city: 'Cabo Frio',
       });
 
     expect(response.status).toBe(200);
@@ -114,6 +117,7 @@ describe('Secretary', () => {
         title: 'secretary',
         email: 'secretary@gmail.com',
         accountable: 'José',
+        city: 'Cabo Frio',
       });
 
     // update
@@ -139,7 +143,12 @@ describe('Secretary', () => {
     await request(app)
       .post('/secretary')
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'first', email: 'first@gmail.com', accountable: 'José' });
+      .send({
+        title: 'first',
+        email: 'first@gmail.com',
+        accountable: 'José',
+        city: 'Cabo Frio',
+      });
 
     // criar
     const {
@@ -151,6 +160,7 @@ describe('Secretary', () => {
         title: 'second',
         email: 'second@gmail.com',
         accountable: 'Maria',
+        city: 'Cabo Frio',
       });
 
     // update
@@ -173,7 +183,12 @@ describe('Secretary', () => {
     await request(app)
       .post('/secretary')
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'first', email: 'first@gmail.com', accountable: 'José' });
+      .send({
+        title: 'first',
+        email: 'first@gmail.com',
+        accountable: 'José',
+        city: 'Cabo Frio',
+      });
 
     // criar
     const {
@@ -185,6 +200,7 @@ describe('Secretary', () => {
         title: 'second',
         email: 'second@gmail.com',
         accountable: 'Maria',
+        city: 'Cabo Frio',
       });
 
     // update
@@ -213,6 +229,7 @@ describe('Secretary', () => {
         title: 'secretary',
         email: 'secretary@gmail.com',
         accountable: 'José',
+        city: 'Cabo Frio',
       });
 
     // delete

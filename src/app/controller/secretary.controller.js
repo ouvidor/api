@@ -1,4 +1,5 @@
 import Secretary from '../models/Secretary';
+import Prefecture from '../models/Prefecture';
 
 class SecretaryController {
   // retorna todos os Secretary registrados
@@ -25,8 +26,10 @@ class SecretaryController {
 
   // salva o Secretary no banco
   async save(req, res) {
+    const { email, title, accountable, city } = req.body;
+
     const doesEmailExist = await Secretary.findOne({
-      where: { email: req.body.email },
+      where: { email },
     });
 
     // caso o email já esteja em uso
@@ -37,7 +40,7 @@ class SecretaryController {
     }
 
     const doesSecretaryExist = await Secretary.findOne({
-      where: { title: req.body.title },
+      where: { title },
     });
 
     // caso o titulo já esteja em uso
@@ -45,8 +48,15 @@ class SecretaryController {
       return res.status(400).json({ message: 'Essa secretaria ja existe.' });
     }
 
+    const prefecture = await Prefecture.findOne({ where: { name: city } });
+
     // criar Secretary
-    const secretary = await Secretary.create(req.body);
+    const secretary = await Secretary.create({
+      email,
+      title,
+      prefectures_id: prefecture.id,
+      accountable,
+    });
 
     return res.json(secretary);
   }

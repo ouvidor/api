@@ -14,6 +14,9 @@ class SecretaryValidator {
         accountable: string().required(
           'É necessário informar o responsável pela secretaria'
         ),
+        city: string().required(
+          'É necessário o nome da cidade da qual a secretária faz parte'
+        ),
       });
 
       await schema.validate(request.body, { abortEarly: false });
@@ -33,6 +36,7 @@ class SecretaryValidator {
         title: string(),
         email: string().email('Email inválido'),
         accountable: string(),
+        city: string(),
       });
       await schema.validate(request.body, { abortEarly: false });
       return next();

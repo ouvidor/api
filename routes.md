@@ -862,7 +862,8 @@ _retorna_:
     "id": 2,
     "title": "Secretaria de Testes",
     "email": "saude.gov@gov.com",
-    "accountable": "José"
+    "accountable": "José",
+    "prefectures_id": 1,
   }
 ]
 ```
@@ -874,7 +875,8 @@ _retorna_:
   "id": 2,
   "title": "Secretaria de Testes",
   "email": "saude.gov@gov.com",
-  "accountable": "José"
+  "accountable": "José",
+  "prefectures_id": 1,
 }
 ```
 
@@ -886,7 +888,8 @@ _requisição_:
 {
 	"title": "Secretaria de Testes",
 	"email": "saude.gov@gov.com",
-	"accountable": "José"
+  "accountable": "José",
+  "city": "Cabo Frio"
 }
 ```
 
@@ -898,6 +901,7 @@ _retorna_:
   "title": "Secretaria de Testes",
   "email": "saude.gov@gov.com",
   "accountable": "José",
+  "prefectures_id": 1,
   "updated_at": "2020-05-04T20:35:12.568Z",
   "created_at": "2020-05-04T20:35:12.568Z"
 }
@@ -922,6 +926,7 @@ _retorna_:
   "title": "Secretaria da Fazenda",
   "email": "fazenda.gov@gov.com",
   "accountable": "José",
+  "prefectures_id": 1,
   "created_at": "2020-05-04T19:27:46.000Z",
   "updated_at": "2020-05-04T20:33:36.000Z"
 }
@@ -936,6 +941,8 @@ _retorna_:
   "id": 1,
   "title": "Secretaria da Fazenda",
   "email": "fazenda.gov@gov.com",
+  "accountable": "José",
+  "prefectures_id": 1,
   "created_at": "2019-10-31T21:30:47.000Z",
   "updated_at": "2019-10-31T23:55:51.000Z"
 }

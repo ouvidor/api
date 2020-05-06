@@ -32,6 +32,13 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false,
         },
+        prefectures_id: {
+          type: Sequelize.INTEGER,
+          references: { model: 'prefectures', key: 'id' },
+          allowNull: false,
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE',
+        },
         created_at: {
           type: Sequelize.DATE,
           allowNull: false,

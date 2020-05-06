@@ -1,7 +1,3 @@
-/**
- * Secretarias
- * exemplo: 'Reclamação', 'Pedido de Informação', 'Elogio'
- */
 import Sequelize, { Model } from 'sequelize';
 
 class Secretary extends Model {
@@ -31,6 +27,14 @@ class Secretary extends Model {
     );
 
     return this;
+  }
+
+  static associate(models) {
+    this.belongsTo(models.Prefecture, {
+      foreignKey: 'prefectures_id',
+      as: 'prefecture',
+      targetKey: 'id',
+    });
   }
 }
 
