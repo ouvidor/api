@@ -9,6 +9,11 @@ const ombudsmanRoutes = Router();
 ombudsmanRoutes.use(authMiddleware);
 
 ombudsmanRoutes.get('/', OmbudsmanController.fetch);
-ombudsmanRoutes.put('/', OmbudsmanValidator.update, OmbudsmanController.update);
+ombudsmanRoutes.get('/:id', OmbudsmanController.show);
+ombudsmanRoutes.put(
+  '/:id',
+  OmbudsmanValidator.update,
+  OmbudsmanController.update
+);
 
 export default ombudsmanRoutes;

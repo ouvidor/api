@@ -109,8 +109,7 @@ describe('User', () => {
       'role'
     );
 
-    expect(response.body[0].role).toHaveProperty('id');
-    expect(response.body[0].role).toHaveProperty('title');
+    expect(response.body[0].role).toEqual('master');
   });
 
   it('should list a specific user', async () => {
@@ -131,8 +130,7 @@ describe('User', () => {
       'last_name',
       'role'
     );
-    expect(response.body.role).toHaveProperty('id');
-    expect(response.body.role).toHaveProperty('title');
+    expect(response.body.role).toEqual('master');
   });
 
   it("shouldn't list a specific user", async () => {

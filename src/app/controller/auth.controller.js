@@ -1,16 +1,19 @@
 import jwt from 'jsonwebtoken';
 
 import User from '../models/User';
+import Prefecture from '../models/Prefecture';
 import roles from '../data/roles';
 import auth from '../../config/auth';
 
 class AuthController {
   // Loga e retorna um Token
   async login(req, res) {
-    req.password = String(req.password);
+    const { email, city } = req.body;
+    let { password } = req.body;
+    password = String(password);
 
     const user = await User.findOne({
-      where: { email: req.body.email },
+      where: { email },
     });
 
     // caso não exista
@@ -19,26 +22,41 @@ class AuthController {
     }
 
     // Checa se a senha está correta
-    if (!(await user.checkPassword(req.body.password))) {
+    if (!(await user.checkPassword(password))) {
       return res.status(401).json({ error: 'Email ou senha incorretos' });
     }
 
-    const { id, first_name, last_name, email, role_id } = user;
+    const roleExists = roles.find(r => user.role === r.title);
 
-    const userRole = roles.find(role => role.id === role_id);
+    if (!roleExists) {
+      return res.status(400).json({ error: 'Este cargo não existe.' });
+    }
 
-    const token = jwt.sign({ id, role: userRole }, auth.secret, {
-      expiresIn: auth.expiresIn,
-    });
+    const cityExists = await Prefecture.findOne({ where: { name: city } });
+
+    if (!cityExists) {
+      return res
+        .status(400)
+        .json({ error: 'Esta cidade não existe no sistema.' });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, role: user.role, city },
+      auth.secret,
+      {
+        expiresIn: auth.expiresIn,
+      }
+    );
 
     return res.status(200).json({
       user: {
-        id,
-        first_name,
-        last_name,
-        email,
-        role: userRole,
+        id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        role: user.role,
       },
+      city,
       token,
     });
   }

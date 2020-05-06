@@ -1,12 +1,18 @@
 import Category from '../models/Category';
 import User from '../models/User';
 import File from '../models/File';
+import Type from '../models/Type';
 
 export default [
   {
     model: File,
     as: 'files',
-    attributes: ['id', 'file_name'],
+    attributes: ['id', 'name'],
+  },
+  {
+    model: Type,
+    as: 'type',
+    attributes: ['id', 'title'],
   },
   {
     model: User,

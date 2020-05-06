@@ -10,15 +10,18 @@ const adminMaster = {
   password: '123456',
 };
 let token;
+let types;
 
 describe('Type', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeEach(async () => {
     await truncate();
-    await seedDatabase();
+    const { types: seedTypes } = await seedDatabase();
 
     const { token: signedToken } = await sign.in(adminMaster);
     token = signedToken;
+
+    types = seedTypes;
   });
 
   describe('FETCH', () => {
@@ -31,11 +34,11 @@ describe('Type', () => {
       expect(response.status).toBe(200);
       expect(response.body).toEqual(
         expect.arrayContaining([
-          expect.objectContaining({ id: 1, title: 'sugestão' }),
-          expect.objectContaining({ id: 2, title: 'elogio' }),
-          expect.objectContaining({ id: 3, title: 'solicitação' }),
-          expect.objectContaining({ id: 4, title: 'reclamação' }),
-          expect.objectContaining({ id: 5, title: 'denúncia' }),
+          expect.objectContaining({ id: types[0].id, title: 'sugestão' }),
+          expect.objectContaining({ id: types[1].id, title: 'elogio' }),
+          expect.objectContaining({ id: types[2].id, title: 'solicitação' }),
+          expect.objectContaining({ id: types[3].id, title: 'reclamação' }),
+          expect.objectContaining({ id: types[4].id, title: 'denúncia' }),
         ])
       );
     });
@@ -44,12 +47,12 @@ describe('Type', () => {
   describe('SHOW', () => {
     it('show type', async () => {
       const response = await request(app)
-        .get('/type/1')
+        .get(`/type/${types[0].id}`)
         .set('Authorization', `Bearer ${token}`)
         .send();
 
       expect(response.body).toEqual(
-        expect.objectContaining({ id: 1, title: 'sugestão' })
+        expect.objectContaining({ id: types[0].id, title: 'sugestão' })
       );
     });
   });

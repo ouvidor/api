@@ -1,9 +1,11 @@
-import arrayOfStatus from '../data/status';
+import Status from '../models/Status';
 
 class StatusController {
   // retorna todos os Status
   async fetch(req, res) {
-    return res.status(200).json(arrayOfStatus);
+    const status = await Status.findAll();
+
+    return res.status(200).json(status);
   }
 
   // retorna apenas um Status
@@ -12,10 +14,14 @@ class StatusController {
 
     id = Number(id);
 
-    const status = arrayOfStatus.find(s => s.id === id);
+    const status = await Status.findOne({
+      where: {
+        id,
+      },
+    });
 
     if (!status) {
-      return res.status(400).json({ message: 'esse status não existe' });
+      return res.status(400).json({ message: 'Esse status não existe.' });
     }
 
     return res.status(200).json(status);

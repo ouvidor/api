@@ -12,18 +12,12 @@ class ManifestationStatusHistory extends Model {
           type: Sequelize.TEXT,
           unique: true,
         },
-        status_id: {
-          type: Sequelize.INTEGER,
-          defaultValue: 2,
-          values: [1, 2, 3, 4, 5, 6, 7, 8],
-          allowNull: false,
-        },
       },
       // configs da tabela
       {
         sequelize,
         modelName: 'ManifestationStatusHistory',
-        tableName: 'manifestation_status_history',
+        tableName: 'manifestations_status_history',
         underscored: true,
         createdAt: 'created_at', // <====== this line and the following one
         updatedAt: 'updated_at',
@@ -35,8 +29,13 @@ class ManifestationStatusHistory extends Model {
 
   static associate(models) {
     this.belongsTo(models.Manifestation, {
-      foreignKey: 'manifestation_id',
+      foreignKey: 'manifestations_id',
       as: 'manifestation',
+      targetKey: 'id',
+    });
+    this.belongsTo(models.Status, {
+      foreignKey: 'status_id',
+      as: 'status',
       targetKey: 'id',
     });
   }

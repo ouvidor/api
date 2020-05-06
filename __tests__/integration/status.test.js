@@ -10,11 +10,14 @@ const adminMaster = {
   password: '123456',
 };
 
+let status;
+
 describe('Status', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeEach(async () => {
     await truncate();
-    await seedDatabase();
+    const { status: seedStatus } = await seedDatabase();
+    status = seedStatus;
   });
 
   it('should list all status', async () => {
@@ -28,18 +31,21 @@ describe('Status', () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ id: 1, title: 'arquivada' }),
-        expect.objectContaining({ id: 2, title: 'cadastrada' }),
-        expect.objectContaining({ id: 3, title: 'prorrogada' }),
-        expect.objectContaining({ id: 4, title: 'resposta intermediária' }),
-        expect.objectContaining({ id: 5, title: 'complementada' }),
-        expect.objectContaining({ id: 6, title: 'encerrada' }),
+        expect.objectContaining({ id: status[0].id, title: 'arquivada' }),
+        expect.objectContaining({ id: status[1].id, title: 'cadastrada' }),
+        expect.objectContaining({ id: status[2].id, title: 'prorrogada' }),
         expect.objectContaining({
-          id: 7,
+          id: status[3].id,
+          title: 'resposta intermediária',
+        }),
+        expect.objectContaining({ id: status[4].id, title: 'complementada' }),
+        expect.objectContaining({ id: status[5].id, title: 'encerrada' }),
+        expect.objectContaining({
+          id: status[6].id,
           title: 'encaminhada para outra ouvidoria',
         }),
         expect.objectContaining({
-          id: 8,
+          id: status[7].id,
           title: 'encaminhada para orgão externo',
         }),
       ])
@@ -50,13 +56,13 @@ describe('Status', () => {
     const { token } = await sign.in(adminMaster);
 
     const response = await request(app)
-      .get(`/status/2`)
+      .get(`/status/${status[1].id}`)
       .set('Authorization', `Bearer ${token}`)
       .send();
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual(
-      expect.objectContaining({ title: 'cadastrada', id: 2 })
+      expect.objectContaining({ title: 'cadastrada', id: status[1].id })
     );
   });
 
@@ -64,11 +70,11 @@ describe('Status', () => {
     const { token } = await sign.in(adminMaster);
 
     const response = await request(app)
-      .get(`/status/120`)
+      .get(`/status/0`)
       .set('Authorization', `Bearer ${token}`)
       .send();
 
     expect(response.status).toBe(400);
-    expect(response.body).toHaveProperty('message', 'esse status não existe');
+    expect(response.body).toHaveProperty('message', 'Esse status não existe.');
   });
 });

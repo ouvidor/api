@@ -21,15 +21,15 @@ describe('Auth', () => {
 
     const response = await request(app)
       .post('/auth')
-      .send({ email: user.email, password: user.password });
+      .send({ email: user.email, password: user.password, city: 'Cabo Frio' });
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('token');
 
     const decodedToken = decode(response.body.token);
 
-    expect(decodedToken).toHaveProperty('exp', 'iat', 'id', 'role');
-    expect(decodedToken.role).toHaveProperty('id', 'title', 'level');
+    expect(decodedToken).toHaveProperty('exp', 'iat', 'id', 'role', 'city');
+    expect(decodedToken.role).toEqual('citizen');
 
     expect(response.body).toHaveProperty('user');
     expect(response.body.user).toHaveProperty(
@@ -47,7 +47,11 @@ describe('Auth', () => {
 
     const response = await request(app)
       .post('/auth')
-      .send({ email: 'umemail@gmail.com', password: 'WRONG_PASSWORD' });
+      .send({
+        email: 'umemail@gmail.com',
+        password: 'WRONG_PASSWORD',
+        city: 'Cabo Frio',
+      });
 
     expect(response.status).toBe(401);
     expect(response.body).toHaveProperty('error');
@@ -65,7 +69,11 @@ describe('Auth', () => {
     expect(response.body.error).toStrictEqual('Validação falhou');
     expect(response.body).toHaveProperty('messages');
     expect(response.body.messages).toEqual(
-      expect.arrayContaining(['Email é necessário', 'Senha é necessária'])
+      expect.arrayContaining([
+        'Email é necessário',
+        'Senha é necessária',
+        'Cidade é necessária',
+      ])
     );
 
     // faltando senha

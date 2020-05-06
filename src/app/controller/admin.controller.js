@@ -1,26 +1,20 @@
 import { Op } from 'sequelize';
 
 import User from '../models/User';
-import arrayOfRoles, { ADMIN, MASTER } from '../data/roles';
+import { ADMIN, MASTER } from '../data/roles';
 
 class AdminController {
   async fetch(req, res) {
     const admins = await User.findAll({
-      attributes: ['id', 'first_name', 'last_name', 'email', 'role_id'],
+      attributes: ['id', 'first_name', 'last_name', 'email', 'role'],
       where: {
-        role_id: {
+        role: {
           [Op.or]: [ADMIN, MASTER],
         },
       },
     });
 
-    const formattedAdmins = admins.map(admin => ({
-      ...admin.dataValues,
-      role_id: undefined,
-      role: arrayOfRoles.find(role => role.id === admin.role_id),
-    }));
-
-    return res.status(200).json(formattedAdmins);
+    return res.status(200).json(admins);
   }
 }
 

@@ -12,11 +12,15 @@ import Secretary from '../app/models/Secretary';
 import File from '../app/models/File';
 import Ombudsman from '../app/models/Ombudsman';
 import Prefecture from '../app/models/Prefecture';
+import Type from '../app/models/Type';
+import Status from '../app/models/Status';
 
 require('dotenv');
 
 // a ordem é importante
 const models = [
+  Type,
+  Status,
   File,
   User,
   Secretary,

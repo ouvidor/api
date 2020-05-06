@@ -17,8 +17,7 @@ describe('File', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeEach(async () => {
     await truncate();
-    await seedDatabase();
-
+    const { ombudsman, category, types } = await seedDatabase();
     const { user, token: signedToken } = await sign.in({
       email: 'root@gmail.com',
       password: '123456',
@@ -26,14 +25,12 @@ describe('File', () => {
     token = signedToken;
     userProfile = user;
 
-    const [category] = await Category.findAll();
-
     manifestation = await Manifestation.create({
       title: 'title',
       description: 'description',
-      read: 0,
-      user_id: user.id,
-      type_id: 1,
+      users_id: user.id,
+      types_id: types[0].id,
+      ombudsmen_id: ombudsman.id,
     });
     manifestation.setCategories(category.id);
 
@@ -41,8 +38,8 @@ describe('File', () => {
       name: 'sample.txt',
       name_in_server: 'sample-123456789.txt',
       extension: '.txt',
-      manifestation_id: manifestation.id,
-      user_id: user.id,
+      manifestations_id: manifestation.id,
+      users_id: user.id,
     });
   });
 
@@ -51,7 +48,6 @@ describe('File', () => {
       const response = await request(app)
         .get(`/files/manifestation/${manifestation.id}`)
         .set('Authorization', `Bearer ${token}`)
-        .expect(200)
         .send();
 
       expect(response.body).toEqual(
@@ -64,8 +60,8 @@ describe('File', () => {
               extension: '.txt',
               created_at: expect.any(String),
               updated_at: expect.any(String),
-              manifestation_id: manifestation.id,
-              user_id: userProfile.id,
+              manifestations_id: manifestation.id,
+              users_id: userProfile.id,
             }),
           ]),
         })

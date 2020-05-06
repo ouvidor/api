@@ -11,11 +11,6 @@ class Manifestation extends Model {
         location: Sequelize.STRING,
         latitude: Sequelize.STRING,
         longitude: Sequelize.STRING,
-        type_id: {
-          type: Sequelize.INTEGER,
-          values: [1, 2, 3, 4, 5],
-          allowNull: false,
-        },
       },
       // configs da tabela
       {
@@ -29,7 +24,7 @@ class Manifestation extends Model {
     // criação do protocolo. exemplo: k6f2uhi9
     this.addHook('beforeSave', async manifestation => {
       // converte o tempo UNIX em Base36
-      if (manifestation.changed('protocol')) {
+      if (!manifestation.protocol) {
         manifestation.protocol = Date.now().toString(36);
       }
     });
@@ -39,24 +34,34 @@ class Manifestation extends Model {
 
   static associate(models) {
     this.belongsTo(models.Secretary, {
-      foreignKey: 'secretary_id',
+      foreignKey: 'secretariats_id',
       as: 'secretary',
       targetKey: 'id',
     });
     this.belongsTo(models.User, {
-      foreignKey: 'user_id',
+      foreignKey: 'users_id',
       as: 'user',
       targetKey: 'id',
     });
     this.belongsToMany(models.Category, {
-      through: 'manifestation_category',
+      through: 'manifestations_categories',
       as: 'categories',
-      foreignKey: 'manifestation_id',
+      foreignKey: 'manifestations_id',
       constraints: false,
     });
     this.hasMany(models.File, {
       as: 'files',
-      foreignKey: 'manifestation_id',
+      foreignKey: 'manifestations_id',
+    });
+    this.belongsTo(models.Type, {
+      as: 'type',
+      foreignKey: 'types_id',
+      targetKey: 'id',
+    });
+    this.belongsTo(models.Ombudsman, {
+      as: 'ombudsman',
+      foreignKey: 'ombudsmen_id',
+      targetKey: 'id',
     });
   }
 }

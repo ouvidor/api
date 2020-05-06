@@ -11,6 +11,7 @@ export default async (request, response, next) => {
         .email('Email invalido')
         .required('Email é necessário'),
       password: string().required('Senha é necessária'),
+      city: string().required('Cidade é necessária'),
     });
 
     await schema.validate(request.body, { abortEarly: false });

@@ -13,12 +13,12 @@ class Sign {
   }
 
   // login
-  async in(user) {
+  async in(user, city = 'Cabo Frio') {
     const { body } = await request(app)
       .post('/auth')
-      .send(user);
+      .send({ ...user, city });
 
-    return { user: body.user, token: body.token };
+    return { user: body.user, token: body.token, city: body.city };
   }
 }
 

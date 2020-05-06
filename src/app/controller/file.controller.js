@@ -1,11 +1,10 @@
 /**
- * Arquivo responsavel por salvar temproariamente a imagem no folder 'temp', e envia-la para a Google Cloud Storage.
+ * Arquivo responsavel por salvar temporariamente a imagem no folder 'temp', e envia-la para a Google Cloud Storage.
  */
 
 /**
  * TODO:
  *  - Limitar a quantidade de arquivos que uma manifestação pode ter.
- *  - Filtrar os arquivos por extensão (escolher quais tipos de arquivos podem ser enviados).
  */
 
 import fileSystem from 'fs';
@@ -55,7 +54,7 @@ class FileController {
       return res.status(500).json({ message: 'Usuario não existe' });
     }
 
-    const isOwner = user.id === manifestation.user_id;
+    const isOwner = user.id === manifestation.users_id;
     const isUserAnAdmin = req.user_role.id > 1;
 
     /**
@@ -126,7 +125,7 @@ class FileController {
       return res.status(404).json({ message: 'Usuário não existe' });
     }
 
-    const isOwner = user.dataValues.id === file.dataValues.user_id;
+    const isOwner = user.id === file.users_id;
     const isCitizen = user_role.id < 2;
 
     if (!isOwner && isCitizen) {
@@ -177,7 +176,7 @@ class FileController {
       return res.status(404).json({ message: 'usuario não existe' });
     }
 
-    const isOwner = user.dataValues.id === file.dataValues.user_id;
+    const isOwner = user.id === file.users_id;
     const isCitizen = user_role.id < 2;
 
     if (!isOwner && isCitizen) {
@@ -215,7 +214,7 @@ class FileController {
         return res.status(404).json({ message: 'Manifestação não existe' });
       }
 
-      const isOwner = user.dataValues.id === manifestation.dataValues.user_id;
+      const isOwner = user.id === manifestation.users_id;
       const isCitizen = user_role.id < 2;
 
       if (!isOwner && isCitizen) {
@@ -227,7 +226,7 @@ class FileController {
 
       const files = await File.findAll({
         where: {
-          manifestation_id,
+          manifestations_id: manifestation_id,
         },
       });
       return res.status(200).json({ files });

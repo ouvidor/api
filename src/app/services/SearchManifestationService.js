@@ -1,12 +1,12 @@
 import { Op } from 'sequelize';
 
 import Manifestation from '../models/Manifestation';
-import arrayOfTypes from '../data/types';
 import Category from '../models/Category';
+import Type from '../models/Type';
 
 class SearchManifestationService {
   async fetchOptionsIds(options) {
-    const types = [];
+    let types = [];
     let categories = [];
 
     // se não for um array, vira um array
@@ -17,25 +17,25 @@ class SearchManifestationService {
 
     // coloca promises nos arrays
     for (const option of options) {
-      const type = arrayOfTypes.find(t => t.title === option);
+      const type = Type.findOne({ where: { title: option } });
       if (type) {
         types.push(type);
       }
 
-      const category = Category.findOne({
-        where: { title: option },
-      });
+      const category = Category.findOne({ where: { title: option } });
       if (category) {
         categories.push(category);
       }
     }
 
     // resolve todas as promises depois de acabar
+    types = await Promise.all(types);
     categories = await Promise.all(categories);
 
+    const filteredTypes = types.filter(type => type !== null);
     const filteredCategories = categories.filter(category => category !== null);
 
-    return [types, filteredCategories];
+    return [filteredTypes, filteredCategories];
   }
 
   makeWhereQuery(text, types, categories, page, isRead) {
@@ -60,6 +60,11 @@ class SearchManifestationService {
             ],
           },
         },
+        {
+          model: Type,
+          as: 'type',
+          attributes: ['id', 'title'],
+        },
       ],
       where: {
         ...(!isRead && { read: 0 }),
@@ -67,7 +72,7 @@ class SearchManifestationService {
           text ? { title: { [Op.like]: `%${text}%` } } : undefined,
           types.length > 0
             ? {
-                type_id: {
+                types_id: {
                   [Op.or]: [...types],
                 },
               }

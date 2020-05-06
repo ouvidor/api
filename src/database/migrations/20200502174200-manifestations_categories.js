@@ -1,7 +1,7 @@
 /**
- * Migration da tabela de categoria
+ * Migration da tabela relacional de categorias e manifestations
  * Para gerar uma migration similar basta executar o comando:
- * yarn sequelize migration:create --name=create-type
+ * yarn sequelize migration:create --name=create-user
  *
  * para rodar a migration para o banco de dados
  * yarn sequelize db:migrate
@@ -10,7 +10,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'secretariats',
+      'manifestations_categories',
       {
         id: {
           type: Sequelize.INTEGER,
@@ -18,15 +18,15 @@ module.exports = {
           autoIncrement: true,
           primaryKey: true,
         },
-        title: {
-          type: Sequelize.STRING,
-          allowNull: false,
-          unique: true,
+        manifestations_id: {
+          type: Sequelize.INTEGER,
+          references: { model: 'manifestations', key: 'id' },
+          onDelete: 'CASCADE',
         },
-        email: {
-          type: Sequelize.STRING,
-          allowNull: false,
-          unique: true,
+        categories_id: {
+          type: Sequelize.INTEGER,
+          references: { model: 'categories', key: 'id' },
+          onDelete: 'CASCADE',
         },
         created_at: {
           type: Sequelize.DATE,
@@ -40,8 +40,7 @@ module.exports = {
       { underscored: true }
     );
   },
-
   down: queryInterface => {
-    return queryInterface.dropTable('secretariats');
+    return queryInterface.dropTable('manifestations_categories');
   },
 };

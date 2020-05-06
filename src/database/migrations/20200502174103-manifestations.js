@@ -46,22 +46,32 @@ module.exports = {
           type: Sequelize.BOOLEAN,
           defaultValue: 0,
         },
-        user_id: {
+        users_id: {
           type: Sequelize.INTEGER,
           references: { model: 'users', key: 'id' },
           onDelete: 'CASCADE',
           allowNull: false,
         },
-        type_id: {
+        types_id: {
           type: Sequelize.INTEGER,
+          references: { model: 'types', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
           allowNull: false,
         },
-        secretary_id: {
+        secretariats_id: {
           type: Sequelize.INTEGER,
           references: { model: 'secretariats', key: 'id' },
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
           allowNull: true,
+        },
+        ombudsmen_id: {
+          type: Sequelize.INTEGER,
+          references: { model: 'ombudsmen', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
+          allowNull: false,
         },
         created_at: {
           type: Sequelize.DATE,

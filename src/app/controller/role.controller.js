@@ -14,7 +14,7 @@ class RoleController {
     });
 
     if (!roleToShow) {
-      return res.status(400).json({ error: 'essa Role não existe' });
+      return res.status(400).json({ error: 'Essa Role não existe.' });
     }
 
     return res.status(200).json(roleToShow);

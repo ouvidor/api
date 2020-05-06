@@ -1,5 +1,5 @@
 /**
- * Migration da tabela relacional de categorias e manifestations
+ * Migration da tabela de files
  * Para gerar uma migration similar basta executar o comando:
  * yarn sequelize migration:create --name=create-user
  *
@@ -10,7 +10,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'manifestation_category',
+      'files',
       {
         id: {
           type: Sequelize.INTEGER,
@@ -18,14 +18,26 @@ module.exports = {
           autoIncrement: true,
           primaryKey: true,
         },
-        manifestation_id: {
+        name: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        name_in_server: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        extension: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        users_id: {
           type: Sequelize.INTEGER,
-          references: { model: 'manifestations', key: 'id' },
+          references: { model: 'users', key: 'id' },
           onDelete: 'CASCADE',
         },
-        category_id: {
+        manifestations_id: {
           type: Sequelize.INTEGER,
-          references: { model: 'categories', key: 'id' },
+          references: { model: 'manifestations', key: 'id' },
           onDelete: 'CASCADE',
         },
         created_at: {
@@ -40,7 +52,8 @@ module.exports = {
       { underscored: true }
     );
   },
+
   down: queryInterface => {
-    return queryInterface.dropTable('manifestation_category');
+    return queryInterface.dropTable('files');
   },
 };

@@ -9,7 +9,6 @@ class GenericValidator {
       const schema = object().shape({
         id: number()
           .min(1)
-          .max(5)
           .integer('O id deve ser um número inteiro')
           .required('O id é necessário'),
       });

@@ -1,10 +1,11 @@
 import Secretary from '../models/Secretary';
+import Prefecture from '../models/Prefecture';
 
 class SecretaryController {
   // retorna todos os Secretary registrados
   async fetch(req, res) {
     const secretary = await Secretary.findAll({
-      attributes: ['id', 'title', 'email'],
+      attributes: ['id', 'title', 'email', 'accountable'],
     });
 
     return res.status(200).json(secretary);
@@ -13,11 +14,11 @@ class SecretaryController {
   // retorna apenas uma Secretary
   async show(req, res) {
     const secretary = await Secretary.findByPk(req.params.id, {
-      attributes: ['id', 'title', 'email'],
+      attributes: ['id', 'title', 'email', 'accountable'],
     });
 
     if (!secretary) {
-      return res.status(400).json({ error: 'essa secretaria não existe' });
+      return res.status(400).json({ message: 'Essa secretaria não existe.' });
     }
 
     return res.status(200).json(secretary);
@@ -25,32 +26,39 @@ class SecretaryController {
 
   // salva o Secretary no banco
   async save(req, res) {
+    const { email, title, accountable, city } = req.body;
+
     const doesEmailExist = await Secretary.findOne({
-      where: { email: req.body.email },
+      where: { email },
     });
 
     // caso o email já esteja em uso
     if (doesEmailExist) {
-      res.status(400).json({ error: 'uma outra secretaria já usa esse email' });
+      res
+        .status(400)
+        .json({ error: 'Uma outra secretaria já usa esse email.' });
     }
 
     const doesSecretaryExist = await Secretary.findOne({
-      where: { title: req.body.title },
+      where: { title },
     });
 
     // caso o titulo já esteja em uso
     if (doesSecretaryExist) {
-      return res.status(400).json({ error: 'essa secretaria ja existe' });
+      return res.status(400).json({ message: 'Essa secretaria ja existe.' });
     }
 
-    // criar Secretary
-    const { id, title, email } = await Secretary.create(req.body);
+    const prefecture = await Prefecture.findOne({ where: { name: city } });
 
-    return res.json({
-      id,
-      title,
+    // criar Secretary
+    const secretary = await Secretary.create({
       email,
+      title,
+      prefectures_id: prefecture.id,
+      accountable,
     });
+
+    return res.json(secretary);
   }
 
   async update(req, res) {
@@ -60,7 +68,7 @@ class SecretaryController {
     if (!secretary) {
       return res
         .status(401)
-        .json({ error: 'essa secretaria não pode ser encontrada' });
+        .json({ message: 'Essa secretaria não pode ser encontrada.' });
     }
 
     // se receber um email checa se ele está em uso
@@ -72,7 +80,7 @@ class SecretaryController {
       if (checkIfEmailExists) {
         return res
           .status(400)
-          .json({ error: 'uma secretaria já usa esse email' });
+          .json({ message: 'Uma secretaria já usa esse email.' });
       }
     }
 
@@ -85,14 +93,14 @@ class SecretaryController {
       if (checkIfTitleExists) {
         return res
           .status(400)
-          .json({ error: 'uma secretaria já existe com esse titulo' });
+          .json({ message: 'Uma secretaria já existe com esse titulo.' });
       }
     }
 
     // atualiza a instancia
-    const { id, title, email } = await secretary.update(req.body);
+    const updatedSecretary = await secretary.update(req.body);
 
-    return res.status(200).json({ id, title, email });
+    return res.status(200).json(updatedSecretary);
   }
 
   async delete(req, res) {
@@ -102,7 +110,7 @@ class SecretaryController {
     if (!secretary) {
       return res
         .status(401)
-        .json({ error: 'essa secretaria não pode ser encontrada' });
+        .json({ error: 'Essa secretaria não pode ser encontrada.' });
     }
 
     await secretary.destroy();

@@ -1,13 +1,18 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'ombudsman',
+      'prefectures',
       {
         id: {
           type: Sequelize.INTEGER,
           allowNull: false,
           autoIncrement: true,
           primaryKey: true,
+        },
+        name: {
+          type: Sequelize.STRING,
+          allowNull: false,
+          unique: true,
         },
         location: {
           type: Sequelize.STRING,
@@ -29,6 +34,12 @@ module.exports = {
           type: Sequelize.TEXT,
           allowNull: false,
         },
+        ombudsmen_id: {
+          type: Sequelize.INTEGER,
+          references: { model: 'ombudsmen', key: 'id' },
+          onDelete: 'CASCADE',
+          onUpdate: 'CASCADE',
+        },
         created_at: {
           type: Sequelize.DATE,
           allowNull: false,
@@ -43,6 +54,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('ombudsman');
+    return queryInterface.dropTable('prefectures');
   },
 };

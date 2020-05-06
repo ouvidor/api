@@ -12,11 +12,12 @@ const adminMaster = {
 
 let token;
 let manifestation;
+let manifestationStatus;
 
 describe('Manifestation Status History', () => {
   beforeEach(async () => {
     await truncate();
-    const { category } = await seedDatabase();
+    const { category, ombudsman, types, status } = await seedDatabase();
 
     // necessário login em todos os tests
     const { token: signedToken } = await sign.in(adminMaster);
@@ -29,9 +30,19 @@ describe('Manifestation Status History', () => {
         title: 'title',
         description: 'description',
         categories_id: [category.id],
-        type_id: 1,
+        type_id: types[0].id,
+        ombudsmen_id: ombudsman.id,
       });
     manifestation = manifestationBody;
+
+    const createStatusResponse = await request(app)
+      .post(`/manifestation/${manifestation.id}/status`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        description: 'test',
+        status_id: status[0].id,
+      });
+    manifestationStatus = createStatusResponse.body;
   });
 
   describe('GET', () => {
@@ -49,44 +60,36 @@ describe('Manifestation Status History', () => {
             created_at: expect.any(String),
             updated_at: expect.any(String),
             status: expect.objectContaining({
-              id: 2,
+              id: expect.any(Number),
               title: 'cadastrada',
+              created_at: expect.any(String),
+              updated_at: expect.any(String),
             }),
-            manifestation_id: manifestation.id,
+            status_id: expect.any(Number),
+            manifestations_id: manifestation.id,
           }),
         ])
       );
     });
 
     it('shows', async () => {
-      expect(manifestation.id).toBeTruthy();
-
-      const saveStatusResponse = await request(app)
-        .post(`/manifestation/${manifestation.id}/status`)
-        .set('Authorization', `Bearer ${token}`)
-        .expect(200)
-        .send({
-          description: 'description',
-          status_id: 1,
-        });
-
-      expect(saveStatusResponse.body).toHaveProperty('id');
-
       const getStatusResponse = await request(app)
-        .get(`/manifestation/status/${saveStatusResponse.body.id}`)
+        .get(`/manifestation/status/${manifestationStatus.id}`)
         .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .send();
 
       expect(getStatusResponse.body).toEqual(
         expect.objectContaining({
-          id: saveStatusResponse.body.id,
-          description: 'description',
+          id: manifestationStatus.id,
+          description: 'test',
           status: {
-            id: 1,
+            id: expect.any(Number),
             title: expect.any(String),
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
           },
-          manifestation_id: manifestation.id,
+          manifestations_id: manifestation.id,
           created_at: expect.any(String),
           updated_at: expect.any(String),
         })
@@ -96,39 +99,28 @@ describe('Manifestation Status History', () => {
 
   describe('PUT', () => {
     it('updates', async () => {
-      expect(manifestation.id).toBeTruthy();
-
-      const saveStatusResponse = await request(app)
-        .post(`/manifestation/${manifestation.id}/status`)
-        .set('Authorization', `Bearer ${token}`)
-        .expect(200)
-        .send({
-          description: 'description',
-          status_id: 1,
-        });
-
-      expect(saveStatusResponse.body).toHaveProperty('id');
-
-      const updateStatusResponse = await request(app)
-        .put(`/manifestation/status/${saveStatusResponse.body.id}`)
+      const response = await request(app)
+        .put(`/manifestation/status/${manifestationStatus.id}`)
         .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .send({
           description: 'updated',
-          status_id: 4,
         });
 
-      expect(updateStatusResponse.body).toEqual(
+      expect(response.body).toEqual(
         expect.objectContaining({
-          id: saveStatusResponse.body.id,
+          id: expect.any(Number),
           description: 'updated',
-          status: {
-            id: 4,
-            title: expect.any(String),
-          },
-          manifestation_id: manifestation.id,
           created_at: expect.any(String),
           updated_at: expect.any(String),
+          manifestations_id: expect.any(Number),
+          status_id: expect.any(Number),
+          status: {
+            id: expect.any(Number),
+            title: expect.any(String),
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+          },
         })
       );
     });

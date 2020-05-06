@@ -9,8 +9,9 @@ const prefectureRoutes = Router();
 prefectureRoutes.use(authMiddleware);
 
 prefectureRoutes.get('/', PrefectuerController.fetch);
+prefectureRoutes.get('/:id', PrefectuerController.show);
 prefectureRoutes.put(
-  '/',
+  '/:id',
   PrefectureValidator.update,
   PrefectuerController.update
 );

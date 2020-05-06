@@ -1,6 +1,6 @@
-export const CITIZEN = 1;
-export const ADMIN = 2;
-export const MASTER = 3;
+export const CITIZEN = 'citizen';
+export const ADMIN = 'admin';
+export const MASTER = 'master';
 
 export default [
   {

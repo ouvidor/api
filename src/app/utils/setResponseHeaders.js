@@ -50,10 +50,7 @@ export default (response, file) => {
       headerToSet = 'text/plain';
   }
 
-  response.setHeader(
-    'Content-Disposition',
-    `inline; filename=${file.file_name}`
-  );
+  response.setHeader('Content-Disposition', `inline; filename=${file.name}`);
 
   response.setHeader('Content-Type', headerToSet);
 

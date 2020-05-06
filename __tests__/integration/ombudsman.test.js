@@ -11,11 +11,13 @@ const adminMaster = {
 };
 
 let token;
+let ombudsman;
 
 describe('Ombudsman', () => {
   beforeEach(async () => {
     await truncate();
-    await seedDatabase();
+    const { ombudsman: seedOmbudsman } = await seedDatabase();
+    ombudsman = seedOmbudsman;
 
     // necessário login em todos os tests
     const { token: signedToken } = await sign.in(adminMaster);
@@ -31,23 +33,49 @@ describe('Ombudsman', () => {
         .send();
 
       expect(response.status).toBe(200);
-      expect(response.body).toMatchObject({
-        id: expect.any(Number),
-        location: expect.any(String),
-        telephone: expect.any(String),
-        email: expect.any(String),
-        site: expect.any(String),
-        attendance: expect.any(String),
-        created_at: expect.any(String),
-        updated_at: expect.any(String),
-      });
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.any(Number),
+            location: expect.any(String),
+            telephone: expect.any(String),
+            email: expect.any(String),
+            site: expect.any(String),
+            attendance: expect.any(String),
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+          }),
+        ])
+      );
+    });
+
+    it('show successful', async () => {
+      // listar
+      const response = await request(app)
+        .get(`/ombudsman/${ombudsman.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send();
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          id: expect.any(Number),
+          location: expect.any(String),
+          telephone: expect.any(String),
+          email: expect.any(String),
+          site: expect.any(String),
+          attendance: expect.any(String),
+          created_at: expect.any(String),
+          updated_at: expect.any(String),
+        })
+      );
     });
   });
 
   describe('PUT', () => {
     it('update successful', async () => {
       const response = await request(app)
-        .put('/ombudsman')
+        .put(`/ombudsman/${ombudsman.id}`)
         .set('Authorization', `Bearer ${token}`)
         .send({
           location: 'location',

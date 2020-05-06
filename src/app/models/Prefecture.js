@@ -8,6 +8,10 @@ class Prefecture extends Model {
           type: Sequelize.STRING,
           allowNull: false,
         },
+        name: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
         telephone: {
           type: Sequelize.STRING,
           allowNull: false,
@@ -31,11 +35,19 @@ class Prefecture extends Model {
         underscored: true,
         createdAt: 'created_at', // <====== this line and the following one
         updatedAt: 'updated_at',
-        tableName: 'prefecture',
+        tableName: 'prefectures',
       }
     );
 
     return this;
+  }
+
+  static associate(models) {
+    this.belongsTo(models.Ombudsman, {
+      foreignKey: 'ombudsmen_id',
+      as: 'ombudsman',
+      targetKey: 'id',
+    });
   }
 }
 
