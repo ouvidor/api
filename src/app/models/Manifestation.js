@@ -1,4 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
+import crypto from 'crypto';
 
 class Manifestation extends Model {
   static init(sequelize) {
@@ -23,9 +24,14 @@ class Manifestation extends Model {
 
     // criação do protocolo. exemplo: k6f2uhi9
     this.addHook('beforeSave', async manifestation => {
-      // converte o tempo UNIX em Base36
+      // converte o tempo UNIX em Base36 e coloca no final 3 caracteres aleatorios
       if (!manifestation.protocol) {
-        manifestation.protocol = Date.now().toString(36);
+        const stringToEncript = `${Date.now().toString(36)}${crypto
+          .randomBytes(5)
+          .toString('hex')
+          .slice(0, 3)}`;
+
+        manifestation.protocol = stringToEncript;
       }
     });
 
@@ -33,6 +39,11 @@ class Manifestation extends Model {
   }
 
   static associate(models) {
+    this.hasMany(models.ManifestationStatusHistory, {
+      foreignKey: 'manifestations_id',
+      as: 'status_history',
+      sourceKey: 'id',
+    });
     this.belongsTo(models.Secretary, {
       foreignKey: 'secretariats_id',
       as: 'secretary',
