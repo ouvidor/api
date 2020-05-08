@@ -65,15 +65,15 @@ describe('Manifestation', () => {
               longitude: null,
               created_at: expect.any(String),
               updated_at: expect.any(String),
-              secretariats_id: null,
+              secretary: null,
               ombudsmen_id: expect.any(Number),
-              types_id: expect.any(Number),
-              users_id: expect.any(Number),
               files: [],
               user: {
+                id: expect.any(Number),
                 first_name: expect.any(String),
                 last_name: expect.any(String),
                 email: expect.any(String),
+                role: 'master',
               },
               categories: [
                 {
@@ -85,6 +85,18 @@ describe('Manifestation', () => {
                 id: expect.any(Number),
                 title: expect.any(String),
               },
+              status_history: [
+                {
+                  id: expect.any(Number),
+                  description: 'A manifestação foi cadastrada',
+                  created_at: expect.any(String),
+                  updated_at: expect.any(String),
+                  status: {
+                    id: expect.any(Number),
+                    title: expect.any(String),
+                  },
+                },
+              ],
             }),
           ]),
         })
@@ -116,10 +128,16 @@ describe('Manifestation', () => {
               longitude: null,
               created_at: expect.any(String),
               updated_at: expect.any(String),
-              secretariats_id: null,
+              secretary: null,
+              files: [],
               ombudsmen_id: expect.any(Number),
-              types_id: expect.any(Number),
-              users_id: expect.any(Number),
+              user: {
+                id: expect.any(Number),
+                first_name: expect.any(String),
+                last_name: expect.any(String),
+                email: expect.any(String),
+                role: 'master',
+              },
               categories: [
                 {
                   id: expect.any(Number),
@@ -130,6 +148,18 @@ describe('Manifestation', () => {
                 id: expect.any(Number),
                 title: expect.any(String),
               },
+              status_history: [
+                {
+                  id: expect.any(Number),
+                  description: 'A manifestação foi cadastrada',
+                  created_at: expect.any(String),
+                  updated_at: expect.any(String),
+                  status: {
+                    id: expect.any(Number),
+                    title: expect.any(String),
+                  },
+                },
+              ],
             }),
           ]),
         })
@@ -147,7 +177,7 @@ describe('Manifestation', () => {
       expect(response.body).toEqual(
         expect.objectContaining({
           id: expect.any(Number),
-          protocol: expect.any(String),
+          protocol: manifestation.protocol,
           title: 'title',
           description: 'description',
           read: 0,
@@ -156,24 +186,36 @@ describe('Manifestation', () => {
           longitude: null,
           created_at: expect.any(String),
           updated_at: expect.any(String),
-          secretariats_id: null,
-          users_id: expect.any(Number),
-          types_id: expect.any(Number),
+          secretary: null,
+          user: {
+            id: expect.any(Number),
+            first_name: expect.any(String),
+            last_name: expect.any(String),
+            email: expect.any(String),
+            role: 'master',
+          },
           ombudsmen_id: expect.any(Number),
           files: [],
           type: {
             id: expect.any(Number),
             title: expect.any(String),
           },
-          user: {
-            first_name: expect.any(String),
-            last_name: expect.any(String),
-            email: expect.any(String),
-          },
           categories: [
             {
               id: expect.any(Number),
               title: 'Saneamento',
+            },
+          ],
+          status_history: [
+            {
+              id: expect.any(Number),
+              description: 'A manifestação foi cadastrada',
+              created_at: expect.any(String),
+              updated_at: expect.any(String),
+              status: {
+                id: expect.any(Number),
+                title: expect.any(String),
+              },
             },
           ],
         })
@@ -205,10 +247,15 @@ describe('Manifestation', () => {
               longitude: null,
               created_at: expect.any(String),
               updated_at: expect.any(String),
-              secretariats_id: null,
+              secretary: null,
               ombudsmen_id: expect.any(Number),
-              types_id: expect.any(Number),
-              users_id: expect.any(Number),
+              user: {
+                id: expect.any(Number),
+                first_name: expect.any(String),
+                last_name: expect.any(String),
+                email: expect.any(String),
+                role: 'master',
+              },
               categories: [
                 {
                   id: expect.any(Number),
@@ -219,6 +266,18 @@ describe('Manifestation', () => {
                 id: expect.any(Number),
                 title: expect.any(String),
               },
+              status_history: [
+                {
+                  id: expect.any(Number),
+                  description: 'A manifestação foi cadastrada',
+                  created_at: expect.any(String),
+                  updated_at: expect.any(String),
+                  status: {
+                    id: expect.any(Number),
+                    title: expect.any(String),
+                  },
+                },
+              ],
             }),
           ]),
         })

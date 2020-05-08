@@ -50,14 +50,19 @@ describe('Search Manifestation Service', () => {
     expect(manifestations).toHaveProperty('count');
     expect(manifestations).toHaveProperty('last_page');
     expect(manifestations).toHaveProperty('rows');
-    expect(manifestations.rows[0]).toEqual(
-      expect.objectContaining({
-        title: 'rua',
-        description: 'descrição',
-        latitude: null,
-        types_id: types[0].id,
-      })
+    expect(manifestations.rows[0]).toHaveProperty(
+      'title',
+      'description',
+      'protocol',
+      'id',
+      'location',
+      'latitude',
+      'longitude'
     );
+    expect(manifestations.rows[0]).toHaveProperty('secretary');
+    expect(manifestations.rows[0]).toHaveProperty('user');
+    expect(manifestations.rows[0]).toHaveProperty('read');
+    expect(manifestations.rows[0]).toHaveProperty('status_history');
     expect(manifestations.rows[0].categories[0]).toEqual(
       expect.objectContaining({
         title: 'Saneamento',
