@@ -1,6 +1,9 @@
+import { Op } from 'sequelize';
+
 import Manifestation from '../models/Manifestation';
 import User from '../models/User';
 import Type from '../models/Type';
+import Category from '../models/Category';
 import Prefecture from '../models/Prefecture';
 import Ombudsman from '../models/Ombudsman';
 import SearchManifestationService from '../services/SearchManifestationService';
@@ -15,30 +18,37 @@ class ManifestationController {
      * options: array de categorias e tipos de manifestações
      * isRead: flag para pesquisar apenas por manifestações lidas, 0 ou 1
      * page: a página para ser pesquisada, o resultado é limitado em 10 itens
+     * ownerId: o id do usuário dono da manifestação
      */
     const { text, options } = req.query;
-    let { page = 1, isRead = 1 } = req.query;
+    const { isRead } = req.query;
+    let { page = 1, ownerId } = req.query;
     page = Number(page);
-    isRead = Number(isRead);
+    ownerId = Number(ownerId);
+    if (ownerId === 0) {
+      return res.status(400).json({ message: 'Esse usuário não existe.' });
+    }
 
     let manifestationQueryResult;
-
-    // pesquisa com filtro
-    if (text || options) {
+    // pesquisa com filtros
+    if (text || options || ownerId || isRead !== undefined) {
       manifestationQueryResult = await SearchManifestationService.run(
         text,
         options,
         page,
-        isRead
+        isRead,
+        ownerId
       );
     } else {
       // pesquisa por todas as manifestações
       manifestationQueryResult = await Manifestation.findAndCountAll({
+        attributes: {
+          exclude: ['users_id', 'types_id', 'secretariats_id'],
+        },
         include: manifestationIncludes,
-        // caso receba isRead, pesquisa apenas por manifestações lidas
-        ...(!isRead && { where: { read: 0 } }),
         limit: 10,
         offset: 10 * page - 10,
+        distinct: true,
       });
     }
 
@@ -58,6 +68,9 @@ class ManifestationController {
     }
 
     const manifestation = await Manifestation.findOne({
+      attributes: {
+        exclude: ['users_id', 'types_id', 'secretariats_id'],
+      },
       where: {
         // decide se busca por protocolo ou id
         ...(isProtocol ? { protocol: idOrProtocol } : { id: idOrProtocol }),
@@ -114,7 +127,21 @@ class ManifestationController {
         ombudsmen_id: prefecture.ombudsman.id,
       });
 
-      if (categories_id && categories_id.length) {
+      if (categories_id) {
+        const categoriesExists = await Category.findAll({
+          where: {
+            id: {
+              [Op.in]: categories_id,
+            },
+          },
+        });
+
+        if (categoriesExists.length !== categories_id.length) {
+          return res
+            .status(400)
+            .json({ message: 'Uma dessas categorias não existe.' });
+        }
+
         await manifestation.setCategories(categories_id);
       }
 
@@ -135,9 +162,38 @@ class ManifestationController {
   }
 
   async update(req, res) {
-    const { type_id, ...data } = req.body;
+    const { type_id, categories_id, ...data } = req.body;
+
+    if (type_id) {
+      const typeExists = await Type.findOne({ where: { id: type_id } });
+
+      if (!typeExists) {
+        return res
+          .status(400)
+          .json({ message: 'Esse tipo de manifestação não existe.' });
+      }
+    }
 
     let manifestation = await Manifestation.findByPk(req.params.id);
+
+    if (categories_id) {
+      const categoriesExists = await Category.findAll({
+        where: {
+          id: {
+            [Op.in]: categories_id,
+          },
+        },
+      });
+
+      if (categoriesExists.length !== categories_id.length) {
+        return res
+          .status(400)
+          .json({ message: 'Uma dessas categorias não existe.' });
+      }
+
+      await manifestation.setCategories(categories_id);
+    }
+
     const geolocationData = await GeolocationService.run(data);
     const formattedData = { ...data, types_id: type_id, ...geolocationData };
 

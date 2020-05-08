@@ -293,9 +293,10 @@ _retorna_
 Essa rota pode receber em sua query parâmetros opcionais.
 
 - page: valor _default_ é `1`, define a página a ser pesquisar.
-- isRead: valor _default_ é `1`, define a busca por manifestações não lidas.
+- isRead: filtra pelo estado de leitura, se foi lido ou não.
 - text: define um título específico a ser pesquisado.
 - options: define um array de categorias e tipos de manifestações a serem pesquisados.
+- ownerId: busca por manifestações de um único usuário.
 
 _retorna_:
 
@@ -304,73 +305,109 @@ _retorna_:
   "count": 1,
   "rows": [
     {
-      "id": 3,
-      "protocol": "k9sur2dt",
-      "title": "MASTER PROBLEM",
+      "id": 1,
+      "protocol": "k9x0pa19",
+      "title": "Na rua da restinga tem um problema",
       "description": "Um cachorro mordeu uma idosa aqui na rua de trás",
-      "read": 0,
-      "location": "Rua da Restinga, Foguete",
-      "latitude": "-22.9242299",
-      "longitude": "-42.0406379",
-      "created_at": "2020-05-04T19:03:47.000Z",
-      "updated_at": "2020-05-04T19:03:47.000Z",
-      "secretariats_id": null,
-      "users_id": 1,
-      "types_id": 1,
-      "ombudsmen_id": null,
+      "read": 1,
+      "location": "Rua da Restinga, Bairro Foguete",
+      "latitude": "-22.9246355",
+      "longitude": "-42.0406559",
+      "created_at": "2020-05-07T17:01:26.000Z",
+      "updated_at": "2020-05-08T16:53:55.000Z",
+      "ombudsmen_id": 1,
       "categories": [
         {
-          "id": 1,
-          "title": "Saneamento"
-        }
+          "id": 2,
+          "title": "Segurança"
+        },
       ],
       "type": {
+        "id": 2,
+        "title": "elogio"
+      },
+      "user": {
         "id": 1,
-        "title": "sugestão"
-      }
-    }
+        "first_name": "master",
+        "last_name": "root",
+        "email": "root@gmail.com",
+        "role": "master"
+      },
+      "secretary": {
+        "id": 1,
+        "title": "Secretaria de Testes",
+        "email": "saude.gov@gov.com",
+        "accountable": "José",
+        "prefectures_id": 1
+      },
+      "files": [],
+      "status_history": [
+        {
+          "id": 1,
+          "description": "A manifestação foi cadastrada",
+          "created_at": "2020-05-07T17:01:26.000Z",
+          "updated_at": "2020-05-07T17:01:26.000Z",
+          "status": {
+            "id": 2,
+            "title": "cadastrada"
+          }
+        }
+      ]
+    },
   ],
   "last_page": 1
 }
 ```
 
-- **GET** `manifestation/:id`: retorna a manifestação que tem esse numero de protocolo, exemplo: `k8xde3pz`.
+- **GET** `manifestation/:id`: retorna a manifestação que tem esse numero de protocolo, exemplo: `5ak9yhccya`.
 
 _retorna_:
 
 ```json
 {
-  "id": 3,
-  "protocol": "k9sur2dt",
-  "title": "MASTER PROBLEM",
+  "id": 112,
+  "protocol": "5ak9yhccya",
+  "title": "reclamação de um cidadão",
   "description": "Um cachorro mordeu uma idosa aqui na rua de trás",
   "read": 0,
   "location": "Rua da Restinga, Foguete",
   "latitude": "-22.9242299",
   "longitude": "-42.0406379",
-  "created_at": "2020-05-04T19:03:47.000Z",
-  "updated_at": "2020-05-04T19:03:47.000Z",
-  "secretariats_id": null,
-  "users_id": 1,
-  "types_id": 1,
-  "ombudsmen_id": null,
+  "created_at": "2020-05-08T17:35:03.000Z",
+  "updated_at": "2020-05-08T17:35:03.000Z",
+  "ombudsmen_id": 1,
   "files": [],
   "type": {
     "id": 1,
     "title": "sugestão"
   },
   "user": {
-    "first_name": "master",
-    "last_name": "root",
-    "email": "root@gmail.com"
+    "id": 2,
+    "first_name": "a",
+    "last_name": "a",
+    "email": "a@gmail.com",
+    "role": "citizen"
   },
+  "secretary": null,
+  "status_history": [
+    {
+      "id": 63,
+      "description": "A manifestação foi cadastrada",
+      "created_at": "2020-05-08T17:35:03.000Z",
+      "updated_at": "2020-05-08T17:35:03.000Z",
+      "status": {
+        "id": 2,
+        "title": "cadastrada"
+      }
+    }
+  ],
   "categories": [
     {
       "id": 1,
       "title": "Saneamento"
     }
   ]
-}
+},
 ```
 
 - **POST** `manifestation/`: cria um novo registro na tabela de _manifestations_.
@@ -394,17 +431,18 @@ _retorna_:
 
 ```json
 {
-  "id": 49,
-  "title": "Local",
-  "description": "Essa manifestação tem um local",
-  "type_id": 1,
-  "latitude": -22.9230097,
-  "longitude": -42.9230097,
-  "location": "Rua Inglaterra, Cabo Frio",
-  "user_id": 1,
-  "updated_at": "2020-02-09T15:54:11.342Z",
-  "created_at": "2020-02-09T15:54:11.342Z",
-  "protocol": "k6f7ju38"
+  "id": 121,
+  "title": "reclamação de um cidadão",
+  "description": "Um cachorro mordeu uma idosa aqui na rua de trás",
+  "latitude": -22.9242299,
+  "longitude": -42.0406379,
+  "location": "Rua da Restinga, Foguete",
+  "types_id": 1,
+  "users_id": 2,
+  "ombudsmen_id": 1,
+  "updated_at": "2020-05-08T17:35:48.953Z",
+  "created_at": "2020-05-08T17:35:48.953Z",
+  "protocol": "k9yhdcd6ea5"
 }
 ```
 
@@ -424,20 +462,20 @@ _retorna_:
 
 ```json
 {
-  "id": 3,
-  "protocol": "k9sur2dt",
+  "id": 1,
+  "protocol": "k9x0pa19",
   "title": "Na rua da restinga tem um problema",
   "description": "Um cachorro mordeu uma idosa aqui na rua de trás",
-  "read": 0,
+  "read": 1,
   "location": "Rua da Restinga, Bairro Foguete",
   "latitude": -22.9246355,
   "longitude": -42.0406559,
-  "created_at": "2020-05-04T19:03:47.000Z",
-  "updated_at": "2020-05-04T19:07:52.199Z",
-  "secretariats_id": null,
+  "created_at": "2020-05-07T17:01:26.000Z",
+  "updated_at": "2020-05-08T17:50:00.152Z",
+  "secretariats_id": 1,
   "users_id": 1,
   "types_id": 2,
-  "ombudsmen_id": null
+  "ombudsmen_id": 1
 }
 ```
 

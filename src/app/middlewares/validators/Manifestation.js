@@ -23,6 +23,7 @@ class ManifestationValidator {
           [0, 1],
           'isRead deve ser 0 ou 1'
         ),
+        ownerId: number('ownerId deve ser um id do usuário'),
       });
 
       await schema.validate(request.query, { abortEarly: false });

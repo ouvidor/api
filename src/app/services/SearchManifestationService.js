@@ -2,7 +2,12 @@ import { Op } from 'sequelize';
 
 import Manifestation from '../models/Manifestation';
 import Category from '../models/Category';
+import User from '../models/User';
+import Secretary from '../models/Secretary';
+import File from '../models/File';
 import Type from '../models/Type';
+import Status from '../models/Status';
+import ManifestationStatusHistory from '../models/ManifestationStatusHistory';
 
 class SearchManifestationService {
   async fetchOptionsIds(options) {
@@ -38,26 +43,23 @@ class SearchManifestationService {
     return [filteredTypes, filteredCategories];
   }
 
-  makeWhereQuery(text, types, categories, page, isRead) {
+  makeWhereQuery(text, types, categories, page, isRead, ownerId) {
     const query = {
+      distinct: true,
+      attributes: {
+        exclude: ['users_id', 'types_id', 'secretariats_id'],
+      },
       include: [
         {
           model: Category,
           as: 'categories',
-          // só pega o id e o título
           attributes: ['id', 'title'],
           // a linha abaixo previne que venham informações desnecessárias
           through: { attributes: [] },
           where: {
-            [Op.and]: [
-              categories.length > 0
-                ? {
-                    id: {
-                      [Op.or]: [...categories],
-                    },
-                  }
-                : undefined,
-            ],
+            id: {
+              [Op.or]: categories,
+            },
           },
         },
         {
@@ -65,18 +67,48 @@ class SearchManifestationService {
           as: 'type',
           attributes: ['id', 'title'],
         },
+        {
+          model: User,
+          as: 'user',
+          attributes: {
+            exclude: ['password', 'created_at', 'updated_at'],
+          },
+        },
+        {
+          model: Secretary,
+          as: 'secretary',
+          attributes: {
+            exclude: ['created_at', 'updated_at'],
+          },
+        },
+        {
+          model: File,
+          as: 'files',
+          attributes: ['id', 'name', 'extension'],
+        },
+        {
+          model: ManifestationStatusHistory,
+          as: 'status_history',
+          attributes: ['id', 'description', 'created_at', 'updated_at'],
+          include: [
+            {
+              model: Status,
+              as: 'status',
+              attributes: ['id', 'title'],
+            },
+          ],
+        },
       ],
       where: {
-        ...(!isRead && { read: 0 }),
+        ...(isRead && { read: isRead }),
+        ...(ownerId && { users_id: ownerId }),
         [Op.and]: [
-          text ? { title: { [Op.like]: `%${text}%` } } : undefined,
-          types.length > 0
-            ? {
-                types_id: {
-                  [Op.or]: [...types],
-                },
-              }
-            : undefined,
+          text && { title: { [Op.like]: `%${text}%` } },
+          {
+            types_id: {
+              [Op.or]: types,
+            },
+          },
         ],
       },
       limit: 10,
@@ -86,7 +118,7 @@ class SearchManifestationService {
     return query;
   }
 
-  async run(text, options, page = 1, isRead = true) {
+  async run(text, options, page = 1, isRead, ownerId) {
     let types = [];
     let categories = [];
 
@@ -102,7 +134,8 @@ class SearchManifestationService {
       typesIds,
       categoriesIds,
       page,
-      isRead
+      isRead,
+      ownerId
     );
 
     const manifestations = await Manifestation.findAndCountAll(query);

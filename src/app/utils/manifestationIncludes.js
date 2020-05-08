@@ -2,12 +2,15 @@ import Category from '../models/Category';
 import User from '../models/User';
 import File from '../models/File';
 import Type from '../models/Type';
+import Status from '../models/Status';
+import ManifestationStatusHistory from '../models/ManifestationStatusHistory';
+import Secretary from '../models/Secretary';
 
 export default [
   {
     model: File,
     as: 'files',
-    attributes: ['id', 'name'],
+    attributes: ['id', 'name', 'extension'],
   },
   {
     model: Type,
@@ -17,7 +20,28 @@ export default [
   {
     model: User,
     as: 'user',
-    attributes: ['first_name', 'last_name', 'email'],
+    attributes: {
+      exclude: ['password', 'created_at', 'updated_at'],
+    },
+  },
+  {
+    model: Secretary,
+    as: 'secretary',
+    attributes: {
+      exclude: ['created_at', 'updated_at'],
+    },
+  },
+  {
+    model: ManifestationStatusHistory,
+    as: 'status_history',
+    attributes: ['id', 'description', 'created_at', 'updated_at'],
+    include: [
+      {
+        model: Status,
+        as: 'status',
+        attributes: ['id', 'title'],
+      },
+    ],
   },
   {
     model: Category,
