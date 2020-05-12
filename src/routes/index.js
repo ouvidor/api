@@ -23,6 +23,7 @@ import secretariatsRoutes from './secretariats.routes';
 import filesRoutes from './files.routes';
 import ombudsmanRoutes from './ombudsman.routes';
 import prefectureRoutes from './prefecture.routes';
+import statisticsRoutes from './statistics.routes';
 
 const routes = Router();
 
@@ -38,6 +39,7 @@ routes.use('/secretary', secretariatsRoutes);
 routes.use('/files', filesRoutes);
 routes.use('/ombudsman', ombudsmanRoutes);
 routes.use('/prefecture', prefectureRoutes);
+routes.use('/statistics', statisticsRoutes);
 
 routes.use(AuthMiddleware);
 routes.use(RolesMiddleware.admin);
