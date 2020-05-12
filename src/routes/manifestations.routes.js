@@ -8,6 +8,7 @@ import ManifestationController from '../app/controller/manifestation.controller'
 
 import ManifestationStatusHistoryValidator from '../app/middlewares/validators/ManifestationStatusHistory';
 import ManifestationStatusHistoryController from '../app/controller/manifestationStatusHistory.controller';
+import Manifestation from '../app/models/Manifestation';
 
 const manifestationsRoutes = Router();
 
@@ -30,6 +31,16 @@ manifestationsRoutes.put(
 );
 
 manifestationsRoutes.use(RolesMiddleware.admin);
+
+manifestationsRoutes.patch('/:id/read', async (request, response) => {
+  const { id } = request.params;
+
+  const manifestation = await Manifestation.findOne({ where: { id } });
+
+  await manifestation.update({ read: true });
+
+  return response.status(204).json({ message: 'A manifestação foi lida' });
+});
 
 manifestationsRoutes.get(
   '/:idOrProtocol/status',
