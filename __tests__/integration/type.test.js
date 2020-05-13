@@ -13,8 +13,7 @@ let token;
 let types;
 
 describe('Type', () => {
-  // entre todos os testes é feito o truncate da tabela
-  beforeEach(async () => {
+  beforeAll(async () => {
     await truncate();
     const { types: seedTypes } = await seedDatabase();
 

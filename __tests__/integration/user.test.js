@@ -11,14 +11,23 @@ const adminMaster = {
   password: '123456',
 };
 
+let token;
+let user;
+
 describe('User', () => {
-  // entre todos os testes é feito o truncate da tabela
-  beforeEach(async () => {
+  beforeAll(async () => {
     await truncate();
     await seedDatabase();
+
+    const { token: signedToken, user: signedUser } = await sign.in({
+      ...adminMaster,
+      city: 'Cabo Frio',
+    });
+    token = signedToken;
+    user = signedUser;
   });
 
-  it('should be able to register', async () => {
+  it('should be able to register a citizen', async () => {
     const user = await factory.attrs('User');
 
     const response = await sign.up(user);
@@ -33,13 +42,15 @@ describe('User', () => {
   });
 
   it('should register a user with admin master', async () => {
-    const { token } = await sign.in(adminMaster);
-    const user = await factory.attrs('User');
-
     const response = await request(app)
       .post('/user')
       .set('Authorization', `Bearer ${token}`)
-      .send(user);
+      .send({
+        first_name: 'register user',
+        last_name: 'with admin master',
+        email: 'register@citizen.com',
+        password: '123456',
+      });
 
     expect(response.body).toHaveProperty(
       'id',
@@ -50,11 +61,15 @@ describe('User', () => {
   });
 
   it("shouldn't be able to register duplicated email", async () => {
-    const user = await factory.attrs('User');
-
-    await sign.up(user);
-
-    const response = await sign.up(user);
+    const response = await request(app)
+      .post('/user')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        first_name: 'a',
+        last_name: 'a',
+        email: 'root@gmail.com',
+        password: '123456',
+      });
 
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty('error');
@@ -62,9 +77,12 @@ describe('User', () => {
   });
 
   it("shouldn't register, invalid password and email", async () => {
-    const user = await factory.attrs('User', { password: '123', email: 'a' });
+    const citizen = await factory.attrs('User', {
+      password: '123',
+      email: 'a',
+    });
 
-    const response = await sign.up(user);
+    const response = await sign.up(citizen);
 
     // espera requisição invalida
     expect(response.status).toBe(400);
@@ -90,11 +108,6 @@ describe('User', () => {
   });
 
   it('should list all users', async () => {
-    const user = { email: 'root@gmail.com', password: '123456' };
-
-    // login
-    const { token } = await sign.in(user);
-
     const response = await request(app)
       .get('/user')
       .set('Authorization', `Bearer ${token}`)
@@ -113,11 +126,6 @@ describe('User', () => {
   });
 
   it('should list a specific user', async () => {
-    const { token, user } = await sign.in({
-      email: 'root@gmail.com',
-      password: '123456',
-    });
-
     const response = await request(app)
       .get(`/user/${user.id}`)
       .set('Authorization', `Bearer ${token}`)
@@ -134,13 +142,6 @@ describe('User', () => {
   });
 
   it("shouldn't list a specific user", async () => {
-    const user = { email: 'root@gmail.com', password: '123456' };
-
-    // cadastro
-    await sign.up(user);
-    // login
-    const { token } = await sign.in(user);
-
     const response = await request(app)
       .get(`/user/0`)
       .set('Authorization', `Bearer ${token}`)
@@ -150,14 +151,8 @@ describe('User', () => {
   });
 
   it('should update and then login', async () => {
-    const user = await factory.attrs('User');
-    // cadastro
-    await sign.up(user);
-    // login
-    const { user: signedUser, token } = await sign.in(user);
-
     const response = await request(app)
-      .put(`/user/${signedUser.id}`)
+      .put(`/user/${user.id}`)
       .set('Authorization', `Bearer ${token}`)
       .send({ email: 'new@email.com' });
 

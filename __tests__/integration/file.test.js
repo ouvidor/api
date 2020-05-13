@@ -15,7 +15,7 @@ let userProfile;
 
 describe('File', () => {
   // entre todos os testes é feito o truncate da tabela
-  beforeEach(async () => {
+  beforeAll(async () => {
     await truncate();
     const { ombudsman, category, types } = await seedDatabase();
     const { user, token: signedToken } = await sign.in({

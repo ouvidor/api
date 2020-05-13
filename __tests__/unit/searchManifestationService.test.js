@@ -11,7 +11,7 @@ let types;
 
 describe('Search Manifestation Service', () => {
   // entre todos os testes é feito o truncate da tabela
-  beforeEach(async () => {
+  beforeAll(async () => {
     await truncate();
     const {
       category: categorySeed,

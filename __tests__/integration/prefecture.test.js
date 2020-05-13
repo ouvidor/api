@@ -14,11 +14,11 @@ let token;
 let prefecture;
 
 describe('Prefecture', () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     await truncate();
     const { prefecture: seedPrefecture } = await seedDatabase();
     prefecture = seedPrefecture;
-    // necessário login em todos os tests
+
     const { token: signedToken } = await sign.in(adminMaster);
     token = signedToken;
   });

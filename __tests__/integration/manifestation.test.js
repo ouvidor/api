@@ -12,32 +12,42 @@ const adminMaster = {
 
 let token;
 let category;
+let types;
 let manifestation;
 
 describe('Manifestation', () => {
-  // entre todos os testes é feito o truncate da tabela
-  beforeEach(async () => {
+  beforeAll(async () => {
     await truncate();
-    const { category: categorySeed, types } = await seedDatabase();
-
+    const { category: categorySeed, types: typesSeed } = await seedDatabase();
+    types = typesSeed;
     category = categorySeed;
 
     // necessário login em todos os tests
     const { token: signedToken } = await sign.in(adminMaster);
     token = signedToken;
+  });
 
-    // criar manifestação
-    const manifestationResult = await request(app)
-      .post('/manifestation')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        title: 'title',
-        description: 'description',
-        type_id: types[0].id,
-        categories_id: [category.id],
-      })
-      .expect(200);
-    manifestation = manifestationResult.body;
+  describe('POST', () => {
+    it('should create a manifestation', async () => {
+      const manifestationResult = await request(app)
+        .post('/manifestation')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          title: 'title',
+          description: 'description',
+          type_id: types[0].id,
+          categories_id: [category.id],
+        })
+        .expect(200);
+
+      manifestation = manifestationResult.body;
+
+      expect(manifestation).toHaveProperty('id');
+      expect(manifestation).toHaveProperty('title');
+      expect(manifestation).toHaveProperty('description');
+      expect(manifestation).toHaveProperty('read');
+      expect(manifestation).toHaveProperty('protocol');
+    });
   });
 
   describe('GET', () => {
@@ -295,6 +305,30 @@ describe('Manifestation', () => {
       expect(response.body).toHaveProperty(
         'message',
         'essa manifestação não existe'
+      );
+    });
+  });
+
+  describe('PATCH', () => {
+    it('should mark manifestation as read', async () => {
+      const response = await request(app)
+        .patch(`/manifestation/${manifestation.id}/read`)
+        .set('Authorization', `Bearer ${token}`)
+        .send();
+
+      expect(response.status).toBe(204);
+    });
+
+    it('should not mark manifestation as read, because it was not found', async () => {
+      const response = await request(app)
+        .patch(`/manifestation/0/read`)
+        .set('Authorization', `Bearer ${token}`)
+        .send();
+
+      expect(response.status).toBe(404);
+      expect(response.body).toHaveProperty(
+        'message',
+        'Essa manifestação não existe.'
       );
     });
   });

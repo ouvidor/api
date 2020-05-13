@@ -12,8 +12,7 @@ const adminMaster = {
 };
 
 describe('Role', () => {
-  // entre todos os testes é feito o truncate da tabela
-  beforeEach(async () => {
+  beforeAll(async () => {
     await truncate();
     await seedDatabase();
   });

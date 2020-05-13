@@ -13,8 +13,7 @@ let token;
 let category;
 
 describe('Category', () => {
-  // entre todos os testes é feito o truncate da tabela
-  beforeEach(async () => {
+  beforeAll(async () => {
     await truncate();
     const { category: categorySeed } = await seedDatabase();
     category = categorySeed;
@@ -82,8 +81,11 @@ describe('Category', () => {
       .send();
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual(
-      expect.objectContaining({ title: 'Saneamento' })
+    expect(response.body).toHaveProperty(
+      'id',
+      'title',
+      'created_at',
+      'updated_at'
     );
   });
 });

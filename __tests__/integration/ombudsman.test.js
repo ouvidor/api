@@ -14,7 +14,7 @@ let token;
 let ombudsman;
 
 describe('Ombudsman', () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     await truncate();
     const { ombudsman: seedOmbudsman } = await seedDatabase();
     ombudsman = seedOmbudsman;

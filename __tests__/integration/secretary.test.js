@@ -10,18 +10,19 @@ const adminMaster = {
   password: '123456',
 };
 
+let token;
+let secretary;
+
 describe('Secretary', () => {
-  // entre todos os testes é feito o truncate da tabela
-  beforeEach(async () => {
+  beforeAll(async () => {
     await truncate();
     await seedDatabase();
+    const { token: signedToken } = await sign.in(adminMaster);
+    token = signedToken;
   });
 
-  it('should list all secretariats', async () => {
-    const { token } = await sign.in(adminMaster);
-
-    // criar
-    await request(app)
+  it('should create secretary', async () => {
+    const response = await request(app)
       .post('/secretary')
       .set('Authorization', `Bearer ${token}`)
       .send({
@@ -31,6 +32,19 @@ describe('Secretary', () => {
         city: 'Cabo Frio',
       });
 
+    secretary = response.body;
+
+    expect(response.status).toBe(200);
+    expect(secretary).toHaveProperty(
+      'id',
+      'title',
+      'email',
+      'accountable',
+      'city'
+    );
+  });
+
+  it('should list all secretariats', async () => {
     // listar
     const response = await request(app)
       .get('/secretary')
@@ -48,55 +62,16 @@ describe('Secretary', () => {
   });
 
   it('should list a specific secretary', async () => {
-    const { token } = await sign.in(adminMaster);
-
-    // criar
-    const {
-      body: { id },
-    } = await request(app)
-      .post('/secretary')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        title: 'secretary',
-        email: 'secretary@gmail.com',
-        accountable: 'José',
-        city: 'Cabo Frio',
-      });
-
     // listar
     const response = await request(app)
-      .get(`/secretary/${id}`)
+      .get(`/secretary/${secretary.id}`)
       .set('Authorization', `Bearer ${token}`)
       .send();
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual(
       expect.objectContaining({
-        title: 'secretary',
-        email: 'secretary@gmail.com',
-        accountable: 'José',
-        id,
-      })
-    );
-  });
-
-  it('should create a secretary', async () => {
-    const { token } = await sign.in(adminMaster);
-
-    // criar
-    const response = await request(app)
-      .post('/secretary')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        title: 'secretary',
-        email: 'secretary@gmail.com',
-        accountable: 'José',
-        city: 'Cabo Frio',
-      });
-
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual(
-      expect.objectContaining({
+        id: secretary.id,
         title: 'secretary',
         email: 'secretary@gmail.com',
         accountable: 'José',
@@ -105,24 +80,8 @@ describe('Secretary', () => {
   });
 
   it('should update a secretary', async () => {
-    const { token } = await sign.in(adminMaster);
-
-    // criar
-    const {
-      body: { id },
-    } = await request(app)
-      .post('/secretary')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        title: 'secretary',
-        email: 'secretary@gmail.com',
-        accountable: 'José',
-        city: 'Cabo Frio',
-      });
-
-    // update
     const response = await request(app)
-      .put(`/secretary/${id}`)
+      .put(`/secretary/${secretary.id}`)
       .set('Authorization', `Bearer ${token}`)
       .send({ title: 'secretary', email: 'secretary@gmail.com' });
 
@@ -137,37 +96,23 @@ describe('Secretary', () => {
   });
 
   it("shouldn't update secretary, because email duplicated", async () => {
-    const { token } = await sign.in(adminMaster);
-
-    // criar
     await request(app)
       .post('/secretary')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        title: 'first',
-        email: 'first@gmail.com',
-        accountable: 'José',
-        city: 'Cabo Frio',
-      });
-
-    // criar
-    const {
-      body: { id },
-    } = await request(app)
-      .post('/secretary')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        title: 'second',
-        email: 'second@gmail.com',
+        title: 'MONGO_TITLE_IS_BACK',
+        email: 'this.email.will.repeat@gmail.com',
         accountable: 'Maria',
         city: 'Cabo Frio',
       });
 
-    // update
+    // will try to update
     const response = await request(app)
-      .put(`/secretary/${id}`)
+      .put(`/secretary/${secretary.id}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'second', email: 'first@gmail.com', accountable: 'José' });
+      .send({
+        email: 'this.email.will.repeat@gmail.com', // duplicated email
+      });
 
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty('message');
@@ -177,37 +122,22 @@ describe('Secretary', () => {
   });
 
   it("shouldn't update secretary, because title duplicated", async () => {
-    const { token } = await sign.in(adminMaster);
-
     // criar
     await request(app)
       .post('/secretary')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        title: 'first',
-        email: 'first@gmail.com',
+        title: 'NEW_TITLE',
+        email: 'some.random@email.com',
         accountable: 'José',
-        city: 'Cabo Frio',
-      });
-
-    // criar
-    const {
-      body: { id },
-    } = await request(app)
-      .post('/secretary')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        title: 'second',
-        email: 'second@gmail.com',
-        accountable: 'Maria',
         city: 'Cabo Frio',
       });
 
     // update
     const response = await request(app)
-      .put(`/secretary/${id}`)
+      .put(`/secretary/${secretary.id}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'first', email: 'second@gmail.com', accountable: 'José' });
+      .send({ title: 'NEW_TITLE' });
 
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty('message');
@@ -217,24 +147,8 @@ describe('Secretary', () => {
   });
 
   it('should delete a secretary', async () => {
-    const { token } = await sign.in(adminMaster);
-
-    // criar
-    const {
-      body: { id },
-    } = await request(app)
-      .post('/secretary')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        title: 'secretary',
-        email: 'secretary@gmail.com',
-        accountable: 'José',
-        city: 'Cabo Frio',
-      });
-
-    // delete
     const response = await request(app)
-      .delete(`/secretary/${id}`)
+      .delete(`/secretary/${secretary.id}`)
       .set('Authorization', `Bearer ${token}`)
       .send();
 

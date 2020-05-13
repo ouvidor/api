@@ -9,19 +9,23 @@ import seedDatabase from '../util/seedDatabase';
 
 describe('Auth', () => {
   // entre todos os testes é feito o truncate da tabela
-  beforeEach(async () => {
+  beforeAll(async () => {
     await truncate();
     await seedDatabase();
+
+    const user = await factory.attrs('User');
+
+    await sign.up({ ...user, email: 'test@gmail.com', password: '123456' });
   });
 
   it('should be able to login', async () => {
-    const user = await factory.attrs('User');
-
-    await sign.up(user);
-
     const response = await request(app)
       .post('/auth')
-      .send({ email: user.email, password: user.password, city: 'Cabo Frio' });
+      .send({
+        email: 'test@gmail.com',
+        password: '123456',
+        city: 'Cabo Frio',
+      });
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('token');
@@ -41,14 +45,10 @@ describe('Auth', () => {
   });
 
   it('should not find user, wrong password', async () => {
-    const user = await factory.attrs('User');
-
-    await sign.up({ ...user, email: 'umemail@gmail.com' });
-
     const response = await request(app)
       .post('/auth')
       .send({
-        email: 'umemail@gmail.com',
+        email: 'test@gmail.com',
         password: 'WRONG_PASSWORD',
         city: 'Cabo Frio',
       });
@@ -60,7 +60,7 @@ describe('Auth', () => {
 
   it('should not pass validation', async () => {
     // requisição vazia
-    let response = await request(app)
+    const response = await request(app)
       .post('/auth')
       .send({});
 
@@ -74,19 +74,6 @@ describe('Auth', () => {
         'Senha é necessária',
         'Cidade é necessária',
       ])
-    );
-
-    // faltando senha
-    response = await request(app)
-      .post('/auth')
-      .send({ email: 'test@invalid.com' });
-
-    expect(response.status).toBe(400);
-    expect(response.body).toHaveProperty('error');
-    expect(response.body.error).toStrictEqual('Validação falhou');
-    expect(response.body).toHaveProperty('messages');
-    expect(response.body.messages).toEqual(
-      expect.arrayContaining(['Senha é necessária'])
     );
   });
 });

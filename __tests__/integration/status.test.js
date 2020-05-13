@@ -13,8 +13,7 @@ const adminMaster = {
 let status;
 
 describe('Status', () => {
-  // entre todos os testes é feito o truncate da tabela
-  beforeEach(async () => {
+  beforeAll(async () => {
     await truncate();
     const { status: seedStatus } = await seedDatabase();
     status = seedStatus;
