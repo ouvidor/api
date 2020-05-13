@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import authMiddleware from '../app/middlewares/auth';
-import OmbudsmanValidator from '../app/middlewares/validators/PrefectureAndOmbudsman';
-import OmbudsmanController from '../app/controller/ombudsman.controller';
+import authMiddleware from '../middlewares/auth';
+import OmbudsmanValidator from '../middlewares/validators/PrefectureAndOmbudsman';
+import OmbudsmanController from '../controller/ombudsman.controller';
 
 const ombudsmanRoutes = Router();
 

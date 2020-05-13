@@ -4,16 +4,16 @@ import Sequelize from 'sequelize';
 import databaseConfig from '../config/database';
 
 // importações dos models
-import User from '../app/models/User';
-import Manifestation from '../app/models/Manifestation';
-import ManifestationStatusHistory from '../app/models/ManifestationStatusHistory';
-import Category from '../app/models/Category';
-import Secretary from '../app/models/Secretary';
-import File from '../app/models/File';
-import Ombudsman from '../app/models/Ombudsman';
-import Prefecture from '../app/models/Prefecture';
-import Type from '../app/models/Type';
-import Status from '../app/models/Status';
+import User from '../models/User';
+import Manifestation from '../models/Manifestation';
+import ManifestationStatusHistory from '../models/ManifestationStatusHistory';
+import Category from '../models/Category';
+import Secretary from '../models/Secretary';
+import File from '../models/File';
+import Ombudsman from '../models/Ombudsman';
+import Prefecture from '../models/Prefecture';
+import Type from '../models/Type';
+import Status from '../models/Status';
 
 require('dotenv');
 

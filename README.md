@@ -15,14 +15,14 @@ Para inicar o servidor só precisa rodar `yarn dev` na raiz do projeto.
 O arquivo `src/index.js` inicia o servidor e conecta ao Banco de Dados, após isso passa o controle de rotas para `src/routes.js`.
 
 ```javascript
-import UserController from './app/controller/user.controller';
+import UserController from './controller/user.controller';
 router.get('/user', UserController.fetch);
 ```
 
 Para exemplo de Middleware, usarei o de autenticação, em routes.index, importaremos o Middleware de autenticação
 
 ```javascript
-import AuthMiddleware from './app/middlewares/auth';
+import AuthMiddleware from './middlewares/auth';
 ```
 
 Após isso diremos no app qual das funções será o middleware, exemplo:

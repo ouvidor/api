@@ -43,8 +43,13 @@ class SearchManifestationService {
     return [filteredTypes, filteredCategories];
   }
 
-  makeWhereQuery(text, types, categories, page, isRead, ownerId) {
+  makeWhereQuery(text, types, categories, page, isRead, ownerId, status) {
     const query = {
+      // logging(msg) {
+      //   console.log('QUERY =>');
+      //   console.log(msg);
+      //   console.log('|= FIM DA QUERY');
+      // },
       distinct: true,
       attributes: {
         exclude: ['users_id', 'types_id', 'secretariats_id'],
@@ -95,6 +100,14 @@ class SearchManifestationService {
               model: Status,
               as: 'status',
               attributes: ['id', 'title'],
+              // where: {
+              //   [Op.and]: [status && { title: status }],
+              //   // ...(status && {
+              //   //   title: {
+              //   //     [Op.like]: `%${status}`,
+              //   //   },
+              //   // }),
+              // },
             },
           ],
         },
@@ -118,7 +131,7 @@ class SearchManifestationService {
     return query;
   }
 
-  async run(text, options, page = 1, isRead, ownerId) {
+  async run(text, options, page = 1, isRead, ownerId, status) {
     let types = [];
     let categories = [];
 
@@ -135,7 +148,8 @@ class SearchManifestationService {
       categoriesIds,
       page,
       isRead,
-      ownerId
+      ownerId,
+      status
     );
 
     const manifestations = await Manifestation.findAndCountAll(query);

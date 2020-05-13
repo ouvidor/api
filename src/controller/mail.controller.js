@@ -1,4 +1,4 @@
-import Mail from '../../lib/Mail';
+import Mail from '../lib/Mail';
 
 class MailController {
   // envia um email

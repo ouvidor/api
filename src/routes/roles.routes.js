@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-import authMiddleware from '../app/middlewares/auth';
-import RolesMiddleware from '../app/middlewares/roles';
-import RoleValidator from '../app/middlewares/validators/Role';
-import RoleController from '../app/controller/role.controller';
+import authMiddleware from '../middlewares/auth';
+import RolesMiddleware from '../middlewares/roles';
+import RoleValidator from '../middlewares/validators/Role';
+import RoleController from '../controller/role.controller';
 
 const rolesRoutes = Router();
 

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User';
 import Prefecture from '../models/Prefecture';
 import roles from '../data/roles';
-import auth from '../../config/auth';
+import auth from '../config/auth';
 
 class AuthController {
   // Loga e retorna um Token

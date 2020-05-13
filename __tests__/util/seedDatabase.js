@@ -1,9 +1,9 @@
-import User from '../../src/app/models/User';
-import Ombudsman from '../../src/app/models/Ombudsman';
-import Prefecture from '../../src/app/models/Prefecture';
-import Category from '../../src/app/models/Category';
-import Type from '../../src/app/models/Type';
-import Status from '../../src/app/models/Status';
+import User from '../../src/models/User';
+import Ombudsman from '../../src/models/Ombudsman';
+import Prefecture from '../../src/models/Prefecture';
+import Category from '../../src/models/Category';
+import Type from '../../src/models/Type';
+import Status from '../../src/models/Status';
 
 export default async function seedDatabase() {
   // CRIANDO USUARIO MASTER

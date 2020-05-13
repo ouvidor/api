@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import authMiddleware from '../app/middlewares/auth';
-import TypeValidator from '../app/middlewares/validators/Type';
-import TypeController from '../app/controller/type.controller';
+import authMiddleware from '../middlewares/auth';
+import TypeValidator from '../middlewares/validators/Type';
+import TypeController from '../controller/type.controller';
 
 const typesRoutes = Router();
 

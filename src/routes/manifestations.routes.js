@@ -1,14 +1,14 @@
 import { Router } from 'express';
 
-import authMiddleware from '../app/middlewares/auth';
-import RolesMiddleware from '../app/middlewares/roles';
+import authMiddleware from '../middlewares/auth';
+import RolesMiddleware from '../middlewares/roles';
 
-import ManifestationValidator from '../app/middlewares/validators/Manifestation';
-import ManifestationController from '../app/controller/manifestation.controller';
+import ManifestationValidator from '../middlewares/validators/Manifestation';
+import ManifestationController from '../controller/manifestation.controller';
 
-import ManifestationStatusHistoryValidator from '../app/middlewares/validators/ManifestationStatusHistory';
-import ManifestationStatusHistoryController from '../app/controller/manifestationStatusHistory.controller';
-import Manifestation from '../app/models/Manifestation';
+import ManifestationStatusHistoryValidator from '../middlewares/validators/ManifestationStatusHistory';
+import ManifestationStatusHistoryController from '../controller/manifestationStatusHistory.controller';
+import Manifestation from '../models/Manifestation';
 
 const manifestationsRoutes = Router();
 

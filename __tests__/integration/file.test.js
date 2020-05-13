@@ -5,9 +5,8 @@ import truncate from '../util/truncate';
 import factory from '../factories';
 import sign from '../util/sign';
 import seedDatabase from '../util/seedDatabase';
-import File from '../../src/app/models/File';
-import Category from '../../src/app/models/Category';
-import Manifestation from '../../src/app/models/Manifestation';
+import File from '../../src/models/File';
+import Manifestation from '../../src/models/Manifestation';
 
 let token;
 let manifestation;

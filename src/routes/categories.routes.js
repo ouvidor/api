@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import authMiddleware from '../app/middlewares/auth';
-import GenericValidator from '../app/middlewares/validators/Generic';
-import CategoryController from '../app/controller/category.controller';
+import authMiddleware from '../middlewares/auth';
+import GenericValidator from '../middlewares/validators/Generic';
+import CategoryController from '../controller/category.controller';
 
 const categoriesRoutes = Router();
 

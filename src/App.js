@@ -7,7 +7,7 @@ import './bootstrap';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import ErrorHandler from './app/middlewares/ErrorHandler';
+import ErrorHandler from './middlewares/ErrorHandler';
 
 // inicia a instancia do Sequelize, fazendo a conexão com o Database
 import './database';

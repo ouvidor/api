@@ -2,9 +2,9 @@ import { Router } from 'express';
 import multer from 'multer';
 
 import multerConfig from '../config/multer';
-import authMiddleware from '../app/middlewares/auth';
-import FileValidator from '../app/middlewares/validators/File';
-import FileController from '../app/controller/file.controller';
+import authMiddleware from '../middlewares/auth';
+import FileValidator from '../middlewares/validators/File';
+import FileController from '../controller/file.controller';
 
 const filesRoutes = Router();
 

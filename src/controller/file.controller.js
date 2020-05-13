@@ -14,7 +14,7 @@ import File from '../models/File';
 import Manifestation from '../models/Manifestation';
 import User from '../models/User';
 import setResponseHeaders from '../utils/setResponseHeaders';
-import GoogleCloudStorage from '../../lib/GoogleCloudStorage';
+import GoogleCloudStorage from '../lib/GoogleCloudStorage';
 
 // Função responsável por limpar o cache
 function deleteTempFiles(files) {

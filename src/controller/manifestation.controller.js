@@ -19,9 +19,10 @@ class ManifestationController {
      * isRead: flag para pesquisar apenas por manifestações lidas, 0 ou 1
      * page: a página para ser pesquisada, o resultado é limitado em 10 itens
      * ownerId: o id do usuário dono da manifestação
+     * status: busca por manifestações que tenham esse status
      */
     const { text, options } = req.query;
-    const { isRead } = req.query;
+    const { isRead, status } = req.query;
     let { page = 1, ownerId } = req.query;
     page = Number(page);
     ownerId = Number(ownerId);
@@ -31,13 +32,14 @@ class ManifestationController {
 
     let manifestationQueryResult;
     // pesquisa com filtros
-    if (text || options || ownerId || isRead !== undefined) {
+    if (text || options || ownerId || status || isRead !== undefined) {
       manifestationQueryResult = await SearchManifestationService.run(
         text,
         options,
         page,
         isRead,
-        ownerId
+        ownerId,
+        status
       );
     } else {
       // pesquisa por todas as manifestações
@@ -86,7 +88,6 @@ class ManifestationController {
   }
 
   async save(req, res) {
-    // Cria a manifestação e salva no banco
     const { categories_id, type_id, ...data } = req.body;
     const city = req.user_city;
 
@@ -150,6 +151,7 @@ class ManifestationController {
         'cadastrada',
         `A manifestação foi cadastrada`
       );
+      return res.status(200).json(manifestation);
     } catch (error) {
       if (manifestation) {
         manifestation.destroy();
@@ -157,8 +159,6 @@ class ManifestationController {
       console.error(error);
       return res.status(500).json({ message: 'Erro interno no servidor' });
     }
-
-    return res.status(200).json(manifestation);
   }
 
   async update(req, res) {

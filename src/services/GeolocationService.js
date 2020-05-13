@@ -1,4 +1,4 @@
-import geocoder from '../../lib/Geocoder';
+import geocoder from '../lib/Geocoder';
 
 class GeolocationService {
   async run({ location, latitude, longitude }) {

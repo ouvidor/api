@@ -5,7 +5,7 @@
 import faker from 'faker';
 import { factory } from 'factory-girl';
 
-import User from '../src/app/models/User';
+import User from '../src/models/User';
 
 factory.define('User', User, {
   first_name: faker.name.firstName(),

@@ -1,17 +1,17 @@
 import { Router } from 'express';
 
 // controllers
-import AdminController from '../app/controller/admin.controller';
-import AuthController from '../app/controller/auth.controller';
-import MailController from '../app/controller/mail.controller';
+import AdminController from '../controller/admin.controller';
+import AuthController from '../controller/auth.controller';
+import MailController from '../controller/mail.controller';
 
 // middlewares de autenticação
-import AuthMiddleware from '../app/middlewares/auth';
-import RolesMiddleware from '../app/middlewares/roles';
+import AuthMiddleware from '../middlewares/auth';
+import RolesMiddleware from '../middlewares/roles';
 
 // validators
-import UserLoginValidator from '../app/middlewares/validators/UserLogin';
-import MailValidator from '../app/middlewares/validators/Mail';
+import UserLoginValidator from '../middlewares/validators/UserLogin';
+import MailValidator from '../middlewares/validators/Mail';
 
 import usersRoutes from './users.routes';
 import manifestationsRoutes from './manifestations.routes';

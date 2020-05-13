@@ -1,8 +1,8 @@
 import truncate from '../util/truncate';
 
-import Manifestation from '../../src/app/models/Manifestation';
-import searchManifestationService from '../../src/app/services/SearchManifestationService';
-import User from '../../src/app/models/User';
+import Manifestation from '../../src/models/Manifestation';
+import searchManifestationService from '../../src/services/SearchManifestationService';
+import User from '../../src/models/User';
 import seedDatabase from '../util/seedDatabase';
 
 let category;

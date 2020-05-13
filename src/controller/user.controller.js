@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
-import authConfig from '../../config/auth';
+import authConfig from '../config/auth';
 
 import User from '../models/User';
 import roles from '../data/roles';

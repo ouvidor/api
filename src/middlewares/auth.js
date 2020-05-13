@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
 
 import roles from '../data/roles';
-import authConfig from '../../config/auth';
+import authConfig from '../config/auth';
 
 export default async (req, res, next) => {
   // pega o token do header

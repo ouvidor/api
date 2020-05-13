@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-import authMiddleware from '../app/middlewares/auth';
-import RolesMiddleware from '../app/middlewares/roles';
-import SecretaryValidator from '../app/middlewares/validators/Secretary';
-import SecretaryController from '../app/controller/secretary.controller';
+import authMiddleware from '../middlewares/auth';
+import RolesMiddleware from '../middlewares/roles';
+import SecretaryValidator from '../middlewares/validators/Secretary';
+import SecretaryController from '../controller/secretary.controller';
 
 const secretariatsRoutes = Router();
 

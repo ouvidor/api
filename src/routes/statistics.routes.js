@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { parseISO, isValid } from 'date-fns';
 
-import CreateStatistics from '../app/services/CreateStatistics';
+import CreateStatistics from '../services/CreateStatistics';
 
 const statisticsRoutes = Router();
 

@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import authMiddleware from '../app/middlewares/auth';
-import PrefectureValidator from '../app/middlewares/validators/PrefectureAndOmbudsman';
-import PrefectuerController from '../app/controller/prefecture.controller';
+import authMiddleware from '../middlewares/auth';
+import PrefectureValidator from '../middlewares/validators/PrefectureAndOmbudsman';
+import PrefectuerController from '../controller/prefecture.controller';
 
 const prefectureRoutes = Router();
 
