@@ -108,7 +108,7 @@ class UserController {
     if (!user) {
       return res
         .status(401)
-        .json({ error: 'essa role não pode ser encontrado' });
+        .json({ message: 'Essa role não pode ser encontrado.' });
     }
 
     // checka se possui um header e se é um adminMaster
@@ -125,7 +125,7 @@ class UserController {
     if (isAdminMaster && role) {
       updateToUser.role = role;
     } else if (role) {
-      return res.status(403).json({ message: 'Você não é um admin MASTER' });
+      return res.status(403).json({ message: 'Você não é um admin MASTER.' });
     }
 
     if (req.body.email && req.body.email !== user.email) {
@@ -136,14 +136,14 @@ class UserController {
       if (checkIfEmailExists) {
         return res
           .status(400)
-          .json({ error: 'um usuário já existe com esse email' });
+          .json({ message: 'um usuário já existe com esse email.' });
       }
     }
 
     // Checa se a senha está correta
-    if(req.body.oldPassword){
+    if (req.body.oldPassword) {
       if (!(await user.checkPassword(req.body.oldPassword))) {
-        return res.status(401).json({ error: 'senha atual incorreta' });
+        return res.status(401).json({ message: 'Senha atual incorreta.' });
       }
     }
 

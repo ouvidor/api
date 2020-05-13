@@ -8,7 +8,10 @@ class Manifestation extends Model {
         protocol: Sequelize.STRING,
         title: Sequelize.STRING,
         description: Sequelize.TEXT,
-        read: Sequelize.TINYINT,
+        read: {
+          type: Sequelize.TINYINT,
+          defaultValue: 0,
+        },
         location: Sequelize.STRING,
         latitude: Sequelize.STRING,
         longitude: Sequelize.STRING,
