@@ -37,9 +37,15 @@ manifestationsRoutes.patch('/:id/read', async (request, response) => {
 
   const manifestation = await Manifestation.findOne({ where: { id } });
 
+  if (!manifestation) {
+    return response
+      .status(404)
+      .json({ message: 'Essa manifestação não existe.' });
+  }
+
   await manifestation.update({ read: true });
 
-  return response.status(204).json({ message: 'A manifestação foi lida' });
+  return response.status(204).json();
 });
 
 manifestationsRoutes.get(
