@@ -16,9 +16,16 @@ class PrefectureController {
 
   async show(req, res) {
     const { id } = req.params;
+    let cityName;
+
+    if (isNaN(id)) {
+      cityName = id;
+    }
 
     const prefecture = await Prefecture.findOne({
-      where: { id },
+      where: {
+        ...(cityName ? { name: cityName } : { id }),
+      },
       include: [{ model: Ombudsman, as: 'ombudsman' }],
     });
 
