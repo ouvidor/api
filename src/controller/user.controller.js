@@ -113,7 +113,7 @@ class UserController {
 
     // checka se possui um header e se é um adminMaster
     const isAdminMaster = await checkAdmin(req.headers.authorization);
-    const { role } = req.body;
+    const { role, password, oldPassword } = req.body;
     delete req.body.role;
 
     if (role && !(role in roles.map(r => r.title))) {
@@ -141,10 +141,14 @@ class UserController {
     }
 
     // Checa se a senha está correta
-    if (req.body.oldPassword) {
+    if (oldPassword && password) {
       if (!(await user.checkPassword(req.body.oldPassword))) {
         return res.status(401).json({ message: 'Senha atual incorreta.' });
       }
+    } else if (password && !oldPassword) {
+      return res
+        .status(400)
+        .json({ message: 'Necessário informar a senha antiga.' });
     }
 
     // atualiza a instancia

@@ -37,12 +37,9 @@ class UserValidator {
         first_name: string(),
         last_name: string(),
         email: string().email('Email invalido'),
+        oldPassword: string(),
         // senha só é requerida se a oldPassword for mandada
-        password: string()
-          .min(6, 'Senha abaixo de 6 caracteres')
-          .when('oldPassword', (oldPassword, field) =>
-            oldPassword ? field.required('A nova senha é necessária') : field
-          ),
+        password: string().min(6, 'Senha abaixo de 6 caracteres'),
       });
 
       await schema.validate(request.body, { abortEarly: false });

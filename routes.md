@@ -78,7 +78,11 @@ _retorna_:
 _requisição_:
 ```json
 {
-  "email": "novoemail@gmail.com",
+  "first_name": "nome",
+  "last_name": "sobrenome",
+  "email": "email@email.com",
+	"oldPassword": "111111",
+  "password": "123456"
 }
 ```
 
@@ -86,10 +90,12 @@ _retorna_:
 ```json
 {
   "id": 2,
-  "first_name": "primeiro nome",
-  "last_name": "ultimo nome",
-  "email": "novoemail@gmail.com",
-  "role": "master",
+  "first_name": "nome",
+  "last_name": "sobrenome",
+  "email": "email@email.com",
+  "role": "citizen",
+  "created_at": "2020-05-07T21:19:14.000Z",
+  "updated_at": "2020-05-18T17:02:12.868Z"
 }
 ```
 
@@ -161,6 +167,8 @@ _retorna_:
 ```
 
 - **GET** `prefecture/:id`: retorna os dados de uma prefeitura em específico.
+
+Também é possível pesquisar pelo nome da cidade, exemplo: `prefecture/Cabo Frio`
 
 ```json
 {
