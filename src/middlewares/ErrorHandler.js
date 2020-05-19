@@ -1,7 +1,3 @@
-/**
- * Atenção, o error handler do express apenas trata problemas ocorridos nas rotas ou midlewares.
- */
-
 import AppError from '../errors/AppError';
 
 async function errorHandler(error, request, response, next) {
@@ -13,7 +9,7 @@ async function errorHandler(error, request, response, next) {
 
   return response
     .status(500)
-    .json({ status: 'error', message: 'Erro inesperado.' });
+    .json({ status: 'error', message: 'Unexpected error.' });
 }
 
 export default errorHandler;

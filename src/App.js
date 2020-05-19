@@ -5,11 +5,12 @@
  */
 import './bootstrap'; // puxa a configuração das variaveis de ambiente
 import express from 'express';
+import 'express-async-errors';
 import cors from 'cors';
 import 'express-async-errors'; // permite o uso do errorHandler
 import helmet from 'helmet';
-import errorHandler from './middlewares/errorHandler';
 
+import ErrorHandler from './middlewares/ErrorHandler';
 // inicia a instancia do Sequelize, fazendo a conexão com o Database
 import './database';
 
@@ -43,7 +44,7 @@ class App {
   routes() {
     this.server.use(routes);
     // Error handler padrão do Express
-    this.server.use(errorHandler);
+    this.server.use(ErrorHandler);
   }
 }
 
