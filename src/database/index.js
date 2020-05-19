@@ -42,6 +42,10 @@ class Database {
     models.forEach(model => model.init(this.connection));
   }
 
+  async query(queryToRun, options) {
+    return this.connection.query(queryToRun, options);
+  }
+
   associate() {
     models.forEach(model => {
       if (model.associate) {
