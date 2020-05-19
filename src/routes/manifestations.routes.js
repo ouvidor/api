@@ -10,6 +10,7 @@ import ManifestationStatusHistoryValidator from '../middlewares/validators/Manif
 import ManifestationStatusHistoryController from '../controller/manifestationStatusHistory.controller';
 import Manifestation from '../models/Manifestation';
 
+import CreateManifestation from '../services/CreateManifestation';
 import SaveAvaliation from '../services/SaveAvaliation';
 
 const manifestationsRoutes = Router();
@@ -19,7 +20,33 @@ manifestationsRoutes.use(authMiddleware);
 manifestationsRoutes.post(
   '/',
   ManifestationValidator.save,
-  ManifestationController.save
+  async (request, response) => {
+    const {
+      categories_id,
+      type_id,
+      title,
+      description,
+      latitude,
+      longitude,
+      location,
+    } = request.body;
+    const city = request.user_city;
+    const userId = request.user_id;
+
+    const manifestation = await CreateManifestation.run({
+      categoriesId: categories_id,
+      typeId: type_id,
+      title,
+      description,
+      latitude,
+      longitude,
+      location,
+      city,
+      userId,
+    });
+
+    return response.status(201).json(manifestation);
+  }
 );
 
 manifestationsRoutes.get('/', ManifestationController.fetch);
