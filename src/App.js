@@ -3,11 +3,12 @@
  * responsável por iniciar a conexão ao banco de dados, manter as rotas e
  * as middlewares de configuração
  */
-import './bootstrap';
+import './bootstrap'; // puxa a configuração das variaveis de ambiente
 import express from 'express';
 import cors from 'cors';
+import 'express-async-errors'; // permite o uso do errorHandler
 import helmet from 'helmet';
-import ErrorHandler from './middlewares/ErrorHandler';
+import errorHandler from './middlewares/errorHandler';
 
 // inicia a instancia do Sequelize, fazendo a conexão com o Database
 import './database';
@@ -42,10 +43,7 @@ class App {
   routes() {
     this.server.use(routes);
     // Error handler padrão do Express
-    this.server.use(ErrorHandler.expressErrorHandler);
-
-    // Todas exceções não tratadas caem aqui
-    // process.on('uncaughtException', ErrorHandler.genericErrorHandler);
+    this.server.use(errorHandler);
   }
 }
 
