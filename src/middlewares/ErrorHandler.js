@@ -10,5 +10,6 @@ async function errorHandler(error, request, response, next) {
   return response
     .status(500)
     .json({ status: 'error', message: 'Unexpected error.' });
+}
 
 export default errorHandler;
