@@ -4,7 +4,7 @@ import { endOfMonth, startOfMonth } from 'date-fns';
 import Manifestation from '../models/Manifestation';
 import ManifestationStatusHistory from '../models/ManifestationStatusHistory';
 
-class CreateStatistics {
+class GenerateStatistics {
   /**
    * Recebe uma data em formato de Date e também recebe o nome da cidade.
    */
@@ -27,4 +27,4 @@ class CreateStatistics {
   }
 }
 
-export default new CreateStatistics();
+export default new GenerateStatistics();
