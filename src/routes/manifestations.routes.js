@@ -10,6 +10,8 @@ import ManifestationStatusHistoryValidator from '../middlewares/validators/Manif
 import ManifestationStatusHistoryController from '../controller/manifestationStatusHistory.controller';
 import Manifestation from '../models/Manifestation';
 
+import SaveAvaliation from '../services/SaveAvaliation';
+
 const manifestationsRoutes = Router();
 
 manifestationsRoutes.use(authMiddleware);
@@ -29,6 +31,20 @@ manifestationsRoutes.put(
   ManifestationValidator.update,
   ManifestationController.update
 );
+
+manifestationsRoutes.patch('/:id/opinion', async (request, response) => {
+  const { rate, description } = request.body;
+  const { id } = request.params;
+
+  const opinion = await SaveAvaliation.run({
+    rate,
+    description,
+    userId: request.user_id,
+    manifestationId: id,
+  });
+
+  return response.status(202).send(opinion);
+});
 
 manifestationsRoutes.use(RolesMiddleware.admin);
 
