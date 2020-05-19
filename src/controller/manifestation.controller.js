@@ -1,14 +1,10 @@
 import { Op } from 'sequelize';
 
 import Manifestation from '../models/Manifestation';
-import User from '../models/User';
 import Type from '../models/Type';
 import Category from '../models/Category';
-import Prefecture from '../models/Prefecture';
-import Ombudsman from '../models/Ombudsman';
 import SearchManifestationService from '../services/SearchManifestationService';
 import GeolocationService from '../services/GeolocationService';
-import SetStatusToManifestation from '../services/SetStatusToManifestation';
 import manifestationIncludes from '../utils/manifestationIncludes';
 
 class ManifestationController {
@@ -85,80 +81,6 @@ class ManifestationController {
     }
 
     return res.status(200).json(manifestation);
-  }
-
-  async save(req, res) {
-    const { categories_id, type_id, ...data } = req.body;
-    const city = req.user_city;
-
-    // caso o token informado seja de um usuário que não existe
-    const user = await User.findByPk(req.user_id);
-    if (!user) {
-      return res.status(401).json({ message: 'Esse usuário não existe' });
-    }
-
-    const prefecture = await Prefecture.findOne({
-      where: { name: city },
-      include: [{ model: Ombudsman, as: 'ombudsman' }],
-    });
-
-    if (!prefecture) {
-      return res
-        .status(400)
-        .json({ message: 'Nome da cidade inválido. Refaça o login.' });
-    }
-
-    let manifestation;
-
-    const geolocationData = await GeolocationService.run(data);
-    const formattedData = { ...data, ...geolocationData };
-    try {
-      const typeExists = await Type.findOne({ where: { id: type_id } });
-
-      if (!typeExists) {
-        return res
-          .status(400)
-          .json({ message: 'Esse tipo de manifestação não existe' });
-      }
-
-      manifestation = await Manifestation.create({
-        ...formattedData,
-        types_id: type_id,
-        users_id: req.user_id,
-        ombudsmen_id: prefecture.ombudsman.id,
-      });
-
-      if (categories_id) {
-        const categoriesExists = await Category.findAll({
-          where: {
-            id: {
-              [Op.in]: categories_id,
-            },
-          },
-        });
-
-        if (categoriesExists.length !== categories_id.length) {
-          return res
-            .status(400)
-            .json({ message: 'Uma dessas categorias não existe.' });
-        }
-
-        await manifestation.setCategories(categories_id);
-      }
-
-      await SetStatusToManifestation.run(
-        manifestation,
-        'cadastrada',
-        `A manifestação foi cadastrada`
-      );
-      return res.status(200).json(manifestation);
-    } catch (error) {
-      if (manifestation) {
-        manifestation.destroy();
-      }
-      console.error(error);
-      return res.status(500).json({ message: 'Erro interno no servidor' });
-    }
   }
 
   async update(req, res) {

@@ -38,7 +38,7 @@ describe('Manifestation', () => {
           type_id: types[0].id,
           categories_id: [category.id],
         })
-        .expect(200);
+        .expect(201);
 
       manifestation = manifestationResult.body;
 
