@@ -13,7 +13,7 @@ async function errorHandler(error, request, response, next) {
 
   return response
     .status(500)
-    .json({ status: 'error', message: 'Unexpected error.' });
+    .json({ status: 'error', message: 'Erro inesperado.' });
 }
 
 export default errorHandler;
