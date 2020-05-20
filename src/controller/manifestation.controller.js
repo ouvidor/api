@@ -4,7 +4,7 @@ import Manifestation from '../models/Manifestation';
 import Type from '../models/Type';
 import Category from '../models/Category';
 import SearchManifestationService from '../services/SearchManifestationService';
-import GeolocationService from '../services/GeolocationService';
+import GenerateGeolocation from '../services/GenerateGeolocation';
 import manifestationIncludes from '../utils/manifestationIncludes';
 
 class ManifestationController {
@@ -116,7 +116,7 @@ class ManifestationController {
       await manifestation.setCategories(categories_id);
     }
 
-    const geolocationData = await GeolocationService.run(data);
+    const geolocationData = await GenerateGeolocation.run(data);
     const formattedData = { ...data, types_id: type_id, ...geolocationData };
 
     if (!manifestation) {
