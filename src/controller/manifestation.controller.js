@@ -56,33 +56,6 @@ class ManifestationController {
     return res.status(200).json({ ...manifestationQueryResult, last_page });
   }
 
-  async show(req, res) {
-    const { idOrProtocol } = req.params;
-    let isProtocol = false;
-
-    // checa se é um protocolo
-    if (idOrProtocol && idOrProtocol.match(/([a-z])\w+/)) {
-      isProtocol = true;
-    }
-
-    const manifestation = await Manifestation.findOne({
-      attributes: {
-        exclude: ['users_id', 'types_id', 'secretariats_id'],
-      },
-      where: {
-        // decide se busca por protocolo ou id
-        ...(isProtocol ? { protocol: idOrProtocol } : { id: idOrProtocol }),
-      },
-      include: manifestationIncludes,
-    });
-
-    if (!manifestation) {
-      return res.status(400).json({ message: 'essa manifestação não existe' });
-    }
-
-    return res.status(200).json(manifestation);
-  }
-
   async update(req, res) {
     const { type_id, categories_id, ...data } = req.body;
 

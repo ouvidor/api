@@ -299,12 +299,12 @@ describe('Manifestation', () => {
       const response = await request(app)
         .get(`/manifestation/${manifestation.id + 20}`)
         .set('Authorization', `Bearer ${token}`)
-        .expect(400)
+        .expect(404)
         .send();
 
       expect(response.body).toHaveProperty(
         'message',
-        'essa manifestação não existe'
+        'Essa manifestação não existe.'
       );
     });
   });

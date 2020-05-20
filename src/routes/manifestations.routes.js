@@ -5,17 +5,20 @@ import RolesMiddleware from '../middlewares/roles';
 
 import ManifestationValidator from '../middlewares/validators/Manifestation';
 import ManifestationController from '../controller/manifestation.controller';
+import avaliationRoutes from './avaliation.routes';
 
 import ManifestationStatusHistoryValidator from '../middlewares/validators/ManifestationStatusHistory';
 import ManifestationStatusHistoryController from '../controller/manifestationStatusHistory.controller';
 import Manifestation from '../models/Manifestation';
 
 import CreateManifestation from '../services/CreateManifestation';
-import SaveAvaliation from '../services/SaveAvaliation';
+import showManifestation from '../services/Manifestation/show';
 
 const manifestationsRoutes = Router();
 
 manifestationsRoutes.use(authMiddleware);
+
+manifestationsRoutes.use('/avaliation', avaliationRoutes);
 
 manifestationsRoutes.post(
   '/',
@@ -51,27 +54,28 @@ manifestationsRoutes.post(
 
 manifestationsRoutes.get('/', ManifestationController.fetch);
 
-manifestationsRoutes.get('/:idOrProtocol', ManifestationController.show);
+manifestationsRoutes.get('/:idOrProtocol', async (request, response) => {
+  const { idOrProtocol } = request.params;
+  let protocol;
+  let id;
+
+  // checa se é um protocolo
+  if (idOrProtocol.match(/([a-z])\w+/)) {
+    protocol = idOrProtocol;
+  } else {
+    id = idOrProtocol;
+  }
+
+  const manifestation = await showManifestation({ protocol, id });
+
+  return response.status(200).json(manifestation);
+});
 
 manifestationsRoutes.put(
   '/:id',
   ManifestationValidator.update,
   ManifestationController.update
 );
-
-manifestationsRoutes.patch('/:id/opinion', async (request, response) => {
-  const { rate, description } = request.body;
-  const { id } = request.params;
-
-  const opinion = await SaveAvaliation.run({
-    rate,
-    description,
-    userId: request.user_id,
-    manifestationId: id,
-  });
-
-  return response.status(202).send(opinion);
-});
 
 manifestationsRoutes.use(RolesMiddleware.admin);
 
