@@ -1,6 +1,6 @@
 import geocoder from '../lib/Geocoder';
 
-class GeolocationService {
+class GenerateGeolocation {
   async run({ location, latitude, longitude }) {
     // reverse
     if (latitude && longitude) {
@@ -21,4 +21,4 @@ class GeolocationService {
   }
 }
 
-export default new GeolocationService();
+export default new GenerateGeolocation();
