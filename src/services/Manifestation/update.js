@@ -19,11 +19,11 @@ const updateManifestation = async ({
     doesCategoriesExistPromise,
   ]);
 
-  if (!doesTypeExists) {
+  if (!doesTypeExists && typeId) {
     throw new AppError('Esse tipo de manifestação não existe.');
   }
 
-  if (!doesCategoriesExist) {
+  if (!doesCategoriesExist && categoriesId.length > 0) {
     throw new AppError('Uma dessas categorias não existe.');
   }
 
