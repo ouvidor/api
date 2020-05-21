@@ -9,10 +9,20 @@ authRoutes.post('/', UserLoginValidator, async (request, response) => {
   const { email, city } = request.body;
   const password = String(request.body.password);
 
-  const { user, token, city: confirmedCity } = login({ city, password, email });
+  const { user, token, city: confirmedCity } = await login({
+    city,
+    password,
+    email,
+  });
 
   return response.status(200).json({
-    user,
+    user: {
+      id: user.id,
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      role: user.role,
+    },
     token,
     city: confirmedCity,
   });

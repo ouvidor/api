@@ -28,9 +28,9 @@ describe('User', () => {
   });
 
   it('should be able to register a citizen', async () => {
-    const user = await factory.attrs('User');
+    const randomUser = await factory.attrs('User');
 
-    const response = await sign.up(user);
+    const response = await sign.up(randomUser);
 
     // expect(response.status).toBe(200);
     expect(response.body).toHaveProperty(

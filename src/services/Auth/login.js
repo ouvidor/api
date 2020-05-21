@@ -19,7 +19,7 @@ const login = async ({ email, password, city }) => {
   });
 
   if (!user || !(await user.checkPassword(password))) {
-    throw new AppError('Email ou senha incorretos', 401);
+    throw new AppError('Email ou senha incorretos.', 401);
   }
 
   const roleExists = roles.find(r => user.role === r.title);

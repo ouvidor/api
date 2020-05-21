@@ -21,7 +21,7 @@ import adminRoutes from './admin.routes';
 
 const routes = Router();
 
-routes.post('/auth', authRoutes);
+routes.use('/auth', authRoutes);
 
 routes.use('/user', usersRoutes);
 routes.use('/manifestation', manifestationsRoutes);

@@ -54,8 +54,8 @@ describe('Auth', () => {
       });
 
     expect(response.status).toBe(401);
-    expect(response.body).toHaveProperty('error');
-    expect(response.body.error).toStrictEqual('Email ou senha incorretos');
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toStrictEqual('Email ou senha incorretos.');
   });
 
   it('should not pass validation', async () => {
