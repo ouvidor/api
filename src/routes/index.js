@@ -1,17 +1,8 @@
 import { Router } from 'express';
 
-// controllers
-import AdminController from '../controller/admin.controller';
-import AuthController from '../controller/auth.controller';
-import MailController from '../controller/mail.controller';
-
 // middlewares de autenticação
 import AuthMiddleware from '../middlewares/auth';
 import RolesMiddleware from '../middlewares/roles';
-
-// validators
-import UserLoginValidator from '../middlewares/validators/UserLogin';
-import MailValidator from '../middlewares/validators/Mail';
 
 import usersRoutes from './users.routes';
 import manifestationsRoutes from './manifestations.routes';
@@ -24,10 +15,13 @@ import filesRoutes from './files.routes';
 import ombudsmanRoutes from './ombudsman.routes';
 import prefectureRoutes from './prefecture.routes';
 import statisticsRoutes from './statistics.routes';
+import mailRoutes from './mail.routes';
+import authRoutes from './auth.routes';
+import adminRoutes from './admin.routes';
 
 const routes = Router();
 
-routes.post('/auth', UserLoginValidator, AuthController.login);
+routes.post('/auth', authRoutes);
 
 routes.use('/user', usersRoutes);
 routes.use('/manifestation', manifestationsRoutes);
@@ -44,10 +38,10 @@ routes.use('/statistics', statisticsRoutes);
 routes.use(AuthMiddleware);
 routes.use(RolesMiddleware.admin);
 
-routes.post('/email', MailValidator, MailController.send);
+routes.use('/email', mailRoutes);
 
 routes.use(RolesMiddleware.adminMaster);
 
-routes.get('/admins', AdminController.fetch);
+routes.use('/admins', adminRoutes);
 
 export default routes;
