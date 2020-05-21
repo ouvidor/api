@@ -9,7 +9,7 @@ import Category from '../../models/Category';
 import Prefecture from '../../models/Prefecture';
 import Ombudsman from '../../models/Ombudsman';
 
-import GenerateGeolocation from '../GenerateGeolocation';
+import generateGeolocation from '../generateGeolocation';
 import SetStatusToManifestation from '../SetStatusToManifestation';
 
 async function create({
@@ -40,7 +40,7 @@ async function create({
 
   let manifestation;
 
-  const geolocationData = await GenerateGeolocation.run({
+  const geolocationData = await generateGeolocation({
     latitude,
     location,
     longitude,

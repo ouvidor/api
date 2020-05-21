@@ -11,8 +11,9 @@ import ManifestationStatusHistoryValidator from '../middlewares/validators/Manif
 import ManifestationStatusHistoryController from '../controller/manifestationStatusHistory.controller';
 import Manifestation from '../models/Manifestation';
 
-import CreateManifestation from '../services/CreateManifestation';
+import createManifestation from '../services/Manifestation/create';
 import showManifestation from '../services/Manifestation/show';
+import updateManifestation from '../services/Manifestation/update';
 
 const manifestationsRoutes = Router();
 
@@ -36,7 +37,7 @@ manifestationsRoutes.post(
     const city = request.user_city;
     const userId = request.user_id;
 
-    const manifestation = await CreateManifestation.run({
+    const manifestation = await createManifestation({
       categoriesId: categories_id,
       typeId: type_id,
       title,
@@ -74,7 +75,19 @@ manifestationsRoutes.get('/:idOrProtocol', async (request, response) => {
 manifestationsRoutes.put(
   '/:id',
   ManifestationValidator.update,
-  ManifestationController.update
+  async (request, response) => {
+    const { id } = request.params;
+    const { type_id, categories_id, ...data } = request.body;
+
+    const manifestation = await updateManifestation({
+      id,
+      typeId: type_id,
+      categoriesId: categories_id,
+      manifestationData: data,
+    });
+
+    return response.status(200).json(manifestation);
+  }
 );
 
 manifestationsRoutes.use(RolesMiddleware.admin);
