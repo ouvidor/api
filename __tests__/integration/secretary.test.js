@@ -114,11 +114,11 @@ describe('Secretary', () => {
         email: 'this.email.will.repeat@gmail.com', // duplicated email
       });
 
-    expect(response.status).toBe(400);
     expect(response.body).toHaveProperty('message');
     expect(response.body.message).toStrictEqual(
       'Uma secretaria já usa esse email.'
     );
+    expect(response.status).toBe(409);
   });
 
   it("shouldn't update secretary, because title duplicated", async () => {
@@ -139,11 +139,11 @@ describe('Secretary', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({ title: 'NEW_TITLE' });
 
-    expect(response.status).toBe(400);
     expect(response.body).toHaveProperty('message');
     expect(response.body.message).toStrictEqual(
       'Uma secretaria já existe com esse titulo.'
     );
+    expect(response.status).toBe(409);
   });
 
   it('should delete a secretary', async () => {
@@ -152,7 +152,6 @@ describe('Secretary', () => {
       .set('Authorization', `Bearer ${token}`)
       .send();
 
-    expect(response.status).toBe(200);
     expect(response.body).toEqual(
       expect.objectContaining({
         title: 'secretary',
@@ -160,5 +159,6 @@ describe('Secretary', () => {
         accountable: 'José',
       })
     );
+    expect(response.status).toBe(200);
   });
 });

@@ -42,9 +42,10 @@ class App {
 
   // conecta as rotas ao app
   routes() {
-    this.server.use(logger);
+    if (process.env.NODE_ENV !== 'test') {
+      this.server.use(logger);
+    }
     this.server.use(routes);
-    // Error handler padrão do Express
     this.server.use(ErrorHandler);
   }
 }
