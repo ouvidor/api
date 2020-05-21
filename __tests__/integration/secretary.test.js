@@ -34,7 +34,7 @@ describe('Secretary', () => {
 
     secretary = response.body;
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(201);
     expect(secretary).toHaveProperty(
       'id',
       'title',

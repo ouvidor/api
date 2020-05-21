@@ -24,43 +24,6 @@ class SecretaryController {
     return res.status(200).json(secretary);
   }
 
-  // salva o Secretary no banco
-  async save(req, res) {
-    const { email, title, accountable, city } = req.body;
-
-    const doesEmailExist = await Secretary.findOne({
-      where: { email },
-    });
-
-    // caso o email já esteja em uso
-    if (doesEmailExist) {
-      res
-        .status(400)
-        .json({ error: 'Uma outra secretaria já usa esse email.' });
-    }
-
-    const doesSecretaryExist = await Secretary.findOne({
-      where: { title },
-    });
-
-    // caso o titulo já esteja em uso
-    if (doesSecretaryExist) {
-      return res.status(400).json({ message: 'Essa secretaria ja existe.' });
-    }
-
-    const prefecture = await Prefecture.findOne({ where: { name: city } });
-
-    // criar Secretary
-    const secretary = await Secretary.create({
-      email,
-      title,
-      prefectures_id: prefecture.id,
-      accountable,
-    });
-
-    return res.json(secretary);
-  }
-
   async update(req, res) {
     // busca pelo id do Secretary
     const secretary = await Secretary.findByPk(req.params.id);
