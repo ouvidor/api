@@ -10,6 +10,7 @@ import 'express-async-errors'; // permite o uso do errorHandler
 import helmet from 'helmet';
 
 import ErrorHandler from './middlewares/ErrorHandler';
+import logger from './middlewares/logger';
 // inicia a instancia do Sequelize, fazendo a conexão com o Database
 import './database';
 
@@ -41,6 +42,7 @@ class App {
 
   // conecta as rotas ao app
   routes() {
+    this.server.use(logger);
     this.server.use(routes);
     // Error handler padrão do Express
     this.server.use(ErrorHandler);
