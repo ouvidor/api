@@ -2,8 +2,8 @@ import Manifestation from '../../models/Manifestation';
 
 import AppError from '../../errors/AppError';
 import generateGeolocation from '../generateGeolocation';
-import doesTypeExists from '../Type/doesTypeExists';
-import doesCategoriesExists from '../Category/doesCategoriesExists';
+import checkIfTypeExists from '../Type/checkIfTypeExists';
+import checkIfCategoriesExists from '../Category/checkIfCategoriesExists';
 
 const updateManifestation = async ({
   id,
@@ -11,16 +11,20 @@ const updateManifestation = async ({
   categoriesId = [],
   manifestationData,
 }) => {
-  if (typeId) {
-    if (!doesTypeExists(typeId)) {
-      throw new AppError('Esse tipo de manifestação não existe.');
-    }
+  const doesTypeExistsPromise = checkIfTypeExists(typeId);
+  const doesCategoriesExistPromise = checkIfCategoriesExists(categoriesId);
+
+  const [doesTypeExists, doesCategoriesExist] = await Promise.all([
+    doesTypeExistsPromise,
+    doesCategoriesExistPromise,
+  ]);
+
+  if (!doesTypeExists) {
+    throw new AppError('Esse tipo de manifestação não existe.');
   }
 
-  if (categoriesId) {
-    if (!doesCategoriesExists(categoriesId)) {
-      throw new AppError('Uma dessas categorias não existe.');
-    }
+  if (!doesCategoriesExist) {
+    throw new AppError('Uma dessas categorias não existe.');
   }
 
   let manifestation = await Manifestation.findByPk(id);
