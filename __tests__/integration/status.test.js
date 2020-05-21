@@ -69,11 +69,11 @@ describe('Status', () => {
     const { token } = await sign.in(adminMaster);
 
     const response = await request(app)
-      .get(`/status/0`)
+      .get(`/status/${status[1].id + 100}`)
       .set('Authorization', `Bearer ${token}`)
       .send();
 
-    expect(response.status).toBe(400);
     expect(response.body).toHaveProperty('message', 'Esse status não existe.');
+    expect(response.status).toBe(404);
   });
 });
