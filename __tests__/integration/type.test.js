@@ -54,5 +54,20 @@ describe('Type', () => {
         expect.objectContaining({ id: types[0].id, title: 'sugestão' })
       );
     });
+
+    it('does not show unexistent type', async () => {
+      const response = await request(app)
+        .get(`/type/${types[0].id + 100}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send();
+
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          message: 'Esse tipo não existe.',
+          status: 'error',
+        })
+      );
+      expect(response.status).toBe(404);
+    });
   });
 });
