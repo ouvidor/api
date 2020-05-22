@@ -23,6 +23,55 @@ describe('Prefecture', () => {
     token = signedToken;
   });
 
+  describe('POST', () => {
+    it('should create a new prefecture', async () => {
+      const response = await request(app)
+        .post('/prefecture/')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          name: 'Prefeitura de Arraial do Cabo',
+          location: 'location',
+          telephone: 'telephone',
+          email: 'arraial@prefeitura.com',
+          site: 'https://arraial.prefeitura.com.br',
+          attendance: 'attendance',
+        });
+
+      expect(response.body).toHaveProperty(
+        'id',
+        'name',
+        'location',
+        'telephone',
+        'email',
+        'site',
+        'attendance'
+      );
+
+      expect(response.status).toBe(201);
+    });
+
+    it('should fail, duplicated email', async () => {
+      const response = await request(app)
+        .post('/prefecture/')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          name: 'Prefeitura de Arraial',
+          location: 'location',
+          telephone: 'telephone',
+          email: 'arraial@prefeitura.com',
+          site: 'https://arraial.com.br',
+          attendance: 'attendance',
+        });
+
+      expect(response.body).toHaveProperty(
+        'message',
+        'Esse email já está sendo usado por outra prefeitura.'
+      );
+
+      expect(response.status).toBe(409);
+    });
+  });
+
   describe('GET', () => {
     it('fetch successful', async () => {
       // listar
