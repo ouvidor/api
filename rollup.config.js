@@ -31,5 +31,10 @@ export default {
     'path',
     'multer',
     'crypto',
+    'date-fns',
+    'fs',
+    '@google-cloud/storage',
+    'helmet',
+    'express-async-errors',
   ],
 };
