@@ -24,6 +24,50 @@ describe('Ombudsman', () => {
     token = signedToken;
   });
 
+  describe('POST', () => {
+    it('should create a new ombudsman', async () => {
+      const response = await request(app)
+        .post('/ombudsman')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          site: 'www.google.com',
+          email: 'prefeitura@prefeitura.com',
+          attendance: '24 horas por dia, todos os dias',
+          location: 'Centro',
+          telephone: '(22)1010-1010',
+        });
+
+      expect(response.body).toHaveProperty(
+        'id',
+        'email',
+        'site',
+        'attendance',
+        'location',
+        'telephone'
+      );
+      expect(response.status).toBe(201);
+    });
+
+    it('should fail, duplicated email', async () => {
+      const response = await request(app)
+        .post('/ombudsman')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          site: 'www.google.com',
+          email: 'prefeitura@prefeitura.com',
+          attendance: '24 horas por dia, todos os dias',
+          location: 'Centro',
+          telephone: '(22)1010-1010',
+        });
+
+      expect(response.body).toHaveProperty(
+        'message',
+        'Já existe uma ouvidoria com esse email.'
+      );
+      expect(response.status).toBe(409);
+    });
+  });
+
   describe('GET', () => {
     it('fetch successful', async () => {
       // listar
@@ -80,22 +124,22 @@ describe('Ombudsman', () => {
         .send({
           location: 'location',
           telephone: 'telephone',
-          email: 'email',
+          email: 'new@email.com.br',
           site: 'site',
           attendance: 'attendance',
         });
 
-      expect(response.status).toBe(200);
       expect(response.body).toMatchObject({
         id: expect.any(Number),
         location: 'location',
         telephone: 'telephone',
-        email: 'email',
+        email: 'new@email.com.br',
         site: 'site',
         attendance: 'attendance',
         created_at: expect.any(String),
         updated_at: expect.any(String),
       });
+      expect(response.status).toBe(200);
     });
   });
 });
