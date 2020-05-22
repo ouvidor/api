@@ -195,6 +195,37 @@ Também é possível pesquisar pelo nome da cidade, exemplo: `prefecture/Cabo Fr
 }
 ```
 
+- **POST** `prefecture/`: registra uma nova prefeitura.
+
+_requisição_
+
+```json
+{
+	"location": "Local",
+	"telephone": "31231231",
+	"email": "arraial@prefeitura.com",
+	"site": "www..com.br",
+	"attendance": "24/7",
+	"name": "Arraial"
+}
+```
+
+_retorna_
+
+```json
+{
+  "id": 2,
+  "name": "Arraial",
+  "location": "Local",
+  "telephone": "31231231",
+  "email": "temer@vampirão.com",
+  "site": "www.google.com.br",
+  "attendance": "24/7",
+  "updated_at": "2020-05-22T19:01:00.703Z",
+  "created_at": "2020-05-22T19:01:00.703Z"
+}
+```
+
 - **PUT** `prefecture/:id`: atualiza os dados de uma prefeitura em específico.
 
 _requisição_
@@ -259,6 +290,35 @@ _retorna_
   "attendance": "24 horas por dia, todos os dias",
   "created_at": "2020-05-04T16:55:37.000Z",
   "updated_at": "2020-05-04T19:55:38.000Z"
+}
+```
+
+- **POST** `ombudsman/`: registra uma nova ouvidoria.
+
+_requisição_
+
+```json
+{
+	"site": "www.google.com",
+	"email": "prefeitura@prefeitura.com",
+	"attendance": "24 horas por dia, todos os dias",
+	"location": "Centro",
+	"telephone": "(22)1010-1010"
+}
+```
+
+_retorna_
+
+```json
+{
+  "id": 2,
+  "location": "Centro",
+  "telephone": "(22)1010-1010",
+  "email": "prefeitura@prefeitura.com",
+  "site": "www.google.com",
+  "attendance": "24 horas por dia, todos os dias",
+  "updated_at": "2020-05-22T19:47:27.479Z",
+  "created_at": "2020-05-22T19:47:27.479Z"
 }
 ```
 
