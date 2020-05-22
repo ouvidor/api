@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import authMiddleware from '../middlewares/auth';
-import OmbudsmanValidator from '../middlewares/validators/PrefectureAndOmbudsman';
+import OmbudsmanValidator from '../middlewares/validators/Ombudsman';
 import OmbudsmanController from '../controller/ombudsman.controller';
 
 const ombudsmanRoutes = Router();

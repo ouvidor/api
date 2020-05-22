@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import authMiddleware from '../middlewares/auth';
 import RolesMiddleware from '../middlewares/roles';
-import PrefectureValidator from '../middlewares/validators/PrefectureAndOmbudsman';
+import PrefectureValidator from '../middlewares/validators/Prefecture';
 
 import fetchPrefectures from '../services/Prefecture/fetch';
 import showPrefecture from '../services/Prefecture/show';
@@ -79,28 +79,32 @@ prefectureRoutes.put(
 
 prefectureRoutes.use(RolesMiddleware.adminMaster);
 
-prefectureRoutes.post('/', async (request, response) => {
-  const {
-    name,
-    location,
-    telephone,
-    email,
-    site,
-    attendance,
-    ombudsmen_id,
-  } = request.body;
+prefectureRoutes.post(
+  '/',
+  PrefectureValidator.save,
+  async (request, response) => {
+    const {
+      name,
+      location,
+      telephone,
+      email,
+      site,
+      attendance,
+      ombudsmen_id,
+    } = request.body;
 
-  const prefecture = await createPrefecture({
-    name,
-    location,
-    telephone,
-    email,
-    site,
-    attendance,
-    ombudsmanId: ombudsmen_id,
-  });
+    const prefecture = await createPrefecture({
+      name,
+      location,
+      telephone,
+      email,
+      site,
+      attendance,
+      ombudsmanId: ombudsmen_id,
+    });
 
-  return response.status(201).json(prefecture);
-});
+    return response.status(201).json(prefecture);
+  }
+);
 
 export default prefectureRoutes;
