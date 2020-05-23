@@ -2,16 +2,76 @@ import { Router } from 'express';
 
 import authMiddleware from '../middlewares/auth';
 import UserValidator from '../middlewares/validators/User';
-import UserController from '../controller/user.controller';
+
+import fetchUsers from '../services/User/fetch';
+import showUser from '../services/User/show';
+import createUser from '../services/User/create';
+import updateUser from '../services/User/update';
 
 const usersRoutes = Router();
 
-usersRoutes.post('/', UserValidator.save, UserController.save);
+usersRoutes.post('/', UserValidator.save, async (request, response) => {
+  const { first_name, last_name, email, role } = request.body;
+  const password = String(request.body.password);
+
+  const authorizationHeader = request.headers.authorization;
+
+  const user = await createUser({
+    first_name,
+    last_name,
+    email,
+    password,
+    role,
+    token: authorizationHeader,
+  });
+
+  delete user.dataValues.password;
+
+  return response.status(201).json(user);
+});
 
 usersRoutes.use(authMiddleware);
 
-usersRoutes.get('/', UserController.fetch);
-usersRoutes.get('/:id', UserController.show);
-usersRoutes.put('/:id', UserValidator.update, UserController.update);
+usersRoutes.get('/', async (request, response) => {
+  const users = await fetchUsers();
+
+  return response.status(200).json(users);
+});
+
+usersRoutes.get('/:id', async (request, response) => {
+  const { id } = request.params;
+
+  const user = await showUser(id);
+
+  return response.status(200).json(user);
+});
+
+usersRoutes.put('/:id', UserValidator.update, async (request, response) => {
+  const {
+    first_name,
+    last_name,
+    email,
+    password,
+    oldPassword,
+    role,
+  } = request.body;
+  const { id } = request.params;
+  const authorizationHeader = request.headers.authorization;
+
+  const user = await updateUser({
+    id,
+    email,
+    first_name,
+    last_name,
+    password,
+    oldPassword,
+    role,
+    token: authorizationHeader,
+  });
+
+  delete user.dataValues.password;
+
+  return response.status(200).json(user);
+});
 
 export default usersRoutes;

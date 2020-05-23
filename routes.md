@@ -9,7 +9,7 @@ Contêm protocolo _HTTP_, endereço da rota, explicação do que é feito, o que
 
 ### User
 
-- **GET** `user/`: retorna todos os registros na tabela de _users_.
+- **GET** `user/`: retorna todos os usuários registrados.
 
 ```json
 [
@@ -43,10 +43,10 @@ _requisição sem role_:
 
 ```json
 {
-  "first_name": "anitta",
-  "last_name": "manuel",
-  "email": "anitta@gmail.com",
-  "password": "123456"
+	"first_name": "usuário",
+	"last_name": "teste",
+	"email": "usuário@test.com",
+	"password": "123456"
 }
 ```
 
@@ -54,11 +54,11 @@ _requisição com role_:
 
 ```json
 {
-  "first_name": "anitta",
-  "last_name": "manuel",
-  "email": "anitta@gmail.com",
-  "role": "admin",
-  "password": "123456"
+	"first_name": "usuário",
+	"last_name": "teste",
+	"email": "usuário@test.com",
+	"password": "123456",
+  "role": "master"
 }
 ```
 
@@ -66,10 +66,13 @@ _retorna_:
 
 ```json
 {
-  "id": 2134,
-  "first_name": "anitta",
-  "last_name": "manuel",
-  "email": "anitta@gmail.com"
+  "role": "citizen",
+  "id": 3,
+  "first_name": "usuário",
+  "last_name": "teste",
+  "email": "usuário@test.com",
+  "updated_at": "2020-05-23T17:55:36.608Z",
+  "created_at": "2020-05-23T17:55:36.608Z"
 }
 ```
 
