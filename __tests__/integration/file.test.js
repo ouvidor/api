@@ -50,20 +50,18 @@ describe('File', () => {
         .send();
 
       expect(response.body).toEqual(
-        expect.objectContaining({
-          files: expect.arrayContaining([
-            expect.objectContaining({
-              id: expect.any(Number),
-              name: 'sample.txt',
-              name_in_server: 'sample-123456789.txt',
-              extension: '.txt',
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-              manifestations_id: manifestation.id,
-              users_id: userProfile.id,
-            }),
-          ]),
-        })
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.any(Number),
+            name: 'sample.txt',
+            name_in_server: 'sample-123456789.txt',
+            extension: '.txt',
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+            manifestations_id: manifestation.id,
+            users_id: userProfile.id,
+          }),
+        ])
       );
     });
 
@@ -80,7 +78,7 @@ describe('File', () => {
 
       expect(response.body).toHaveProperty(
         'message',
-        'Não autorizado, apenas administradores e donos do arquivo podem acessa-lo'
+        'Não autorizado, apenas administradores e donos do arquivo podem acessa-lo.'
       );
     });
   });
@@ -92,7 +90,7 @@ describe('File', () => {
         .set('Authorization', `Bearer ${token}`)
         .expect(404);
 
-      expect(response.body).toHaveProperty('message', 'Arquivo não existe');
+      expect(response.body).toHaveProperty('message', 'Arquivo não existe.');
     });
   });
 });

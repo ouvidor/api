@@ -11,7 +11,7 @@ import typesRoutes from './types.routes';
 import rolesRoutes from './roles.routes';
 import statusRoutes from './status.routes';
 import secretaryRoutes from './secretary.routes';
-import filesRoutes from './files.routes';
+import filesRoutes from './file.routes';
 import ombudsmanRoutes from './ombudsman.routes';
 import prefectureRoutes from './prefecture.routes';
 import statisticsRoutes from './statistics.routes';
