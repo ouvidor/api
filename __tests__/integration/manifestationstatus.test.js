@@ -32,7 +32,8 @@ describe('Manifestation Status History', () => {
         categories_id: [category.id],
         type_id: types[0].id,
         ombudsmen_id: ombudsman.id,
-      });
+      })
+      .expect(201);
     manifestation = manifestationBody;
 
     const createStatusResponse = await request(app)
@@ -41,7 +42,8 @@ describe('Manifestation Status History', () => {
       .send({
         description: 'test',
         status_id: status[0].id,
-      });
+      })
+      .expect(201);
     manifestationStatus = createStatusResponse.body;
   });
 
@@ -102,7 +104,6 @@ describe('Manifestation Status History', () => {
       const response = await request(app)
         .put(`/manifestation/status/${manifestationStatus.id}`)
         .set('Authorization', `Bearer ${token}`)
-        .expect(200)
         .send({
           description: 'updated',
         });
@@ -123,6 +124,7 @@ describe('Manifestation Status History', () => {
           },
         })
       );
+      expect(response.status).toBe(200);
     });
   });
 });

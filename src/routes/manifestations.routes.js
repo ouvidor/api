@@ -1,5 +1,7 @@
 import { Router } from 'express';
 
+import statusHistoryRoutes from './statusHistory.routes';
+
 import authMiddleware from '../middlewares/auth';
 import RolesMiddleware from '../middlewares/roles';
 
@@ -7,8 +9,6 @@ import ManifestationValidator from '../middlewares/validators/Manifestation';
 import ManifestationController from '../controller/manifestation.controller';
 import avaliationRoutes from './avaliation.routes';
 
-import ManifestationStatusHistoryValidator from '../middlewares/validators/ManifestationStatusHistory';
-import ManifestationStatusHistoryController from '../controller/manifestationStatusHistory.controller';
 import Manifestation from '../models/Manifestation';
 
 import createManifestation from '../services/Manifestation/create';
@@ -108,23 +108,6 @@ manifestationsRoutes.patch('/:id/read', async (request, response) => {
   return response.status(204).json();
 });
 
-manifestationsRoutes.get(
-  '/:idOrProtocol/status',
-  ManifestationStatusHistoryController.fetch
-);
-manifestationsRoutes.get(
-  '/status/:id',
-  ManifestationStatusHistoryController.show
-);
-manifestationsRoutes.post(
-  '/:manifestationId/status',
-  ManifestationStatusHistoryValidator.save,
-  ManifestationStatusHistoryController.save
-);
-manifestationsRoutes.put(
-  '/status/:id',
-  ManifestationStatusHistoryValidator.update,
-  ManifestationStatusHistoryController.update
-);
+manifestationsRoutes.use(statusHistoryRoutes);
 
 export default manifestationsRoutes;

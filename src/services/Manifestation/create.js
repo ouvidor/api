@@ -9,8 +9,8 @@ import Category from '../../models/Category';
 import Prefecture from '../../models/Prefecture';
 import Ombudsman from '../../models/Ombudsman';
 
+import createManifestationStatus from '../StatusHistory/create';
 import generateGeolocation from '../generateGeolocation';
-import SetStatusToManifestation from '../SetStatusToManifestation';
 
 async function create({
   categoriesId,
@@ -83,11 +83,12 @@ async function create({
       await manifestation.setCategories(categoriesId);
     }
 
-    await SetStatusToManifestation.run(
-      manifestation,
-      'cadastrada',
-      `A manifestação foi cadastrada`
-    );
+    await createManifestationStatus({
+      description: 'A manifestação foi cadastrada',
+      manifestationId: manifestation.id,
+      statusIdentifier: 'cadastrada',
+      manifestationAlreadyChecked: true,
+    });
 
     return manifestation;
   } catch (error) {
