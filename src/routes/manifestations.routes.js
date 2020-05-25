@@ -6,11 +6,11 @@ import authMiddleware from '../middlewares/auth';
 import RolesMiddleware from '../middlewares/roles';
 
 import ManifestationValidator from '../middlewares/validators/Manifestation';
-import ManifestationController from '../controller/manifestation.controller';
 import avaliationRoutes from './avaliation.routes';
 
 import Manifestation from '../models/Manifestation';
 
+import searchManifestations from '../services/Manifestation/search';
 import createManifestation from '../services/Manifestation/create';
 import showManifestation from '../services/Manifestation/show';
 import updateManifestation from '../services/Manifestation/update';
@@ -53,7 +53,23 @@ manifestationsRoutes.post(
   }
 );
 
-manifestationsRoutes.get('/', ManifestationController.fetch);
+manifestationsRoutes.get('/', async (request, response) => {
+  const { text, options, isRead, status } = request.query;
+  let { page = 1, ownerId } = request.query;
+  page = page && Number(page);
+  ownerId = ownerId && Number(ownerId);
+
+  const searchResult = await searchManifestations({
+    text,
+    options,
+    page,
+    ownerId,
+    isRead,
+    status,
+  });
+
+  return response.status(200).json(searchResult);
+});
 
 manifestationsRoutes.get('/:idOrProtocol', async (request, response) => {
   const { idOrProtocol } = request.params;

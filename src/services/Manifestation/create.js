@@ -95,8 +95,8 @@ async function create({
     if (manifestation) {
       manifestation.destroy();
     }
-    console.error(error);
-    throw new AppError('Erro interno no servidor.', 500);
+
+    throw error;
   }
 }
 

@@ -31,7 +31,6 @@ statusHistoryRoutes.get('/:idOrProtocol/status', async (request, response) => {
 
 statusHistoryRoutes.get('/status/:id', async (request, response) => {
   const id = Number(request.params.id);
-  console.log(id);
 
   const statusHistory = await showManifestationStatus(id);
 
