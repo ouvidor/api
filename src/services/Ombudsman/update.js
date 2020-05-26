@@ -19,7 +19,7 @@ const updateOmbudsman = async ({
   if (email) {
     const emailIsAlreadyInUse = await Ombudsman.findOne({ where: { email } });
 
-    if (emailIsAlreadyInUse) {
+    if (emailIsAlreadyInUse && emailIsAlreadyInUse.id !== ombudsman.id) {
       throw new AppError('Já existe uma ouvidoria com esse email.', 409);
     }
   }

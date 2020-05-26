@@ -63,14 +63,14 @@ const updatePrefecture = async ({
     nameIsAlreadyInUsePromise,
   ]);
 
-  if (emailIsAlreadyInUse) {
+  if (emailIsAlreadyInUse && emailIsAlreadyInUse.id !== prefecture.id) {
     throw new AppError(
       'Esse email já está sendo usado por outra prefeitura.',
       409
     );
   }
 
-  if (nameIsAlreadyInUse) {
+  if (nameIsAlreadyInUse && nameIsAlreadyInUse.id !== prefecture.id) {
     throw new AppError('Uma outra prefeitura já usa esse nome.', 409);
   }
 
