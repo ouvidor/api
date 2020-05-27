@@ -14,8 +14,7 @@ import Ombudsman from '../models/Ombudsman';
 import Prefecture from '../models/Prefecture';
 import Type from '../models/Type';
 import Status from '../models/Status';
-
-require('dotenv');
+import Avaliation from '../models/Avaliation';
 
 // a ordem é importante
 const models = [
@@ -29,6 +28,7 @@ const models = [
   ManifestationStatusHistory,
   Ombudsman,
   Prefecture,
+  Avaliation,
 ];
 
 class Database {
