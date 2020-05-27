@@ -1,4 +1,4 @@
-import { max, isEqual, isAfter } from 'date-fns';
+import { isAfter } from 'date-fns';
 
 import AppError from '../../errors/AppError';
 
@@ -8,6 +8,7 @@ import Status from '../../models/Status';
 import Avaliation from '../../models/Avaliation';
 
 import createManifestationStatus from '../StatusHistory/create';
+import getLatestManifestationStatus from '../../utils/getLatestManifestationStatus';
 
 const createAvaliation = async ({
   rate,
@@ -47,11 +48,7 @@ const createAvaliation = async ({
   /**
    * Checar se o ultimo status de manifestação é 'encerrada'
    */
-  const maxDate = max(manifestation.status_history.map(sh => sh.created_at));
-
-  const [latestManifestationStatus] = manifestation.status_history.filter(sh =>
-    isEqual(sh.created_at, maxDate)
-  );
+  const latestManifestationStatus = getLatestManifestationStatus(manifestation);
 
   if (latestManifestationStatus.status.title !== 'encerrada') {
     throw new AppError(

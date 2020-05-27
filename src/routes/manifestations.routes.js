@@ -94,12 +94,14 @@ manifestationsRoutes.put(
   async (request, response) => {
     const { id } = request.params;
     const { type_id, categories_id, ...data } = request.body;
+    const { user_id } = request;
 
     const manifestation = await updateManifestation({
       id,
       typeId: type_id,
       categoriesId: categories_id,
       manifestationData: data,
+      userId: user_id,
     });
 
     return response.status(200).json(manifestation);
