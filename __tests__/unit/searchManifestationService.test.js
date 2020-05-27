@@ -60,8 +60,6 @@ describe('Search Manifestation Service', () => {
       text: 'rua',
     });
 
-    console.log(result);
-
     expect(result).toHaveProperty('count');
     expect(result).toHaveProperty('last_page');
     expect(result).toHaveProperty('rows');

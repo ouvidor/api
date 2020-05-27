@@ -110,11 +110,6 @@ module.exports = {
           updated_at: new Date(),
         },
         {
-          title: 'prorrogada',
-          created_at: new Date(),
-          updated_at: new Date(),
-        },
-        {
           title: 'resposta intermediária',
           created_at: new Date(),
           updated_at: new Date(),
@@ -130,12 +125,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
-          title: 'encaminhada para outra ouvidoria',
-          created_at: new Date(),
-          updated_at: new Date(),
-        },
-        {
-          title: 'encaminhada para orgão externo',
+          title: 'encaminhada',
           created_at: new Date(),
           updated_at: new Date(),
         },

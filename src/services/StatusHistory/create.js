@@ -28,6 +28,11 @@ const createManifestationStatusHistory = async ({
     status = await Status.findOne({ where: { title: statusIdentifier } });
   }
 
+  /**
+   * REGRAS DE NEGÓCIO
+   * não pode haver o mesmo status seguido
+   */
+
   const manifestationStatus = await ManifestationStatusHistory.create({
     description,
     manifestations_id: manifestationId,
