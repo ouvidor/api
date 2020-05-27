@@ -138,6 +138,36 @@ _retorna_:
 
 ## Autenticação necessária
 
+### Avaliation
+
+- **POST** `manifestation/:id/avaliation`: registra uma avaliação para a manifestação.
+
+_requisição_
+
+```json
+{
+  "rate": 5,
+  "description": "Gostei",
+  "reopen": true
+}
+```
+
+_retorna_
+
+```json
+{
+  "id": 1,
+  "rate": 5,
+  "reopen": true,
+  "description": "Gostei",
+  "manifestations_id": 2,
+  "updated_at": "2020-05-27T17:57:41.919Z",
+  "created_at": "2020-05-27T17:57:41.919Z"
+}
+```
+
+---
+
 ### Prefecture
 
 - **GET** `prefecture/`: retorna os dados das prefeituras registradas.

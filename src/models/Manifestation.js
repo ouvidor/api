@@ -77,6 +77,10 @@ class Manifestation extends Model {
       foreignKey: 'ombudsmen_id',
       targetKey: 'id',
     });
+    this.hasOne(models.Avaliation, {
+      as: 'avaliation',
+      foreignKey: 'manifestations_id',
+    });
   }
 }
 

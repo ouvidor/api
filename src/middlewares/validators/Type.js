@@ -1,9 +1,6 @@
-/**
- * Middleware de validação generico
- */
 import { object, number } from 'yup';
 
-class GenericValidator {
+class TypeValidator {
   async show(request, response, next) {
     try {
       const schema = object().shape({
@@ -25,4 +22,4 @@ class GenericValidator {
   }
 }
 
-export default new GenericValidator();
+export default new TypeValidator();

@@ -19,7 +19,7 @@ const manifestationsRoutes = Router();
 
 manifestationsRoutes.use(authMiddleware);
 
-manifestationsRoutes.use('/avaliation', avaliationRoutes);
+manifestationsRoutes.use(avaliationRoutes);
 
 manifestationsRoutes.post(
   '/',
