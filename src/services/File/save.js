@@ -4,17 +4,47 @@ import GoogleCloudStorage from '../../lib/GoogleCloudStorage';
 import AppError from '../../errors/AppError';
 import File from '../../models/File';
 import Manifestation from '../../models/Manifestation';
+import ManifestationStatusHistory from '../../models/ManifestationStatusHistory';
+import Status from '../../models/Status';
 import User from '../../models/User';
+import createManifestationStatus from '../StatusHistory/create';
+
+import checkIfManifestionInUpdatePeriod from '../../utils/checkIfManifestionInUpdatePeriod';
 import deleteTempFiles from '../../utils/deleteTempFiles';
+import getLatestManifestationStatus from '../../utils/getLatestManifestationStatus';
 
 const saveFiles = async ({ userId, manifestationId, files, userRoleId }) => {
   const userPromise = User.findByPk(userId); // usuario que fez a requisição de upload
-  const manifestationPromise = Manifestation.findByPk(manifestationId); // manifestação que irá receber o arquivo
-  console.log('wadqwjioqdjqiow');
+  const manifestationPromise = Manifestation.findByPk(manifestationId, {
+    include: [
+      {
+        model: ManifestationStatusHistory,
+        as: 'status_history',
+        attributes: ['id', 'description', 'created_at', 'updated_at'],
+        include: [
+          {
+            model: Status,
+            as: 'status',
+            attributes: ['id', 'title'],
+          },
+        ],
+      },
+    ],
+  });
+
   const [user, manifestation] = await Promise.all([
     userPromise,
     manifestationPromise,
   ]);
+
+  const latestManifestationStatus = getLatestManifestationStatus(manifestation);
+
+  if (!checkIfManifestionInUpdatePeriod(latestManifestationStatus)) {
+    deleteTempFiles(files);
+    throw new AppError(
+      'Fora do período disponível para edição da manifestação.'
+    );
+  }
 
   if (!files) {
     throw new AppError('Não consta um arquivo na requisição.', 400);
@@ -68,6 +98,19 @@ const saveFiles = async ({ userId, manifestationId, files, userRoleId }) => {
     });
 
     deleteTempFiles(files);
+
+    // se for o dono da manifestação marca como complementada
+    if (
+      userId === manifestation.users_id &&
+      latestManifestationStatus.status.title !== 'complementada'
+    ) {
+      await createManifestationStatus({
+        description: 'Manifestação foi complementada',
+        manifestationId: manifestation.id,
+        statusIdentifier: 'complementada',
+        manifestationAlreadyChecked: true,
+      });
+    }
 
     return savedFiles;
   } catch (error) {

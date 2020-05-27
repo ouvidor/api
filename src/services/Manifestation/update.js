@@ -10,6 +10,7 @@ import createManifestationStatus from '../StatusHistory/create';
 import checkIfTypeExists from '../Type/checkIfTypeExists';
 import checkIfCategoriesExists from '../Category/checkIfCategoriesExists';
 
+import checkIfManifestionInUpdatePeriod from '../../utils/checkIfManifestionInUpdatePeriod';
 import getLatestManifestationStatus from '../../utils/getLatestManifestationStatus';
 
 const updateManifestation = async ({
@@ -71,16 +72,10 @@ const updateManifestation = async ({
 
   const latestManifestationStatus = getLatestManifestationStatus(manifestation);
 
-  switch (latestManifestationStatus.status.title) {
-    case 'cadastrada':
-    case 'complementada':
-    case 'arquivada':
-      break;
-
-    default:
-      throw new AppError(
-        'Fora do período disponível para edição da manifestação.'
-      );
+  if (!checkIfManifestionInUpdatePeriod(latestManifestationStatus)) {
+    throw new AppError(
+      'Fora do período disponível para edição da manifestação.'
+    );
   }
 
   const { latitude, longitude, location } = manifestationData;
