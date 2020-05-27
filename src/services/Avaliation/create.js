@@ -81,13 +81,6 @@ const createAvaliation = async ({
     });
   }
 
-  console.log({
-    rate,
-    description,
-    manifestations_id: manifestation.id,
-    reopen,
-  });
-
   const avaliation = await Avaliation.create({
     rate,
     description,
