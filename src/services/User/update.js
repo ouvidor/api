@@ -31,7 +31,7 @@ const updateUser = async ({
   // checa se possui um header e se é um adminMaster
   const isAdminMaster = await checkIfMasterRole(token);
 
-  if (role && !roles.filter(r => r.title === role)) {
+  if (role && roles.filter(r => r.title === role).length <= 0) {
     throw new AppError('Esse cargo não existe.', 404);
   }
 

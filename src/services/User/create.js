@@ -25,7 +25,7 @@ const createUser = async ({
 
   const userToSave = { first_name, last_name, email, password };
 
-  if (role && !roles.filter(r => r.title === role)) {
+  if (role && roles.filter(r => r.title === role).length <= 0) {
     throw new AppError('Esse cargo não existe.', 404);
   }
 
