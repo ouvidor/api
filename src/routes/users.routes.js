@@ -7,6 +7,7 @@ import fetchUsers from '../services/User/fetch';
 import showUser from '../services/User/show';
 import createUser from '../services/User/create';
 import updateUser from '../services/User/update';
+import deleteUser from '../services/User/delete';
 
 const usersRoutes = Router();
 
@@ -72,6 +73,18 @@ usersRoutes.put('/:id', UserValidator.update, async (request, response) => {
   delete user.dataValues.password;
 
   return response.status(200).json(user);
+});
+
+usersRoutes.delete('/:id', async (request, response) => {
+  const id = Number(request.params.id);
+  const { user_id } = request;
+
+  await deleteUser({
+    id,
+    userId: user_id,
+  });
+
+  return response.status(204).send();
 });
 
 export default usersRoutes;

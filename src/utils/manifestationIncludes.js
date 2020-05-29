@@ -21,7 +21,7 @@ export default [
     model: User,
     as: 'user',
     attributes: {
-      exclude: ['password', 'created_at', 'updated_at'],
+      exclude: ['password', 'created_at', 'updated_at', 'deleted_at'],
     },
   },
   {

@@ -185,7 +185,7 @@ describe('User', () => {
     });
 
     it('should fail to update, citizen cannot change role', async () => {
-      const signUpCitizenResponse = await sign.up({
+      await sign.up({
         first_name: 'usuário',
         last_name: 'test',
         email: 'update@citizen.com',
@@ -208,6 +208,17 @@ describe('User', () => {
         'Você não é um administrador mestre. Mudar o cargo não é permitido.'
       );
       expect(response.status).toBe(403);
+    });
+  });
+
+  describe('DELETE', () => {
+    it('should delete profile', async () => {
+      const response = await request(app)
+        .delete(`/user/${user.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ email: 'new@email.com' });
+
+      expect(response.status).toBe(204);
     });
   });
 });

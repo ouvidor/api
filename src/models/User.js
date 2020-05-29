@@ -21,8 +21,10 @@ class User extends Model {
         sequelize,
         underscored: true,
         tableName: 'users',
+        paranoid: true,
         createdAt: 'created_at', // <====== this line and the following one
         updatedAt: 'updated_at',
+        deletedAt: 'deleted_at',
       }
     );
 
