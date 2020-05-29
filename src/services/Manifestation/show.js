@@ -5,6 +5,7 @@ import manifestationIncludes from '../../utils/manifestationIncludes';
 
 const showManifestation = async ({ protocol, id }) => {
   const manifestation = await Manifestation.findOne({
+    paranoid: false,
     attributes: {
       exclude: ['users_id', 'types_id', 'secretariats_id'],
     },

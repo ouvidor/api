@@ -3,7 +3,7 @@
  * Docs do yup:
  * https://github.com/jquense/yup
  */
-import { object, string, array, number, mixed } from 'yup';
+import { object, string, array, number, boolean, mixed } from 'yup';
 
 class ManifestationValidator {
   async fetch(request, response, next) {
@@ -24,6 +24,7 @@ class ManifestationValidator {
           'isRead deve ser 0 ou 1'
         ),
         ownerId: number('ownerId deve ser um id do usuário'),
+        cancelled: boolean('cancelled deve ser uma boolean'),
         status: string(),
       });
 

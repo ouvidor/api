@@ -22,6 +22,8 @@ class Manifestation extends Model {
         underscored: true,
         createdAt: 'created_at', // <====== this line and the following one
         updatedAt: 'updated_at',
+        deletedAt: 'deleted_at',
+        paranoid: true, // faz com que não seja excluido, apenas marcado como excluido
       }
     );
 

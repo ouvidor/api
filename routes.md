@@ -397,6 +397,7 @@ Essa rota pode receber em sua query parâmetros opcionais.
 - isRead: filtra pelo estado de leitura, se foi lido ou não.
 - text: define um título específico a ser pesquisado.
 - options: define um array de categorias e tipos de manifestações a serem pesquisados.
+- cancelled: valor pode ser `true`, permite retornar manifestações canceladas.
 - ownerId: busca por manifestações de um único usuário.
 
 _retorna_:
@@ -416,6 +417,7 @@ _retorna_:
       "longitude": "-42.0406559",
       "created_at": "2020-05-07T17:01:26.000Z",
       "updated_at": "2020-05-08T16:53:55.000Z",
+      "deleted_at": null,
       "ombudsmen_id": 1,
       "categories": [
         {
@@ -476,6 +478,7 @@ _retorna_:
   "longitude": "-42.0406379",
   "created_at": "2020-05-08T17:35:03.000Z",
   "updated_at": "2020-05-08T17:35:03.000Z",
+  "deleted_at": null,
   "ombudsmen_id": 1,
   "files": [],
   "type": {
@@ -579,6 +582,12 @@ _retorna_:
   "ombudsmen_id": 1
 }
 ```
+
+- **DELETE** `/manifestation/:id`: Cancela uma manifestação.
+
+_retorna_:
+
+_`vazio`_
 
 ---
 

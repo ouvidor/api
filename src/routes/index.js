@@ -18,7 +18,6 @@ import statisticsRoutes from './statistics.routes';
 import mailRoutes from './mail.routes';
 import authRoutes from './auth.routes';
 import adminRoutes from './admin.routes';
-import avaliationRoutes from './avaliation.routes';
 
 const routes = Router();
 

@@ -349,4 +349,19 @@ describe('Manifestation', () => {
       );
     });
   });
+
+  describe('DELETE', () => {
+    it('should fail to cancel a manifestation, out of period', async () => {
+      const result = await request(app)
+        .delete(`/manifestation/${manifestation.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send();
+
+      expect(result.status).toBe(403);
+      expect(result.body).toHaveProperty(
+        'message',
+        'Fora do período disponível para cancelar a manifestação.'
+      );
+    });
+  });
 });

@@ -17,6 +17,7 @@ const searchManifestations = async ({
   page = 1,
   ownerId,
   isRead,
+  cancelled,
   status,
 }) => {
   if (options === undefined) {
@@ -30,12 +31,14 @@ const searchManifestations = async ({
   const categoriesIds = categories.map(category => category.id);
 
   const result = await Manifestation.findAndCountAll({
+    paranoid: !cancelled, // para mostrar os cancelados paranoid deve ser false
     limit: 10,
     offset: 10 * page - 10,
     distinct: true,
     attributes: {
       exclude: ['users_id', 'types_id', 'secretariats_id'],
     },
+    order: [['updated_at', 'DESC']],
     where: {
       ...(isRead && { read: isRead }),
       ...(ownerId && { users_id: ownerId }),

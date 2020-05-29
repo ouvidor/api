@@ -67,7 +67,7 @@ const updateManifestation = async ({
   });
 
   if (!manifestation) {
-    throw new AppError('Essa manifestação não pôde ser encontrada.', 401);
+    throw new AppError('Essa manifestação não pôde ser encontrada.', 404);
   }
 
   const latestManifestationStatus = getLatestManifestationStatus(manifestation);

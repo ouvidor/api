@@ -14,6 +14,7 @@ import searchManifestations from '../services/Manifestation/search';
 import createManifestation from '../services/Manifestation/create';
 import showManifestation from '../services/Manifestation/show';
 import updateManifestation from '../services/Manifestation/update';
+import cancelManifestation from '../services/Manifestation/cancel';
 
 const manifestationsRoutes = Router();
 
@@ -53,23 +54,28 @@ manifestationsRoutes.post(
   }
 );
 
-manifestationsRoutes.get('/', async (request, response) => {
-  const { text, options, isRead, status } = request.query;
-  let { page = 1, ownerId } = request.query;
-  page = page && Number(page);
-  ownerId = ownerId && Number(ownerId);
+manifestationsRoutes.get(
+  '/',
+  ManifestationValidator.fetch,
+  async (request, response) => {
+    const { text, options, isRead, status, cancelled } = request.query;
+    let { page = 1, ownerId } = request.query;
+    page = page && Number(page);
+    ownerId = ownerId && Number(ownerId);
 
-  const searchResult = await searchManifestations({
-    text,
-    options,
-    page,
-    ownerId,
-    isRead,
-    status,
-  });
+    const searchResult = await searchManifestations({
+      text,
+      options,
+      page,
+      ownerId,
+      isRead,
+      cancelled,
+      status,
+    });
 
-  return response.status(200).json(searchResult);
-});
+    return response.status(200).json(searchResult);
+  }
+);
 
 manifestationsRoutes.get('/:idOrProtocol', async (request, response) => {
   const { idOrProtocol } = request.params;
@@ -109,6 +115,15 @@ manifestationsRoutes.put(
 );
 
 manifestationsRoutes.use(RolesMiddleware.admin);
+
+manifestationsRoutes.delete('/:id', async (request, response) => {
+  const id = Number(request.params.id);
+  const { user_id } = request;
+
+  await cancelManifestation({ id, userId: user_id });
+
+  return response.status(204).send();
+});
 
 manifestationsRoutes.patch('/:id/read', async (request, response) => {
   const { id } = request.params;
