@@ -68,7 +68,7 @@ const saveFiles = async ({ userId, manifestationId, files, userRoleId }) => {
    * OU
    * O usuário deve ser um administrador
    */
-  if (!isOwner || !isUserAnAdmin) {
+  if (!isOwner && !isUserAnAdmin) {
     throw new AppError(
       'Não tem permissão para enviar um arquivo para essa manifestação.',
       403
