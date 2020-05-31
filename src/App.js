@@ -17,12 +17,16 @@ import './database';
 // instancia configurada do Sequelize, para conectar ao Database
 import routes from './routes';
 
+// jobs, funções que são executadas de tempo em tempo
+import jobArchiveManifestations from './jobs/archiveManifestations';
+
 class App {
   constructor() {
     this.server = express();
 
     this.config();
     this.routes();
+    this.jobs();
   }
 
   // middlewares de configuração
@@ -47,6 +51,10 @@ class App {
     }
     this.server.use(routes);
     this.server.use(ErrorHandler);
+  }
+
+  jobs() {
+    jobArchiveManifestations.start();
   }
 }
 
