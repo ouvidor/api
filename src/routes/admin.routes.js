@@ -1,22 +1,26 @@
-import { Op } from 'sequelize';
 import { Router } from 'express';
 
-import { ADMIN, MASTER } from '../data/roles';
-import User from '../models/User';
+import fetchAdmins from '../services/Admin/fetch';
+import changeAdminRole from '../services/Admin/changeAdminRole';
 
 const adminRoutes = Router();
 
 adminRoutes.get('/', async (request, response) => {
-  const admins = await User.findAll({
-    attributes: ['id', 'first_name', 'last_name', 'email', 'role'],
-    where: {
-      role: {
-        [Op.or]: [ADMIN, MASTER],
-      },
-    },
-  });
+  const admins = await fetchAdmins();
 
   return response.status(200).json(admins);
+});
+
+adminRoutes.patch('/:id', async (request, response) => {
+  const id = Number(request.params.id);
+  const { admin } = request.query;
+
+  await changeAdminRole({
+    id,
+    adminRole: admin,
+  });
+
+  return response.status(204).json();
 });
 
 export default adminRoutes;
