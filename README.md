@@ -1,6 +1,6 @@
 # Ouvidor API
 
-[![CircleCI](https://circleci.com/gh/ouvidor/api.svg?style=svg)](https://circleci.com/gh/ouvidor/api) [![Greenkeeper badge](https://badges.greenkeeper.io/ouvidor/api.svg)](https://greenkeeper.io/)
+[![CircleCI](https://circleci.com/gh/ouvidor/api.svg?style=svg)](https://circleci.com/gh/ouvidor/api)
 
 ## Como usar
 
