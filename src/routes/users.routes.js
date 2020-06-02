@@ -3,6 +3,7 @@ import { Router } from 'express';
 import authMiddleware from '../middlewares/auth';
 import UserValidator from '../middlewares/validators/User';
 
+import searchUser from '../services/User/search';
 import fetchUsers from '../services/User/fetch';
 import showUser from '../services/User/show';
 import createUser from '../services/User/create';
@@ -32,6 +33,14 @@ usersRoutes.post('/', UserValidator.save, async (request, response) => {
 });
 
 usersRoutes.use(authMiddleware);
+
+usersRoutes.get('/search', async (request, response) => {
+  const { email } = request.query;
+
+  const user = await searchUser({ email });
+
+  return response.status(200).json(user);
+});
 
 usersRoutes.get('/', async (request, response) => {
   const users = await fetchUsers();

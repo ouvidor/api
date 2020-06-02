@@ -35,6 +35,22 @@ Contêm protocolo _HTTP_, endereço da rota, explicação do que é feito, o que
 }
 ```
 
+- **GET** `user/search`: retorna o usuário que tem esse id.
+Atributos disponíveis na query:
+  > email: O email do usuário a ser achado.
+
+```json
+{
+  "id": 1,
+  "first_name": "master",
+  "last_name": "root",
+  "email": "root@gmail.com",
+  "role": "master",
+  "created_at": "2020-06-02T16:59:42.000Z",
+  "deleted_at": null
+}
+```
+
 - **POST** `user/`: cria um novo registro na tabela de _users_.
 
 Existem **dois** tipos de requisições possiveis aqui, uma incluí o atributo 'role' mas é **necessário um token** de usuário de nivel master no header na requisição, e a outra é sem o atributo role.
@@ -1139,3 +1155,12 @@ _retorna_:
   }
 ]
 ```
+
+- **PATCH** `admins/:id`: muda o status de um usuário para admin ou para cidadão.
+Atributo disponível na query:
+
+ > admin: Deverá ser true ou false. Se for true o usuário vira um admin.
+
+_retorna_:
+
+`204`

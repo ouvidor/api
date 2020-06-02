@@ -163,6 +163,22 @@ describe('User', () => {
       );
       expect(response.status).toBe(404);
     });
+
+    it('should search a user by email', async () => {
+      const response = await request(app)
+        .get(`/user/search`)
+        .query({ email: user.email })
+        .set('Authorization', `Bearer ${token}`)
+        .send();
+
+      expect(response.body).toHaveProperty(
+        'email',
+        'first_name',
+        'id',
+        'last_name',
+        'role'
+      );
+    });
   });
 
   describe('UPDATE', () => {
