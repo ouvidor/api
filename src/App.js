@@ -54,7 +54,9 @@ class App {
   }
 
   jobs() {
-    jobArchiveManifestations.start();
+    if (process.env.NODE_ENV !== 'test') {
+      jobArchiveManifestations.start();
+    }
   }
 }
 
