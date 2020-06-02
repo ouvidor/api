@@ -1,7 +1,6 @@
 import request from 'supertest';
 
 import app from '../../src/App';
-import factory from '../factories';
 import truncate from '../util/truncate';
 import sign from '../util/sign';
 import seedDatabase from '../util/seedDatabase';
@@ -12,19 +11,17 @@ const adminMaster = {
 };
 
 let token;
-let user;
 
 describe('Admin', () => {
   beforeAll(async () => {
     await truncate();
     await seedDatabase();
 
-    const { token: signedToken, user: signedUser } = await sign.in({
+    const { token: signedToken } = await sign.in({
       ...adminMaster,
       city: 'Cabo Frio',
     });
     token = signedToken;
-    user = signedUser;
   });
 
   describe('GET', () => {
@@ -50,9 +47,18 @@ describe('Admin', () => {
   });
 
   describe('PATCH', () => {
-    it('should update and then login', async () => {
+    it('should transform a citizen into an admin', async () => {
+      const citizenResponse = await sign.up({
+        first_name: 'Dark',
+        last_name: 'Sorcerer',
+        email: 'd4rk@s0rc3r3r.com',
+        password: 'D4rk_s0rc3r3r_1337',
+      });
+
+      const citizen = citizenResponse.body;
+
       const response = await request(app)
-        .patch(`/admins/${user.id}`)
+        .patch(`/admins/${citizen.id}`)
         .set('Authorization', `Bearer ${token}`)
         .query({ admin: true })
         .send({});
