@@ -1,4 +1,4 @@
-import Sequelize from 'sequelize';
+import Sequelize, { QueryTypes } from 'sequelize';
 
 // configuração de acesso ao banco
 import databaseConfig from '../config/database';
@@ -43,7 +43,10 @@ class Database {
   }
 
   async query(queryToRun, options) {
-    return this.connection.query(queryToRun, options);
+    return this.connection.query(queryToRun, {
+      type: QueryTypes.SELECT,
+      ...options,
+    });
   }
 
   associate() {
