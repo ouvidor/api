@@ -10,7 +10,7 @@ import Prefecture from '../../models/Prefecture';
 import Ombudsman from '../../models/Ombudsman';
 
 import createManifestationStatus from '../StatusHistory/create';
-import generateGeolocation from '../generateGeolocation';
+import generateGeolocation from '../../utils/generateGeolocation';
 
 async function create({
   categoriesId,

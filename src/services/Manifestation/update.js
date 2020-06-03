@@ -5,7 +5,7 @@ import ManifestationStatusHistory from '../../models/ManifestationStatusHistory'
 import Status from '../../models/Status';
 import Secretary from '../../models/Secretary';
 
-import generateGeolocation from '../generateGeolocation';
+import generateGeolocation from '../../utils/generateGeolocation';
 import createManifestationStatus from '../StatusHistory/create';
 import checkIfTypeExists from '../Type/checkIfTypeExists';
 import checkIfCategoriesExists from '../Category/checkIfCategoriesExists';

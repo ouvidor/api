@@ -13,7 +13,16 @@ import checkIfManifestionInUpdatePeriod from '../../utils/checkIfManifestionInUp
 import deleteTempFiles from '../../utils/deleteTempFiles';
 import getLatestManifestationStatus from '../../utils/getLatestManifestationStatus';
 
-const saveFiles = async ({ userId, manifestationId, files, userRoleId }) => {
+const saveManifestationFiles = async ({
+  userId,
+  manifestationId,
+  files,
+  userRoleId,
+}) => {
+  if (!files) {
+    throw new AppError('Não consta um arquivo na requisição.', 400);
+  }
+
   const userPromise = User.findByPk(userId); // usuario que fez a requisição de upload
   const manifestationPromise = Manifestation.findByPk(manifestationId, {
     include: [
@@ -44,10 +53,6 @@ const saveFiles = async ({ userId, manifestationId, files, userRoleId }) => {
     throw new AppError(
       'Fora do período disponível para edição da manifestação.'
     );
-  }
-
-  if (!files) {
-    throw new AppError('Não consta um arquivo na requisição.', 400);
   }
 
   if (!manifestation || !user) {
@@ -121,4 +126,4 @@ const saveFiles = async ({ userId, manifestationId, files, userRoleId }) => {
   }
 };
 
-export default saveFiles;
+export default saveManifestationFiles;

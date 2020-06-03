@@ -33,6 +33,11 @@ class File extends Model {
       as: 'manifestation',
       targetKey: 'id',
     });
+    this.belongsTo(models.ManifestationStatusHistory, {
+      foreignKey: 'manifestations_status_id',
+      as: 'manifestation_status',
+      targetKey: 'id',
+    });
     this.belongsTo(models.User, {
       foreignKey: 'users_id',
       as: 'user',

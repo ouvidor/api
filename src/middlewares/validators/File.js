@@ -16,10 +16,10 @@ class FileValidator {
   async save(request, response, next) {
     try {
       const schema = object().shape({
-        manifestation_id: string().required('ID da Manifestação é necessário'),
+        id: string().required('Id da entidade é necessário'),
       });
 
-      await schema.validate(request.body, { abortEarly: false });
+      await schema.validate(request.params, { abortEarly: false });
       return next();
     } catch (error) {
       // console.log(error);
