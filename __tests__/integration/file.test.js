@@ -2,21 +2,22 @@ import request from 'supertest';
 
 import app from '../../src/App';
 import truncate from '../util/truncate';
-import factory from '../factories';
 import sign from '../util/sign';
 import seedDatabase from '../util/seedDatabase';
 import File from '../../src/models/File';
 import Manifestation from '../../src/models/Manifestation';
+import ManifestationStatusHistory from '../../src/models/ManifestationStatusHistory';
 
 let token;
 let manifestation;
+let manifestationStatus;
 let userProfile;
 
 describe('File', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeAll(async () => {
     await truncate();
-    const { ombudsman, category, types } = await seedDatabase();
+    const { ombudsman, category, types, status } = await seedDatabase();
     const { user, token: signedToken } = await sign.in({
       email: 'root@gmail.com',
       password: '123456',
@@ -33,6 +34,12 @@ describe('File', () => {
     });
     manifestation.setCategories(category.id);
 
+    manifestationStatus = await ManifestationStatusHistory.create({
+      description: 'Manifestação foi cadastrada.',
+      manifestations_id: manifestation.id,
+      status_id: status[1].id,
+    });
+
     await File.create({
       name: 'sample.txt',
       name_in_server: 'sample-123456789.txt',
@@ -40,10 +47,18 @@ describe('File', () => {
       manifestations_id: manifestation.id,
       users_id: user.id,
     });
+
+    await File.create({
+      name: 'sample.txt',
+      name_in_server: 'sample-123456789.txt',
+      extension: '.txt',
+      manifestations_status_id: manifestationStatus.id,
+      users_id: user.id,
+    });
   });
 
   describe('FETCH', () => {
-    it('fetch files successful', async () => {
+    it('fetch manifestation files successful', async () => {
       const response = await request(app)
         .get(`/files/manifestation/${manifestation.id}`)
         .set('Authorization', `Bearer ${token}`)
@@ -65,20 +80,25 @@ describe('File', () => {
       );
     });
 
-    it('cannot fetch files, not owner and not admin', async () => {
-      const user = await factory.attrs('User');
-      await sign.up(user);
-
-      const { token: citizenToken } = await sign.in(user);
-
+    it('fetch manifestation status files successful', async () => {
       const response = await request(app)
-        .get(`/files/manifestation/${manifestation.id}`)
-        .set('Authorization', `Bearer ${citizenToken}`)
+        .get(`/files/status/${manifestationStatus.id}`)
+        .set('Authorization', `Bearer ${token}`)
         .send();
 
-      expect(response.body).toHaveProperty(
-        'message',
-        'Não autorizado, apenas administradores e donos do arquivo podem acessa-lo.'
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.any(Number),
+            name: 'sample.txt',
+            name_in_server: 'sample-123456789.txt',
+            extension: '.txt',
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+            manifestations_status_id: manifestationStatus.id,
+            users_id: userProfile.id,
+          }),
+        ])
       );
     });
   });
