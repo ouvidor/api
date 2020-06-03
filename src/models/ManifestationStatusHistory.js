@@ -38,6 +38,10 @@ class ManifestationStatusHistory extends Model {
       as: 'status',
       targetKey: 'id',
     });
+    this.hasMany(models.File, {
+      as: 'files',
+      foreignKey: 'manifestations_status_id',
+    });
   }
 }
 

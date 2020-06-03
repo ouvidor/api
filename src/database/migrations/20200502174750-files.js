@@ -40,6 +40,11 @@ module.exports = {
           references: { model: 'manifestations', key: 'id' },
           onDelete: 'CASCADE',
         },
+        manifestations_status_id: {
+          type: Sequelize.INTEGER,
+          references: { model: 'manifestations_status_history', key: 'id' },
+          onDelete: 'CASCADE',
+        },
         created_at: {
           type: Sequelize.DATE,
           allowNull: false,

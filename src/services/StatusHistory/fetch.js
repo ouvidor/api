@@ -2,6 +2,7 @@ import AppError from '../../errors/AppError';
 import ManifestationStatusHistory from '../../models/ManifestationStatusHistory';
 import Manifestation from '../../models/Manifestation';
 import Status from '../../models/Status';
+import File from '../../models/File';
 
 const fetchManifestationStatusHistory = async ({
   manifestationProtocol,
@@ -27,7 +28,10 @@ const fetchManifestationStatusHistory = async ({
 
   const manifestationStatusHistory = await ManifestationStatusHistory.findAll({
     where: { manifestations_id: manifestation.id },
-    include: [{ model: Status, as: 'status' }],
+    include: [
+      { model: Status, as: 'status' },
+      { model: File, as: 'files' },
+    ],
   });
 
   return manifestationStatusHistory;
