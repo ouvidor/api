@@ -81,19 +81,6 @@ const saveManifestationFiles = async ({
     );
   }
 
-  /**
-   * É importante checar a data de envio por causa que se a manifestação
-   * for criada com um arquivo ela receberia o status de complementada
-   * logo de cara
-   */
-  const isRequestInTheSameDay = isSameDay(
-    latestManifestationStatus.created_at,
-    new Date()
-  );
-
-  console.log(latestManifestationStatus.created_at);
-  console.log(new Date());
-
   const uploadPromises = files.map(file =>
     GoogleCloudStorage.upload(file.filename)
   );
@@ -117,6 +104,16 @@ const saveManifestationFiles = async ({
     });
 
     deleteTempFiles(files);
+
+    /**
+     * É importante checar a data de envio por causa que se a manifestação
+     * for criada com um arquivo ela receberia o status de complementada
+     * logo de cara
+     */
+    const isRequestInTheSameDay = isSameDay(
+      latestManifestationStatus.created_at,
+      new Date()
+    );
 
     if (
       !isRequestInTheSameDay &&
