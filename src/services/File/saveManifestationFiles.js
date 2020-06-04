@@ -1,4 +1,5 @@
 import { extname } from 'path';
+import { isSameDay } from 'date-fns';
 
 import GoogleCloudStorage from '../../lib/GoogleCloudStorage';
 import AppError from '../../errors/AppError';
@@ -80,6 +81,19 @@ const saveManifestationFiles = async ({
     );
   }
 
+  /**
+   * É importante checar a data de envio por causa que se a manifestação
+   * for criada com um arquivo ela receberia o status de complementada
+   * logo de cara
+   */
+  const isRequestInTheSameDay = isSameDay(
+    latestManifestationStatus.created_at,
+    new Date()
+  );
+
+  console.log(latestManifestationStatus.created_at);
+  console.log(new Date());
+
   const uploadPromises = files.map(file =>
     GoogleCloudStorage.upload(file.filename)
   );
@@ -104,9 +118,8 @@ const saveManifestationFiles = async ({
 
     deleteTempFiles(files);
 
-    // se for o dono da manifestação marca como complementada
     if (
-      userId === manifestation.users_id &&
+      !isRequestInTheSameDay &&
       latestManifestationStatus.status.title !== 'complementada'
     ) {
       await createManifestationStatus({
