@@ -605,38 +605,62 @@ _retorna_:
 
 _`vazio`_
 
+- **PATCH** `manifestation/:id/read`: Marca a manifestação como lida.
+Requisição sem corpo.
+Resposta sem corpo.
+
 ---
 
 ### File
 
-- **GET** `/files/manifestation/:manifestation_id`: retorna todos os arquivos associados à _manifestação_ buscada.
+- **GET** `/files/manifestation/:id`: retorna todos os arquivos associados à _manifestação_ buscada.
 
 _retorna_:
 
 ```json
-{
-  "files": [
-    {
-      "id": 2,
-      "name": "imagem.png",
-      "name_in_server": "file-1588623519621.png",
-      "extension": ".png",
-      "created_at": "2020-05-04T20:18:40.000Z",
-      "updated_at": "2020-05-04T20:18:40.000Z",
-      "manifestations_id": 3,
-      "users_id": 1
-    }
-  ]
-}
+[
+  {
+    "id": 1,
+    "name": "imagem.png",
+    "name_in_server": "file-1591130825083.png",
+    "extension": ".png",
+    "created_at": "2020-06-02T20:47:10.000Z",
+    "updated_at": "2020-06-02T20:47:10.000Z",
+    "manifestations_id": 1,
+    "manifestations_status_id": null,
+    "users_id": 1
+  }
+]
 ```
 
-- **POST** `/files/`: faz upload de um arquivo para o server, o arquivo é vinculado a uma manifestação e tem seus dados salvos na tabela _files_, o arquivo em si é salvo na Googlo Cloud.
+- **GET** `/files/status/:id`: retorna todos os arquivos associados ao Status de Manifestação buscada.
+
+_retorna_:
+
+```json
+[
+  {
+    "id": 1,
+    "name": "imagem.png",
+    "name_in_server": "file-1591360996262.png",
+    "extension": ".png",
+    "created_at": "2020-06-05T12:43:16.000Z",
+    "updated_at": "2020-06-05T12:43:16.000Z",
+    "manifestations_id": null,
+    "manifestations_status_id": 1,
+    "users_id": 1
+  }
+]
+```
+
+- **POST** `/files/manifestation/:id`: faz upload de um arquivo para o server, o arquivo é vinculado a uma manifestação e tem seus dados salvos na tabela _files_, o arquivo em si é salvo na Googlo Cloud.
 
 O corpo para envio dessa requisição se da através de um **multipart form-data** na seguinte estrutura:
+
 | key               | value         |
 |-------------------|---------------|
 | file              | documento.pdf |
-| manifestation_id  | 3             |
+
 
 Para que o envio ocorra com sucesso, o token de autenticação deve ser do **AUTOR** da manifestação, ou de algum usuário com role **ADMIN** ou **MASTER**
 
@@ -652,6 +676,34 @@ _retorna_:
     "created_at": "2020-05-04T20:18:40.515Z",
     "updated_at": "2020-05-04T20:18:40.542Z",
     "users_id": 1
+  }
+]
+```
+
+- **POST** `/files/status/:id`: faz upload de um arquivo para o server, o arquivo é vinculado a um status de manifestação e tem seus dados salvos na tabela _files_, o arquivo em si é salvo na Googlo Cloud.
+
+O corpo para envio dessa requisição se da através de um **multipart form-data** na seguinte estrutura:
+
+| key               | value         |
+|-------------------|---------------|
+| file              | documento.pdf |
+
+
+Para que o envio ocorra com sucesso, o token de autenticação deve ser de algum usuário com role **ADMIN** ou **MASTER**
+
+_retorna_:
+
+```json
+[
+  {
+    "id": 1,
+    "extension": ".png",
+    "name": "imagem.png",
+    "name_in_server": "file-1591360996262.png",
+    "manifestations_status_id": 1,
+    "users_id": 1,
+    "created_at": "2020-06-05T12:43:16.953Z",
+    "updated_at": "2020-06-05T12:43:16.953Z"
   }
 ]
 ```
