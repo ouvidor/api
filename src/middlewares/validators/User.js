@@ -31,6 +31,25 @@ class UserValidator {
     }
   }
 
+  async search(request, response, next) {
+    try {
+      const schema = object().shape({
+        email: string()
+          .email('Email invalido')
+          .required('Email é necessário'),
+      });
+
+      await schema.validate(request.query, { abortEarly: false });
+      return next();
+    } catch (error) {
+      return response.status(400).json({
+        error: 'Validação falhou',
+        // pega apenas a mensagens do erros
+        messages: error.inner.map(err => err.message),
+      });
+    }
+  }
+
   async update(request, response, next) {
     try {
       const schema = object().shape({

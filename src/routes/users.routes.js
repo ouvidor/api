@@ -34,7 +34,7 @@ usersRoutes.post('/', UserValidator.save, async (request, response) => {
 
 usersRoutes.use(authMiddleware);
 
-usersRoutes.get('/search', async (request, response) => {
+usersRoutes.get('/search', UserValidator.search, async (request, response) => {
   const { email } = request.query;
 
   const user = await searchUser({ email });
