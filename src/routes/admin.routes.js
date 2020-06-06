@@ -13,7 +13,7 @@ adminRoutes.get('/', async (request, response) => {
 
 adminRoutes.patch('/:id', async (request, response) => {
   const id = Number(request.params.id);
-  const { admin } = request.query;
+  const { admin } = request.body;
 
   await changeAdminRole({
     id,

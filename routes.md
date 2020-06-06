@@ -1209,9 +1209,14 @@ _retorna_:
 ```
 
 - **PATCH** `admins/:id`: muda o status de um usuário para admin ou para cidadão.
-Atributo disponível na query:
 
- > admin: Deverá ser true ou false. Se for true o usuário vira um admin.
+_requisição_:
+
+```json
+{
+  "admin": false,
+}
+```
 
 _retorna_:
 

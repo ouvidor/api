@@ -2,7 +2,7 @@ import AppError from '../../errors/AppError';
 import User from '../../models/User';
 import { MASTER, ADMIN, CITIZEN } from '../../data/roles';
 
-const changeAdminRole = async ({ id, adminRole = false }) => {
+const changeAdminRole = async ({ id, adminRole }) => {
   const user = await User.findByPk(id);
 
   if (!user) {
@@ -16,7 +16,9 @@ const changeAdminRole = async ({ id, adminRole = false }) => {
     );
   }
 
-  return user.update({ role: adminRole ? ADMIN : CITIZEN });
+  await user.update({ role: adminRole ? ADMIN : CITIZEN });
+
+  return user;
 };
 
 export default changeAdminRole;
