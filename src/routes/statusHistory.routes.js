@@ -15,7 +15,7 @@ statusHistoryRoutes.get('/:idOrProtocol/status', async (request, response) => {
   let manifestationId;
 
   // checa se é um protocolo
-  if (idOrProtocol.match(/\d*-\d/)) {
+  if (idOrProtocol.match(/([a-z])\w+/)) {
     manifestationProtocol = idOrProtocol;
   } else {
     manifestationId = idOrProtocol;
