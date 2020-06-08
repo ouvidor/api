@@ -8,13 +8,13 @@ import RolesMiddleware from '../middlewares/roles';
 import ManifestationValidator from '../middlewares/validators/Manifestation';
 import avaliationRoutes from './avaliation.routes';
 
-import Manifestation from '../models/Manifestation';
-
 import searchManifestations from '../services/Manifestation/search';
 import createManifestation from '../services/Manifestation/create';
 import showManifestation from '../services/Manifestation/show';
 import updateManifestation from '../services/Manifestation/update';
 import cancelManifestation from '../services/Manifestation/cancel';
+import markManifestationAsRead from '../services/Manifestation/read';
+import linkManifestationToSecretary from '../services/Manifestation/linkSecretary';
 
 const manifestationsRoutes = Router();
 
@@ -128,18 +128,27 @@ manifestationsRoutes.delete('/:id', async (request, response) => {
 manifestationsRoutes.patch('/:id/read', async (request, response) => {
   const { id } = request.params;
 
-  const manifestation = await Manifestation.findOne({ where: { id } });
-
-  if (!manifestation) {
-    return response
-      .status(404)
-      .json({ message: 'Essa manifestação não existe.' });
-  }
-
-  await manifestation.update({ read: true });
+  await markManifestationAsRead(id);
 
   return response.status(204).json();
 });
+
+manifestationsRoutes.patch(
+  '/:manifestationId/secretary/:secretaryId',
+  async (request, response) => {
+    let { manifestationId, secretaryId } = request.params;
+
+    manifestationId = Number(manifestationId);
+    secretaryId = Number(secretaryId);
+
+    await linkManifestationToSecretary({
+      manifestationId,
+      secretaryId,
+    });
+
+    return response.status(204).json();
+  }
+);
 
 manifestationsRoutes.use(statusHistoryRoutes);
 

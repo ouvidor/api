@@ -14,6 +14,7 @@ let token;
 let category;
 let types;
 let manifestation;
+let secretary;
 
 describe('Manifestation', () => {
   beforeAll(async () => {
@@ -25,6 +26,18 @@ describe('Manifestation', () => {
     // necessário login em todos os tests
     const { token: signedToken } = await sign.in(adminMaster);
     token = signedToken;
+
+    const response = await request(app)
+      .post('/secretary')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title: 'secretary',
+        email: 'secretary@gmail.com',
+        accountable: 'José',
+        city: 'Cabo Frio',
+      });
+
+    secretary = response.body;
   });
 
   describe('POST', () => {
@@ -330,6 +343,15 @@ describe('Manifestation', () => {
         'message',
         'Essa manifestação não existe.'
       );
+    });
+
+    it('should link manifestation to a secretary', async () => {
+      const response = await request(app)
+        .patch(`/manifestation/${manifestation.id}/secretary/${secretary.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send();
+
+      expect(response.status).toBe(204);
     });
   });
 
