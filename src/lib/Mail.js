@@ -41,7 +41,11 @@ class Mail {
   }
 
   sendMail(message) {
-    return this.transporter.sendMail({ ...mailConfig.default, ...message });
+    return this.transporter.sendMail({
+      ...mailConfig.default,
+      ...message,
+      from: 'cabofrio@ouvidor.com',
+    });
   }
 }
 
