@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { parseISO, isValid } from 'date-fns';
 
-import GenerateStatistics from '../services/GenerateStatistics';
+import generateReport from '../services/Statatistics/report';
 
 const statisticsRoutes = Router();
 
@@ -13,7 +13,7 @@ statisticsRoutes.get('/', async (request, response) => {
     return response.status(400).json({ message: 'Essa data é invalida.' });
   }
 
-  const statistics = await GenerateStatistics.run({
+  const statistics = await generateReport({
     date: parsedDate,
     city: request.user_city,
   });
