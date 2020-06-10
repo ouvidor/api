@@ -27,7 +27,12 @@ const generateHeatmap = async ({ init, end, city }) => {
       p.name = '${city}';
   `);
 
-  return result;
+  const formattedResult = result.map(item => ({
+    lat: Number(item.lat),
+    lng: Number(item.lng),
+  }));
+
+  return formattedResult;
 };
 
 export default generateHeatmap;

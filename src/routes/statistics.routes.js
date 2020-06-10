@@ -7,21 +7,28 @@ import generateHeatmap from '../services/Statatistics/heatmap';
 
 const statisticsRoutes = Router();
 
-statisticsRoutes.get('/', async (request, response) => {
-  const { date } = request.query;
-  const parsedDate = parseISO(date);
+statisticsRoutes.get(
+  '/',
+  StatisticValidator.report,
+  async (request, response) => {
+    const { init, end, city } = request.query;
 
-  if (!isValid(parsedDate)) {
-    return response.status(400).json({ message: 'Essa data é invalida.' });
+    const parsedInitDate = parseISO(init);
+    const parsedEndDate = parseISO(end);
+
+    if (!isValid(parsedInitDate) || !isValid(parsedEndDate)) {
+      return response.status(400).json({ message: 'Essa data é invalida.' });
+    }
+
+    const statistics = await generateReport({
+      init: parsedInitDate,
+      end: parsedEndDate,
+      city,
+    });
+
+    return response.status(200).json(statistics);
   }
-
-  const statistics = await generateReport({
-    date: parsedDate,
-    city: request.user_city,
-  });
-
-  return response.status(200).json(statistics);
-});
+);
 
 statisticsRoutes.get(
   '/heatmap',

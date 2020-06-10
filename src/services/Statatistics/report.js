@@ -1,8 +1,11 @@
-import { startOfMonth, endOfMonth } from 'date-fns';
+import { format } from 'date-fns';
 
 import database from '../../database';
 
-const generateReport = async ({ date, city }) => {
+const generateReport = async ({ init, end, city }) => {
+  const formattedInitialDate = format(init, 'dd/MM/yyyy');
+  const formattedEndDate = format(end, 'dd/MM/yyyy');
+
   const result = await database.query(`
     SELECT
       t.secretariats_id AS id,
