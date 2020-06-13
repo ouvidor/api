@@ -49,7 +49,7 @@ prefectureRoutes.put(
       telephone,
       location,
       attendance,
-      ombudsmen_id,
+      ombudsmanEmail,
     } = request.body;
 
     let nameToSearch;
@@ -70,7 +70,7 @@ prefectureRoutes.put(
       telephone,
       location,
       attendance,
-      ombudsmanId: ombudsmen_id,
+      ombudsmanEmail,
     });
 
     return response.status(200).json(prefecture);
@@ -90,7 +90,7 @@ prefectureRoutes.post(
       email,
       site,
       attendance,
-      ombudsmen_id,
+      ombudsmanEmail,
     } = request.body;
 
     const prefecture = await createPrefecture({
@@ -100,7 +100,7 @@ prefectureRoutes.post(
       email,
       site,
       attendance,
-      ombudsmanId: ombudsmen_id,
+      ombudsmanEmail,
     });
 
     return response.status(201).json(prefecture);

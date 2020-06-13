@@ -12,7 +12,7 @@ const updatePrefecture = async ({
   email,
   site,
   attendance,
-  ombudsmanId,
+  ombudsmanEmail,
 }) => {
   const prefecture = await Prefecture.findOne({
     where: {
@@ -34,21 +34,16 @@ const updatePrefecture = async ({
     attendance,
   };
 
-  if (ombudsmanId) {
-    const ombudsmanExists = Ombudsman.findOne({
-      where: { id: ombudsmanId },
-      attributes: ['id'],
-    });
-
-    if (!ombudsmanExists) {
-      throw new AppError('Essa ouvidoria não existe.', 400);
-    }
-
-    data.ombudsmen_id = ombudsmanId;
-  }
-
+  let ombudsmanExistsPromise;
   let emailIsAlreadyInUsePromise;
   let nameIsAlreadyInUsePromise;
+
+  if (ombudsmanEmail) {
+    ombudsmanExistsPromise = Ombudsman.findOne({
+      where: { email: ombudsmanEmail },
+      attributes: ['id'],
+    });
+  }
 
   if (email) {
     emailIsAlreadyInUsePromise = Prefecture.findOne({ where: { email } });
@@ -58,9 +53,14 @@ const updatePrefecture = async ({
     nameIsAlreadyInUsePromise = Prefecture.findOne({ where: { name } });
   }
 
-  const [emailIsAlreadyInUse, nameIsAlreadyInUse] = await Promise.all([
+  const [
+    emailIsAlreadyInUse,
+    nameIsAlreadyInUse,
+    ombudsmanExists,
+  ] = await Promise.all([
     emailIsAlreadyInUsePromise,
     nameIsAlreadyInUsePromise,
+    ombudsmanExistsPromise,
   ]);
 
   if (emailIsAlreadyInUse && emailIsAlreadyInUse.id !== prefecture.id) {
@@ -73,6 +73,11 @@ const updatePrefecture = async ({
   if (nameIsAlreadyInUse && nameIsAlreadyInUse.id !== prefecture.id) {
     throw new AppError('Uma outra prefeitura já usa esse nome.', 409);
   }
+
+  if (!ombudsmanExists) {
+    throw new AppError('Essa ouvidoria não existe.', 404);
+  }
+  data.ombudsmen_id = ombudsmanExists.id;
 
   const updatedPrefecture = await prefecture.update(data);
 

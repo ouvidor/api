@@ -10,7 +10,7 @@ const createPrefecture = async ({
   email,
   site,
   attendance,
-  ombudsmanId,
+  ombudsmanEmail,
 }) => {
   const data = {
     name,
@@ -21,26 +21,27 @@ const createPrefecture = async ({
     attendance,
   };
 
-  if (ombudsmanId) {
-    const ombudsmanExists = Ombudsman.findOne({
-      where: { id: ombudsmanId },
-      attributes: ['id'],
-    });
-
-    if (!ombudsmanExists) {
-      throw new AppError('Essa ouvidoria não existe.', 400);
-    }
-
-    data.ombudsmen_id = ombudsmanId;
-  }
-
+  const ombudsmanExistsPromise = Ombudsman.findOne({
+    where: { email: ombudsmanEmail },
+    attributes: ['id'],
+  });
   const emailIsAlreadyInUsePromise = Prefecture.findOne({ where: { email } });
   const nameIsAlreadyInUsePromise = Prefecture.findOne({ where: { name } });
 
-  const [emailIsAlreadyInUse, nameIsAlreadyInUse] = await Promise.all([
+  const [
+    emailIsAlreadyInUse,
+    nameIsAlreadyInUse,
+    ombudsmanExists,
+  ] = await Promise.all([
     emailIsAlreadyInUsePromise,
     nameIsAlreadyInUsePromise,
+    ombudsmanExistsPromise,
   ]);
+
+  if (!ombudsmanExists) {
+    throw new AppError('Essa ouvidoria não existe.', 404);
+  }
+  data.ombudsmen_id = ombudsmanExists.id;
 
   if (emailIsAlreadyInUse) {
     throw new AppError(

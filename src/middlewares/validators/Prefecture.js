@@ -15,6 +15,7 @@ class PrefectureValidator {
         attendance: string().required(
           'O horario de atendimento da prefeitura é necessário'
         ),
+        ombudsmanEmail: string().required('O email da ouvidoria é necessário'),
       });
 
       await schema.validate(request.body, { abortEarly: false });
@@ -38,6 +39,7 @@ class PrefectureValidator {
         email: string(),
         site: string(),
         attendance: string(),
+        ombudsmanEmail: string(),
       });
 
       await schema.validate(request.body, { abortEarly: false });
