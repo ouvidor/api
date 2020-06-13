@@ -74,10 +74,13 @@ const updatePrefecture = async ({
     throw new AppError('Uma outra prefeitura já usa esse nome.', 409);
   }
 
-  if (!ombudsmanExists) {
-    throw new AppError('Essa ouvidoria não existe.', 404);
+  if (ombudsmanEmail) {
+    if (!ombudsmanExists) {
+      throw new AppError('Essa ouvidoria não existe.', 404);
+    } else {
+      data.ombudsmen_id = ombudsmanExists.id;
+    }
   }
-  data.ombudsmen_id = ombudsmanExists.id;
 
   const updatedPrefecture = await prefecture.update(data);
 
