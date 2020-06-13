@@ -60,16 +60,9 @@ statisticsRoutes.get(
   async (request, response) => {
     const { init, end } = request.query;
 
-    const parsedInitDate = parseISO(init);
-    const parsedEndDate = parseISO(end);
-
-    if (!isValid(parsedInitDate) || !isValid(parsedEndDate)) {
-      return response.status(400).json({ message: 'Essa data é invalida.' });
-    }
-
     const statistic = await generateStatistic({
-      init: parsedInitDate,
-      end: parsedEndDate,
+      init,
+      end,
     });
 
     return response.status(200).json(statistic);
