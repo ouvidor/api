@@ -10,7 +10,13 @@ export default [
   {
     model: File,
     as: 'files',
-    attributes: ['id', 'name', 'extension'],
+    attributes: [
+      'id',
+      'name',
+      'extension',
+      'manifestations_id',
+      'manifestations_status_id',
+    ],
   },
   {
     model: Type,
