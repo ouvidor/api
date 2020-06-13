@@ -16,7 +16,9 @@ secretariatsRoutes.use(authMiddleware);
 secretariatsRoutes.use(RolesMiddleware.admin);
 
 secretariatsRoutes.get('/', async (request, response) => {
-  const secretariats = await fetchSecretariats();
+  const { user_city } = request;
+
+  const secretariats = await fetchSecretariats({ city: user_city });
 
   return response.status(200).json(secretariats);
 });

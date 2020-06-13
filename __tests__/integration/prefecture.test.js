@@ -4,6 +4,7 @@ import app from '../../src/App';
 import truncate from '../util/truncate';
 import sign from '../util/sign';
 import seedDatabase from '../util/seedDatabase';
+import Ombudsman from '../../src/models/Ombudsman';
 
 const adminMaster = {
   email: 'root@gmail.com',
@@ -12,6 +13,7 @@ const adminMaster = {
 
 let token;
 let prefecture;
+let ombudsman;
 
 describe('Prefecture', () => {
   beforeAll(async () => {
@@ -21,6 +23,14 @@ describe('Prefecture', () => {
 
     const { token: signedToken } = await sign.in(adminMaster);
     token = signedToken;
+
+    ombudsman = await Ombudsman.create({
+      location: 'Local',
+      telephone: '2212345678',
+      email: 'ouv@mail.br',
+      site: 'ouv.com.br',
+      attendance: 'Horário de atendimento',
+    });
   });
 
   describe('POST', () => {
@@ -35,6 +45,7 @@ describe('Prefecture', () => {
           email: 'arraial@prefeitura.com',
           site: 'https://arraial.prefeitura.com.br',
           attendance: 'attendance',
+          ombudsmanEmail: ombudsman.email,
         });
 
       expect(response.body).toHaveProperty(
@@ -61,6 +72,7 @@ describe('Prefecture', () => {
           email: 'arraial@prefeitura.com',
           site: 'https://arraial.com.br',
           attendance: 'attendance',
+          ombudsmanEmail: ombudsman.email,
         });
 
       expect(response.body).toHaveProperty(
@@ -157,7 +169,6 @@ describe('Prefecture', () => {
           attendance: 'attendance',
         });
 
-      expect(response.status).toBe(200);
       expect(response.body).toMatchObject({
         id: expect.any(Number),
         location: expect.any(String),
@@ -170,6 +181,7 @@ describe('Prefecture', () => {
         updated_at: expect.any(String),
         ombudsmen_id: expect.any(Number),
       });
+      expect(response.status).toBe(200);
     });
   });
 });
