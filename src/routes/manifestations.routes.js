@@ -15,6 +15,7 @@ import updateManifestation from '../services/Manifestation/update';
 import cancelManifestation from '../services/Manifestation/cancel';
 import markManifestationAsRead from '../services/Manifestation/read';
 import linkManifestationToSecretary from '../services/Manifestation/linkSecretary';
+import getManifestationByStatus from '../services/Manifestation/getManifestationByStatus';
 
 const manifestationsRoutes = Router();
 
@@ -74,6 +75,24 @@ manifestationsRoutes.get(
     });
 
     return response.status(200).json(searchResult);
+  }
+);
+
+manifestationsRoutes.get(
+  '/filter',
+  ManifestationValidator.filter,
+  async (request, response) => {
+    const { status, page = 1, quantity = 10 } = request.query;
+    const { user_id } = request;
+
+    const filterResult = await getManifestationByStatus({
+      statusTitle: status,
+      page: Number(page),
+      ownerId: Number(user_id),
+      itemsPerPage: Number(quantity),
+    });
+
+    return response.status(200).json(filterResult);
   }
 );
 

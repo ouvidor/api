@@ -91,6 +91,25 @@ class ManifestationValidator {
       });
     }
   }
+
+  async filter(request, response, next) {
+    try {
+      const schema = object().shape({
+        status: string(),
+        page: number().min(1),
+        quantity: number().min(1),
+      });
+
+      await schema.validate(request.query, { abortEarly: false });
+      return next();
+    } catch (error) {
+      return response.status(400).json({
+        error: 'Validação falhou',
+        // pega apenas a mensagens do erros
+        messages: error.inner.map(err => err.message),
+      });
+    }
+  }
 }
 
 export default new ManifestationValidator();
