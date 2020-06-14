@@ -119,7 +119,7 @@ manifestationsRoutes.put(
   async (request, response) => {
     const { id } = request.params;
     const { type_id, categories_id, ...data } = request.body;
-    const { user_id } = request;
+    const { user_id, user_city } = request;
 
     const manifestation = await updateManifestation({
       id,
@@ -127,6 +127,7 @@ manifestationsRoutes.put(
       categoriesId: categories_id,
       manifestationData: data,
       userId: user_id,
+      city: user_city,
     });
 
     return response.status(200).json(manifestation);

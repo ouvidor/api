@@ -1,7 +1,7 @@
 import geocoder from '../lib/Geocoder';
 import AppError from '../errors/AppError';
 
-const generateGeolocation = async ({ location, latitude, longitude }) => {
+const generateGeolocation = async ({ location, latitude, longitude, city }) => {
   // reverse
   if (latitude && longitude) {
     const [bestResult] = await geocoder
@@ -10,17 +10,23 @@ const generateGeolocation = async ({ location, latitude, longitude }) => {
         throw new AppError('Latitude/Longitude invalida.');
       });
     return {
-      location: `${bestResult.streetName}, ${bestResult.extra.neighborhood}`,
+      location: bestResult.formattedAddress,
+      latitude,
+      longitude,
     };
   }
 
   // forward
-  if (location) {
-    const [bestResult] = await geocoder.forward(location).catch(() => {
+  if (location && city) {
+    const [bestResult] = await geocoder.forward(location, city).catch(() => {
       throw new AppError('Localização invalida.');
     });
 
-    return { latitude: bestResult.latitude, longitude: bestResult.longitude };
+    return {
+      location: bestResult.formattedAddress,
+      latitude: bestResult.latitude,
+      longitude: bestResult.longitude,
+    };
   }
 
   return {};

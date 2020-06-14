@@ -11,12 +11,19 @@ class Geocoder {
 
     this.options = { provider, apiKey, httpAdapter, formatter };
 
-    this.geocoder = NodeGeocoder(this.options);
+    this.geocoder = NodeGeocoder({
+      ...this.options,
+      language: 'pt-BR',
+      region: 'BR',
+    });
   }
 
   // retorna uma promise
-  forward(location) {
-    return this.geocoder.geocode({ country: 'Brazil', address: location });
+  forward(location, city) {
+    return this.geocoder.geocode({
+      country: 'Brasil',
+      address: `${location}, ${city}`,
+    });
   }
 
   // retorna uma promise
