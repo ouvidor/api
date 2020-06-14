@@ -43,6 +43,10 @@ export default [
     attributes: ['id', 'description', 'created_at', 'updated_at'],
     include: [
       {
+        model: File,
+        as: 'files',
+      },
+      {
         model: Status,
         as: 'status',
         attributes: ['id', 'title'],
