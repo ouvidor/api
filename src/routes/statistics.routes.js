@@ -45,9 +45,9 @@ statisticsRoutes.get(
     }
 
     const heatmap = await generateHeatmap({
-      init: parsedInitDate,
-      end: parsedEndDate,
-      city,
+      init,
+      end,
+      cityName: city,
     });
 
     return response.status(200).json(heatmap);

@@ -1,10 +1,6 @@
-import { format } from 'date-fns';
 import database from '../../database';
 
-const generateHeatmap = async ({ init, end, city }) => {
-  const formattedInitialDate = format(init, 'dd/MM/yyyy');
-  const formattedEndDate = format(end, 'dd/MM/yyyy');
-
+const generateHeatmap = async ({ init, end, cityName }) => {
   /**
    * Autor da query: Lucas Sousa
    */
@@ -19,12 +15,12 @@ const generateHeatmap = async ({ init, end, city }) => {
       FROM
         manifestations m
       WHERE
-        m.latitude IS NOT NULL AND m.longitude IS NOT NULL AND DATE_FORMAT(m.created_at, '%d/%m/%Y') >= '${formattedInitialDate}' AND DATE_FORMAT(m.created_at, '%d/%m/%Y') <= '${formattedEndDate}'
+        m.latitude IS NOT NULL AND m.longitude IS NOT NULL AND DATE(m.created_at) BETWEEN '${init}' AND '${end}'
     ) t
     LEFT JOIN
       prefectures p ON p.ombudsmen_id = t.ombudsmen_id
     WHERE
-      p.name = '${city}';
+      p.name = '${cityName}';
   `);
 
   const formattedResult = result.map(item => ({
