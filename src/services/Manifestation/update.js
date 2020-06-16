@@ -19,6 +19,7 @@ const updateManifestation = async ({
   categoriesId = [],
   manifestationData,
   userId,
+  city,
 }) => {
   const doesTypeExistsPromise = checkIfTypeExists(typeId);
   const doesCategoriesExistPromise = checkIfCategoriesExists(categoriesId);
@@ -88,6 +89,7 @@ const updateManifestation = async ({
     latitude,
     longitude,
     location,
+    city,
   });
 
   const formattedData = {

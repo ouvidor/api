@@ -44,6 +44,7 @@ class SecretaryValidator {
       const schema = object().shape({
         init: string().required('A data de início é necessária'),
         end: string().required('A data de fim é necessária'),
+        city: string().required('O nome da cidade é necessária'),
       });
 
       await schema.validate(request.query, { abortEarly: false });

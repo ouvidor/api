@@ -44,13 +44,11 @@ async function create({
     latitude,
     location,
     longitude,
+    city,
   });
   const formattedData = {
     title,
     description,
-    latitude,
-    longitude,
-    location,
     ...geolocationData,
   };
   try {

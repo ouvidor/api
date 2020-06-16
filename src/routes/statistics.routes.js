@@ -22,9 +22,9 @@ statisticsRoutes.get(
     }
 
     const statistics = await generateReport({
-      init: parsedInitDate,
-      end: parsedEndDate,
-      city,
+      init,
+      end,
+      cityName: city,
     });
 
     return response.status(200).json(statistics);
@@ -45,9 +45,9 @@ statisticsRoutes.get(
     }
 
     const heatmap = await generateHeatmap({
-      init: parsedInitDate,
-      end: parsedEndDate,
-      city,
+      init,
+      end,
+      cityName: city,
     });
 
     return response.status(200).json(heatmap);
@@ -58,11 +58,19 @@ statisticsRoutes.get(
   '/types',
   StatisticValidator.statistic,
   async (request, response) => {
-    const { init, end } = request.query;
+    const { init, end, city } = request.query;
+
+    const parsedInitDate = parseISO(init);
+    const parsedEndDate = parseISO(end);
+
+    if (!isValid(parsedInitDate) || !isValid(parsedEndDate)) {
+      return response.status(400).json({ message: 'Essa data é invalida.' });
+    }
 
     const statistic = await generateStatistic({
       init,
       end,
+      cityName: city,
     });
 
     return response.status(200).json(statistic);
