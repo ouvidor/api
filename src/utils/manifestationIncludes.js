@@ -5,6 +5,7 @@ import Type from '../models/Type';
 import Status from '../models/Status';
 import ManifestationStatusHistory from '../models/ManifestationStatusHistory';
 import Secretary from '../models/Secretary';
+import Avaliation from '../models/Avaliation';
 
 export default [
   {
@@ -58,5 +59,9 @@ export default [
     as: 'categories',
     attributes: ['id', 'title'],
     through: { attributes: [] }, // remove dados desnecessários
+  },
+  {
+    model: Avaliation,
+    as: 'avaliation',
   },
 ];
