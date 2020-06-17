@@ -6,6 +6,11 @@ const getManifestationByStatus = async ({
   ownerId,
   itemsPerPage = 10,
 }) => {
+  let statusFilter = '';
+  if (statusTitle) {
+    statusFilter = `s.title = "${statusTitle}" AND `;
+  }
+
   const [{ count }] = await database.query(`
     SELECT
       COUNT(DISTINCT (m.id)) 'count'
@@ -16,7 +21,7 @@ const getManifestationByStatus = async ({
     INNER JOIN status s ON
       s.id = msh.status_id
     WHERE
-      s.title = "encerrada" AND m.users_id = 1
+      ${statusFilter} m.users_id = ${ownerId}
   `);
 
   const manifestations = await database.query(`
@@ -42,8 +47,8 @@ const getManifestationByStatus = async ({
     INNER JOIN status s ON
       s.id = msh.status_id
     WHERE
-      s.title = "${statusTitle}"
-      AND m.users_id = ${ownerId}
+      ${statusFilter}
+      m.users_id = ${ownerId}
       AND msh.id IN (
       SELECT
         MAX(id)
@@ -57,6 +62,7 @@ const getManifestationByStatus = async ({
   return {
     rows: manifestations,
     count,
+    current_page: page,
     last_page: Math.ceil(count / itemsPerPage),
   };
 };
