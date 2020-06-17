@@ -67,6 +67,12 @@ filesRoutes.post(
     const id = Number(request.params.id);
     const { files, user_role, user_id } = request;
 
+    if (files.length === 0) {
+      return response
+        .status(400)
+        .json({ status: 'error', message: 'Nenhum arquivo enviado.' });
+    }
+
     const savedFiles = await saveManifestationFiles({
       manifestationId: id,
       files,
