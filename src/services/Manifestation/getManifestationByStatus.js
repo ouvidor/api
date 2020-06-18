@@ -59,6 +59,7 @@ const getManifestationByStatus = async ({
     LEFT JOIN status s ON msh2.status_id = s.id
     LEFT JOIN avaliations a ON t.manifestations_id = a.manifestations_id
     WHERE ${statusFilter} m.users_id = ${ownerId}
+    ORDER BY m.updated_at DESC
     LIMIT ${itemsPerPage} OFFSET ${(page - 1) * itemsPerPage};
   `);
 
