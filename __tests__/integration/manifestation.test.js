@@ -209,7 +209,9 @@ describe('Manifestation', () => {
           longitude: null,
           created_at: expect.any(String),
           updated_at: expect.any(String),
+          deleted_at: null,
           secretary: null,
+          avaliation: null,
           user: {
             id: expect.any(Number),
             first_name: expect.any(String),
@@ -239,6 +241,7 @@ describe('Manifestation', () => {
                 id: expect.any(Number),
                 title: expect.any(String),
               },
+              files: [],
             },
           ],
         })
