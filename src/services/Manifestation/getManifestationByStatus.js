@@ -26,14 +26,14 @@ const getManifestationByStatus = async ({
 
   const manifestations = await database.query(`
     SELECT
-      m.id, m.description,
+      m.id, m.title, m.description,
       m.latitude, m.longitude,
       m.users_id, m.types_id,
       m.created_at, m.updated_at,
       m.protocol, m.secretariats_id,
       m.read, msh2.status_id,
       s.title AS status_title,
-      s.id AS status_id,
+      s.id AS status_id, tp.title as type_title,
       t.categories, t.categories_title,
       a.rate AS avaliation_rate, a.description AS avaliation_description
     FROM (
@@ -54,6 +54,7 @@ const getManifestationByStatus = async ({
         GROUP BY msh.manifestations_id
     ) t
     LEFT JOIN manifestations m ON t.manifestations_id = m.id
+    LEFT JOIN types tp ON m.types_id = tp.id
     LEFT JOIN manifestations_status_history msh2 ON t.msh_id = msh2.id
     LEFT JOIN status s ON msh2.status_id = s.id
     LEFT JOIN avaliations a ON t.manifestations_id = a.manifestations_id
