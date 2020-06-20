@@ -1,3 +1,4 @@
+import database from '../../database';
 import AppError from '../../errors/AppError';
 import Manifestation from '../../models/Manifestation';
 import ManifestationStatusHistory from '../../models/ManifestationStatusHistory';
@@ -9,11 +10,10 @@ const createManifestationStatusHistory = async ({
   manifestationId,
   manifestationAlreadyChecked = false,
 }) => {
-  let manifestation;
   let status;
 
   if (!manifestationAlreadyChecked) {
-    manifestation = await Manifestation.findByPk(manifestationId, {
+    const manifestation = await Manifestation.findByPk(manifestationId, {
       attributes: ['id'],
     });
 
@@ -28,10 +28,41 @@ const createManifestationStatusHistory = async ({
     status = await Status.findOne({ where: { title: statusIdentifier } });
   }
 
+  if (!status) {
+    throw new AppError('Esse status não existe.', 404);
+  }
+
   /**
-   * REGRAS DE NEGÓCIO
-   * não pode haver o mesmo status seguido
+   * Pega o status mais recente da manifestação
    */
+  const [latestManifestationStatus] = await database.query(`
+    SELECT
+      status.title as status_title,
+      status.id as status_id,
+      msh.manifestations_id
+    FROM
+      manifestations_status_history msh
+    INNER JOIN status ON
+      status.id = msh.status_id
+    WHERE
+      manifestations_id = ${manifestationId}
+      AND msh.id IN (
+      SELECT
+        MAX(id)
+      FROM
+        manifestations_status_history msh2
+      GROUP BY
+        manifestations_id )
+  `);
+
+  if (latestManifestationStatus) {
+    const willStatusBeSame =
+      Number(latestManifestationStatus.status_id) === Number(status.id);
+
+    if (willStatusBeSame) {
+      throw new AppError('Não pode inserir o mesmo status seguido.', 409);
+    }
+  }
 
   const manifestationStatus = await ManifestationStatusHistory.create({
     description,
