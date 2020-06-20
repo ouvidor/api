@@ -1,7 +1,7 @@
 const checkIfManifestionInUpdatePeriod = currentManifestationStatus => {
   switch (currentManifestationStatus.status.title) {
     case 'cadastrada':
-    case 'complementada':
+    case 'resposta intermediária':
     case 'arquivada':
       return true;
 
