@@ -59,7 +59,7 @@ manifestationsRoutes.get(
   '/',
   ManifestationValidator.fetch,
   async (request, response) => {
-    const { text, options, isRead, status, cancelled } = request.query;
+    const { text, options, isRead, cancelled, quantity = 10 } = request.query;
     let { page = 1, ownerId } = request.query;
     page = page && Number(page);
     ownerId = ownerId && Number(ownerId);
@@ -71,7 +71,7 @@ manifestationsRoutes.get(
       ownerId,
       isRead,
       cancelled,
-      status,
+      quantity: Number(quantity),
     });
 
     return response.status(200).json(searchResult);
