@@ -6,6 +6,10 @@ import File from '../../models/File';
 const getFile = async ({ fileId, userId, userRoleId }) => {
   const file = await File.findByPk(fileId);
 
+  if (!file) {
+    throw new AppError('Arquivo não existe.', 404);
+  }
+
   const isFileLinkedToManifestation = !!file.manifestations_id;
   let innerJoinQuery = '';
 
@@ -37,10 +41,6 @@ const getFile = async ({ fileId, userId, userRoleId }) => {
   const [[isManifestationOwner]] = await Promise.all([
     isManifestationOwnerQueryPromise,
   ]);
-
-  if (!file) {
-    throw new AppError('Arquivo não existe.', 404);
-  }
 
   const isCitizen = userRoleId < 2;
 

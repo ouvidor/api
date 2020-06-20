@@ -16,45 +16,49 @@ let userProfile;
 describe('File', () => {
   // entre todos os testes é feito o truncate da tabela
   beforeAll(async () => {
-    await truncate();
-    const { ombudsman, category, types, status } = await seedDatabase();
-    const { user, token: signedToken } = await sign.in({
-      email: 'root@gmail.com',
-      password: '123456',
-    });
-    token = signedToken;
-    userProfile = user;
+    try {
+      await truncate();
+      const { ombudsman, category, types, status } = await seedDatabase();
+      const { user, token: signedToken } = await sign.in({
+        email: 'root@gmail.com',
+        password: '123456',
+      });
+      token = signedToken;
+      userProfile = user;
 
-    manifestation = await Manifestation.create({
-      title: 'title',
-      description: 'description',
-      users_id: user.id,
-      types_id: types[0].id,
-      ombudsmen_id: ombudsman.id,
-    });
-    manifestation.setCategories(category.id);
+      manifestation = await Manifestation.create({
+        title: 'title',
+        description: 'description',
+        users_id: user.id,
+        types_id: types[0].id,
+        ombudsmen_id: ombudsman.id,
+      });
+      manifestation.setCategories(category.id);
 
-    manifestationStatus = await ManifestationStatusHistory.create({
-      description: 'Manifestação foi cadastrada.',
-      manifestations_id: manifestation.id,
-      status_id: status[1].id,
-    });
+      manifestationStatus = await ManifestationStatusHistory.create({
+        description: 'Manifestação foi cadastrada.',
+        manifestations_id: manifestation.id,
+        status_id: status[1].id,
+      });
 
-    await File.create({
-      name: 'sample.txt',
-      name_in_server: 'sample-123456789.txt',
-      extension: '.txt',
-      manifestations_id: manifestation.id,
-      users_id: user.id,
-    });
+      await File.create({
+        name: 'sample.txt',
+        name_in_server: 'sample-123456789.txt',
+        extension: '.txt',
+        manifestations_id: manifestation.id,
+        users_id: user.id,
+      });
 
-    await File.create({
-      name: 'sample.txt',
-      name_in_server: 'sample-123456789.txt',
-      extension: '.txt',
-      manifestations_status_id: manifestationStatus.id,
-      users_id: user.id,
-    });
+      await File.create({
+        name: 'sample.txt',
+        name_in_server: 'sample-123456789.txt',
+        extension: '.txt',
+        manifestations_status_id: manifestationStatus.id,
+        users_id: user.id,
+      });
+    } catch (error) {
+      console.info(error);
+    }
   });
 
   describe('FETCH', () => {
