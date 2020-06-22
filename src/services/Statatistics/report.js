@@ -9,8 +9,8 @@ const generateReport = async ({ init, end, cityName }) => {
       t.secretariats_id AS id,
       s.title,
       s.accountable,
-      SUM(IF(t.status_id = 5, 1, 0)) AS encerradas,
-      SUM(IF(t.status_id != 5, 1, 0)) AS semResposta
+      SUM(IF(t.status_id IN (5, 3), 1, 0)) AS encerradas,
+      SUM(IF(t.status_id NOT IN (5, 3), 1, 0)) AS semResposta
     FROM
       (
       SELECT
