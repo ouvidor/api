@@ -17,15 +17,6 @@ const updateSecretary = async ({ id, email, title, accountable }) => {
     }
   }
 
-  // se receber um title checa se ele está em uso
-  if (title && title !== secretary.title) {
-    const checkIfTitleExists = await Secretary.findOne({ where: { title } });
-
-    if (checkIfTitleExists) {
-      throw new AppError('Uma secretaria já existe com esse titulo.', 409);
-    }
-  }
-
   const updatedSecretary = await secretary.update({
     title,
     email,
