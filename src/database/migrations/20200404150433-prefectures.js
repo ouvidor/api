@@ -39,6 +39,7 @@ module.exports = {
           references: { model: 'ombudsmen', key: 'id' },
           onDelete: 'CASCADE',
           onUpdate: 'CASCADE',
+          allowNull: false,
         },
         created_at: {
           type: Sequelize.DATE,
