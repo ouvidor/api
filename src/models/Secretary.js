@@ -6,7 +6,7 @@ class Secretary extends Model {
       {
         title: {
           type: Sequelize.STRING,
-          unique: true,
+          unique: false,
         },
         email: {
           type: Sequelize.STRING,
