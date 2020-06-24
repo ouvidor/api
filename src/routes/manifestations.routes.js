@@ -134,8 +134,6 @@ manifestationsRoutes.put(
   }
 );
 
-manifestationsRoutes.use(RolesMiddleware.admin);
-
 manifestationsRoutes.delete('/:id', async (request, response) => {
   const id = Number(request.params.id);
   const { user_id } = request;
@@ -144,6 +142,8 @@ manifestationsRoutes.delete('/:id', async (request, response) => {
 
   return response.status(204).send();
 });
+
+manifestationsRoutes.use(RolesMiddleware.admin);
 
 manifestationsRoutes.patch('/:id/read', async (request, response) => {
   const { id } = request.params;
