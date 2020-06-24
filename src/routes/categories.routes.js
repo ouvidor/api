@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import authMiddleware from '../middlewares/auth';
+import RolesMiddleware from '../middlewares/roles';
 import GenericValidator from '../middlewares/validators/Generic';
 
 import fetchCategories from '../services/Category/fetch';
@@ -26,6 +27,8 @@ categoriesRoutes.get('/:id', async (request, response) => {
 
   return response.status(200).json(category);
 });
+
+categoriesRoutes.use(RolesMiddleware.adminMaster);
 
 categoriesRoutes.post('/', GenericValidator.save, async (request, response) => {
   const { title } = request.body;
