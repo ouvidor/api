@@ -33,12 +33,11 @@ routes.use('/secretary', secretaryRoutes);
 routes.use('/files', filesRoutes);
 routes.use('/ombudsman', ombudsmanRoutes);
 routes.use('/prefecture', prefectureRoutes);
-routes.use('/statistics', statisticsRoutes);
 
 routes.use(AuthMiddleware);
 
 routes.use(RolesMiddleware.admin);
-
+routes.use('/statistics', statisticsRoutes);
 routes.use('/email', mailRoutes);
 
 routes.use(RolesMiddleware.adminMaster);
