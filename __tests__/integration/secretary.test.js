@@ -121,31 +121,6 @@ describe('Secretary', () => {
     expect(response.status).toBe(409);
   });
 
-  it("shouldn't update secretary, because title duplicated", async () => {
-    // criar
-    await request(app)
-      .post('/secretary')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        title: 'NEW_TITLE',
-        email: 'some.random@email.com',
-        accountable: 'José',
-        city: 'Cabo Frio',
-      });
-
-    // update
-    const response = await request(app)
-      .put(`/secretary/${secretary.id}`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'NEW_TITLE' });
-
-    expect(response.body).toHaveProperty('message');
-    expect(response.body.message).toStrictEqual(
-      'Uma secretaria já existe com esse titulo.'
-    );
-    expect(response.status).toBe(409);
-  });
-
   it('should delete a secretary', async () => {
     const response = await request(app)
       .delete(`/secretary/${secretary.id}`)
