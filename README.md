@@ -2,33 +2,29 @@
 
 [![CircleCI](https://circleci.com/gh/ouvidor/api.svg?style=svg)](https://circleci.com/gh/ouvidor/api)
 
-## Como usar
+## Como usar 🏁
 
-Primeiro instale todas as dependências com: `yarn install`
+Primeiro instale todas as dependências com: `yarn install`.
 
 Defina suas variáveis de ambiente no arquivo, para isso basta copiar o `.env.example` e fazer um `.env` com seus dados.
 
-Para inicar o servidor só precisa rodar `yarn dev` na raiz do projeto.
+> ❗ Para preencher a variável de ambiente `GOOGLE_APPLICATION_CREDENTIALS` é necessário colocar um arquivo JSON na pasta raiz do projeto. Esse arquivo é adquirido fazendo um plano na Google Cloud Storage.
 
-## Estrutura
+Antes de iniciar é necessário ter conectado seu banco de dados à aplicação e rodado os comandos:
+- `yarn migrate`: para rodar todas as migrations.
+- `yarn seed`: para preencher o banco com os dados iniciais.
 
-O arquivo `src/index.js` inicia o servidor e conecta ao Banco de Dados, após isso passa o controle de rotas para `src/routes.js`.
+Para inicar a aplicação em modo de desenvolvimento é necessário rodar o comando `yarn dev`.
 
-```javascript
-import UserController from './controller/user.controller';
-router.get('/user', UserController.fetch);
-```
+## Tecnologias utilizadas 🤠
 
-Para exemplo de Middleware, usarei o de autenticação, em routes.index, importaremos o Middleware de autenticação
-
-```javascript
-import AuthMiddleware from './middlewares/auth';
-```
-
-Após isso diremos no app qual das funções será o middleware, exemplo:
-
-```javascript
-router.use(AuthMiddleware);
-```
-
-Isso faz com que todas requisições de app a partir dessa linha, necessitem de validação de token
+- Node.js
+- Express
+- Sequelize
+- BCrypt.js
+- Yup
+- Nodemailer
+- Multer
+- Helmet
+- Jest
+- Supertest
